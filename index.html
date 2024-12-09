@@ -19,9 +19,31 @@
             margin: 20px 0;
         }
 
+        /* Animação do título */
         h1 {
             font-size: 3rem;
             text-shadow: 0 0 10px #00ff00;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            animation: typing 4s steps(30) 1s forwards, blink 0.75s step-end infinite;
+        }
+
+        /* Efeito de digitação */
+        @keyframes typing {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* Efeito de piscar */
+        @keyframes blink {
+            50% {
+                border-color: transparent;
+            }
         }
 
         h2 {
@@ -91,17 +113,15 @@
     <script>
         // Lista de filmes
         const movies = [
-            "Pulp Fiction",
+            "Matrix",
             "Blade Runner",
             "O Exterminador do Futuro",
             "Neuromancer",
-            "Central do Brasil",
-            "Carandiru",
             "Tron"
         ];
 
         // API TMDb
-        const API_KEY = "395b8b6ba3e1dab472d05623c54e1089"; // Substitua por sua API Key
+        const API_KEY = "395b8b6ba3e1dab472d05623c54e1089"; // Sua chave API
         const API_URL = "https://api.themoviedb.org/3/search/movie";
 
         const drawButton = document.getElementById("draw-button");
