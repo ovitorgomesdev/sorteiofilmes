@@ -99,9 +99,6 @@
         const API_KEY = "395b8b6ba3e1dab472d05623c54e1089"; // Substitua por sua API Key
         const API_URL = "https://api.themoviedb.org/3/search/movie";
 
-        // Configuração da data do sorteio
-        const drawDate = new Date(); // Data do sorteio definida para hoje
-        const today = new Date();
         const drawButton = document.getElementById("draw-button");
         const movieDisplay = document.getElementById("movie-display");
         const moviePoster = document.getElementById("movie-poster");
@@ -146,7 +143,7 @@
             }
         }
 
-        // Inicializa o botão
+        // Inicializa o sorteio imediatamente
         drawButton.addEventListener("click", drawMovie);
     </script>
 </body>
