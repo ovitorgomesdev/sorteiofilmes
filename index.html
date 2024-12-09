@@ -3,66 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteio de Filme UAIMAX</title>
+    <title>Sorteios Filmes UAIMAX</title>
     <style>
+        /* Estilo inspirado no filme Matrix */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: black;
+            color: #00ff00;
             text-align: center;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
         }
-        .container {
-            margin-top: 10%;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-        #movie-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #007bff;
+
+        h1, h2 {
             margin: 20px 0;
         }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        #movie-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
         button {
-            background-color: #007bff;
-            color: white;
-            border: none;
+            background-color: black;
+            color: #00ff00;
+            border: 2px solid #00ff00;
             padding: 10px 20px;
-            font-size: 1rem;
+            font-size: 1.2rem;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
         }
+
+        button:hover:enabled {
+            background-color: #00ff00;
+            color: black;
+        }
+
         button:disabled {
-            background-color: #ccc;
+            background-color: black;
+            color: gray;
+            border-color: gray;
             cursor: not-allowed;
         }
-        button:hover:enabled {
-            background-color: #0056b3;
+
+        .container {
+            margin-top: 10%;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>O filme de hoje é:</h1>
+        <h1>Sorteios Filmes UAIMAX</h1>
+        <h2>O filme de hoje é:</h2>
         <div id="movie-display">Aguardando sorteio...</div>
-        <button id="draw-button">Sorteio disponível no dia: 2025-01-26</button>
+        <button id="draw-button">Sorteio disponível no dia: 26/01/2025</button>
     </div>
 
     <script>
         // Lista de filmes
         const movies = [
-            "O Poderoso Chefão",
-            "Interestelar",
-            "A Viagem de Chihiro",
-            "Parasita",
-            "Cidade de Deus"
+            "Matrix",
+            "Blade Runner",
+            "O Exterminador do Futuro",
+            "Neuromancer",
+            "Tron"
         ];
 
         // Configuração da data do sorteio
-        const drawDate = new Date("2025-0112-26T00:00:00"); // Data do sorteio
+        const drawDate = new Date("2025-01-26T00:00:00"); // Data do sorteio
         const today = new Date(); // Data atual
         const drawButton = document.getElementById("draw-button");
         const movieDisplay = document.getElementById("movie-display");
