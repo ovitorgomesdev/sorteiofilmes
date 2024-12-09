@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteios Filmes UAIMAX</title>
     <style>
-        /* Estilo inspirado no filme Matrix */
         body {
             font-family: 'Courier New', Courier, monospace;
             background-color: black;
@@ -29,11 +28,22 @@
         }
 
         #movie-display {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             margin: 30px 0;
             color: #00ff00;
-            text-shadow: 0 0 10px #00ff00;
+        }
+
+        #movie-poster {
+            margin: 20px 0;
+            max-width: 300px;
+            border: 2px solid #00ff00;
+        }
+
+        #movie-synopsis {
+            font-size: 1rem;
+            margin: 20px;
+            color: #00ff00;
         }
 
         button {
@@ -60,7 +70,7 @@
         }
 
         .container {
-            margin-top: 10%;
+            margin-top: 5%;
         }
     </style>
 </head>
@@ -69,6 +79,8 @@
         <h1>Sorteios Filmes UAIMAX</h1>
         <h2>O filme de hoje é:</h2>
         <div id="movie-display">Aguardando sorteio...</div>
+        <img id="movie-poster" src="" alt="Pôster do filme" style="display: none;">
+        <div id="movie-synopsis"></div>
         <button id="draw-button">Sorteio disponível no dia: 26/01/2025</button>
     </div>
 
@@ -82,11 +94,17 @@
             "Tron"
         ];
 
+        // API TMDb
+        const API_KEY = "395b8b6ba3e1dab472d05623c54e1089"; // Substitua por sua API Key
+        const API_URL = "https://api.themoviedb.org/3/search/movie";
+
         // Configuração da data do sorteio
-        const drawDate = new Date("2025-01-26T00:00:00"); // Data do sorteio
-        const today = new Date(); // Data atual
+        const drawDate = new Date("2025-01-26T00:00:00");
+        const today = new Date();
         const drawButton = document.getElementById("draw-button");
         const movieDisplay = document.getElementById("movie-display");
+        const moviePoster = document.getElementById("movie-poster");
+        const movieSynopsis = document.getElementById("movie-synopsis");
 
         // Atualiza o botão dependendo da data
         function updateButton() {
@@ -104,11 +122,43 @@
             }
         }
 
-        // Sorteio do filme
-        function drawMovie() {
+        // Função para buscar informações do filme na API TMDb
+        async function fetchMovieData(movieName) {
+            try {
+                const response = await fetch(`${API_URL}?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    const movie = data.results[0];
+                    return {
+                        title: movie.title,
+                        poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                        synopsis: movie.overview
+                    };
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                console.error("Erro ao buscar dados do filme:", error);
+                return null;
+            }
+        }
+
+        // Sorteio do filme e exibição
+        async function drawMovie() {
             const randomIndex = Math.floor(Math.random() * movies.length);
             const selectedMovie = movies[randomIndex];
-            movieDisplay.textContent = selectedMovie;
+            const movieData = await fetchMovieData(selectedMovie);
+
+            if (movieData) {
+                movieDisplay.textContent = movieData.title;
+                moviePoster.src = movieData.poster;
+                moviePoster.style.display = "block";
+                movieSynopsis.textContent = movieData.synopsis;
+            } else {
+                movieDisplay.textContent = "Filme não encontrado!";
+                moviePoster.style.display = "none";
+                movieSynopsis.textContent = "";
+            }
         }
 
         // Inicializa o botão
