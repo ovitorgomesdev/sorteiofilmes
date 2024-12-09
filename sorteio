@@ -14,7 +14,7 @@
             color: #333;
         }
         .container {
-            margin-top: 20%;
+            margin-top: 10%;
         }
         h1 {
             font-size: 2rem;
@@ -62,8 +62,8 @@
         ];
 
         // Configuração da data do sorteio
-        const drawDate = new Date("2024-12-10");
-        const today = new Date();
+        const drawDate = new Date("2024-12-10T00:00:00"); // Data do sorteio
+        const today = new Date(); // Data atual
         const drawButton = document.getElementById("draw-button");
         const movieDisplay = document.getElementById("movie-display");
 
@@ -73,7 +73,12 @@
                 drawButton.textContent = "Sorteie Já";
                 drawButton.disabled = false;
             } else {
-                drawButton.textContent = `Sorteio disponível no dia: ${drawDate.toISOString().split('T')[0]}`;
+                const formattedDate = drawDate.toLocaleDateString("pt-BR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                });
+                drawButton.textContent = `Sorteio disponível no dia: ${formattedDate}`;
                 drawButton.disabled = true;
             }
         }
@@ -85,7 +90,7 @@
             movieDisplay.textContent = selectedMovie;
         }
 
-        // Inicialização
+        // Inicializa o botão
         updateButton();
         drawButton.addEventListener("click", drawMovie);
     </script>
