@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteios Filmes UAIMAX</title>
     <style>
+        /* Estilo inspirado no filme Matrix */
         body {
             font-family: 'Courier New', Courier, monospace;
             background-color: black;
@@ -81,7 +82,7 @@
         <div id="movie-display">Aguardando sorteio...</div>
         <img id="movie-poster" src="" alt="Pôster do filme" style="display: none;">
         <div id="movie-synopsis"></div>
-        <button id="draw-button">Sorteio disponível no dia: 26/01/2025</button>
+        <button id="draw-button">Sorteie Já</button>
     </div>
 
     <script>
@@ -99,28 +100,12 @@
         const API_URL = "https://api.themoviedb.org/3/search/movie";
 
         // Configuração da data do sorteio
-        const drawDate = new Date("2025-01-26T00:00:00");
+        const drawDate = new Date(); // Data do sorteio definida para hoje
         const today = new Date();
         const drawButton = document.getElementById("draw-button");
         const movieDisplay = document.getElementById("movie-display");
         const moviePoster = document.getElementById("movie-poster");
         const movieSynopsis = document.getElementById("movie-synopsis");
-
-        // Atualiza o botão dependendo da data
-        function updateButton() {
-            if (today >= drawDate) {
-                drawButton.textContent = "Sorteie Já";
-                drawButton.disabled = false;
-            } else {
-                const formattedDate = drawDate.toLocaleDateString("pt-BR", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                });
-                drawButton.textContent = `Sorteio disponível no dia: ${formattedDate}`;
-                drawButton.disabled = true;
-            }
-        }
 
         // Função para buscar informações do filme na API TMDb
         async function fetchMovieData(movieName) {
@@ -162,7 +147,6 @@
         }
 
         // Inicializa o botão
-        updateButton();
         drawButton.addEventListener("click", drawMovie);
     </script>
 </body>
