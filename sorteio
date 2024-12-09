@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio de Filme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            margin-top: 20%;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        #movie-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        button:hover:enabled {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>O filme de hoje é:</h1>
+        <div id="movie-display">Aguardando sorteio...</div>
+        <button id="draw-button">Sorteio disponível no dia: 2024-12-10</button>
+    </div>
+
+    <script>
+        // Lista de filmes
+        const movies = [
+            "O Poderoso Chefão",
+            "Interestelar",
+            "A Viagem de Chihiro",
+            "Parasita",
+            "Cidade de Deus"
+        ];
+
+        // Configuração da data do sorteio
+        const drawDate = new Date("2024-12-10");
+        const today = new Date();
+        const drawButton = document.getElementById("draw-button");
+        const movieDisplay = document.getElementById("movie-display");
+
+        // Atualiza o botão dependendo da data
+        function updateButton() {
+            if (today >= drawDate) {
+                drawButton.textContent = "Sorteie Já";
+                drawButton.disabled = false;
+            } else {
+                drawButton.textContent = `Sorteio disponível no dia: ${drawDate.toISOString().split('T')[0]}`;
+                drawButton.disabled = true;
+            }
+        }
+
+        // Sorteio do filme
+        function drawMovie() {
+            const randomIndex = Math.floor(Math.random() * movies.length);
+            const selectedMovie = movies[randomIndex];
+            movieDisplay.textContent = selectedMovie;
+        }
+
+        // Inicialização
+        updateButton();
+        drawButton.addEventListener("click", drawMovie);
+    </script>
+</body>
+</html>
