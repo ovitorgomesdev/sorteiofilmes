@@ -102,6 +102,14 @@
             color: #00ff00;
         }
 
+        #trailer-link {
+            font-size: 1.2rem;
+            color: #00ff00;
+            display: block;
+            margin: 20px auto;
+            text-decoration: underline;
+        }
+
         button {
             background-color: black;
             color: #00ff00;
@@ -134,6 +142,7 @@
         <div id="movie-display">Aguardando sorteio...</div>
         <img id="movie-poster" src="" alt="Pôster do filme" style="display: none;">
         <div id="movie-synopsis"></div>
+        <a id="trailer-link" href="#" target="_blank" style="display: none;">Ver trailer no YouTube</a>
         <button id="draw-button">Sorteie Já</button>
     </div>
 
@@ -161,7 +170,7 @@
             "2001 - Uma Odisseia no Espaço",
             "Fogo Contra Fogo",
             "A Single Man",
-            "Sweeney Todd - O Barbeiro Demoniaco da Rua Fleet",
+            "Sweeney Todd - O Barbeiro Demoniaco da Rua Fleet"
         ];
 
         const API_KEY = "395b8b6ba3e1dab472d05623c54e1089";
@@ -171,6 +180,7 @@
         const movieDisplay = document.getElementById("movie-display");
         const moviePoster = document.getElementById("movie-poster");
         const movieSynopsis = document.getElementById("movie-synopsis");
+        const trailerLink = document.getElementById("trailer-link");
 
         async function fetchMovieData(movieName) {
             try {
@@ -181,7 +191,8 @@
                     return {
                         title: movie.title,
                         poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                        synopsis: movie.overview
+                        synopsis: movie.overview,
+                        youtubeTrailerQuery: `${movie.title} trailer`
                     };
                 } else {
                     return null;
@@ -194,33 +205,29 @@
 
         async function drawMovie() {
             drawButton.disabled = true;
-            let timePassed = 0;
-            const fastDuration = 10000;
-            const slowDuration = 5000;
+            let iterations = 0;
             const chosenMovie = "Faça a Coisa Certa";
 
-            function sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
+            function getDelay(i) {
+                return 100 + i * 50;
             }
 
-            async function cycleMovies() {
-                const startTime = Date.now();
-                let delay = 50;
-
-                while (timePassed < fastDuration + slowDuration) {
-                    const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-                    movieDisplay.textContent = randomMovie;
-
-                    await sleep(delay);
-                    timePassed = Date.now() - startTime;
-
-                    if (timePassed > fastDuration) {
-                        delay += 100; // desaceleração progressiva
+            function cycleMovies() {
+                return new Promise(resolve => {
+                    function step() {
+                        if (iterations < 30) {
+                            const random = movies[Math.floor(Math.random() * movies.length)];
+                            movieDisplay.textContent = random;
+                            iterations++;
+                            setTimeout(step, getDelay(iterations));
+                        } else {
+                            movieDisplay.textContent = chosenMovie;
+                            movieDisplay.style.animation = "pulse 1s infinite";
+                            resolve();
+                        }
                     }
-                }
-
-                movieDisplay.textContent = chosenMovie;
-                movieDisplay.style.animation = "pulse 1s infinite";
+                    step();
+                });
             }
 
             await cycleMovies();
@@ -228,14 +235,16 @@
             const movieData = await fetchMovieData(chosenMovie);
             if (movieData) {
                 movieDisplay.textContent = movieData.title;
-                movieDisplay.style.animation = "pulse 1s infinite";
                 moviePoster.src = movieData.poster;
                 moviePoster.style.display = "block";
                 movieSynopsis.textContent = movieData.synopsis;
+                trailerLink.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(movieData.youtubeTrailerQuery)}`;
+                trailerLink.style.display = "block";
             } else {
                 movieDisplay.textContent = "Filme não encontrado!";
                 moviePoster.style.display = "none";
                 movieSynopsis.textContent = "";
+                trailerLink.style.display = "none";
             }
 
             drawButton.disabled = false;
