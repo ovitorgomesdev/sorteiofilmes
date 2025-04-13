@@ -194,29 +194,33 @@
 
         async function drawMovie() {
             drawButton.disabled = true;
-            let iterations = 0;
+            let timePassed = 0;
+            const fastDuration = 10000;
+            const slowDuration = 5000;
             const chosenMovie = "Faça a Coisa Certa";
 
-            function getDelay(i) {
-                return 100 + i * 50;
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
             }
 
-            function cycleMovies() {
-                return new Promise(resolve => {
-                    function step() {
-                        if (iterations < 30) {
-                            const random = movies[Math.floor(Math.random() * movies.length)];
-                            movieDisplay.textContent = random;
-                            iterations++;
-                            setTimeout(step, getDelay(iterations));
-                        } else {
-                            movieDisplay.textContent = chosenMovie;
-                            movieDisplay.style.animation = "pulse 1s infinite";
-                            resolve();
-                        }
+            async function cycleMovies() {
+                const startTime = Date.now();
+                let delay = 50;
+
+                while (timePassed < fastDuration + slowDuration) {
+                    const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+                    movieDisplay.textContent = randomMovie;
+
+                    await sleep(delay);
+                    timePassed = Date.now() - startTime;
+
+                    if (timePassed > fastDuration) {
+                        delay += 100; // desaceleração progressiva
                     }
-                    step();
-                });
+                }
+
+                movieDisplay.textContent = chosenMovie;
+                movieDisplay.style.animation = "pulse 1s infinite";
             }
 
             await cycleMovies();
@@ -224,6 +228,7 @@
             const movieData = await fetchMovieData(chosenMovie);
             if (movieData) {
                 movieDisplay.textContent = movieData.title;
+                movieDisplay.style.animation = "pulse 1s infinite";
                 moviePoster.src = movieData.poster;
                 moviePoster.style.display = "block";
                 movieSynopsis.textContent = movieData.synopsis;
