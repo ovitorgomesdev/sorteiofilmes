@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteios Filmes UAIMAX</title>
     <style>
-        /* Estilo inspirado no filme Matrix */
         body {
             font-family: 'Courier New', Courier, monospace;
             background-color: black;
@@ -19,7 +18,6 @@
             margin: 20px 0;
         }
 
-        /* Animação do título */
         h1 {
             font-size: 3rem;
             text-shadow: 0 0 10px #00ff00;
@@ -29,29 +27,17 @@
             animation: typing 4s steps(30) 1s forwards, blink 0.75s step-end infinite;
         }
 
-        /* Efeito de digitação */
         @keyframes typing {
-            0% {
-                width: 0;
-            }
-            100% {
-                width: 100%;
-            }
+            0% { width: 0; }
+            100% { width: 100%; }
         }
 
-        /* Efeito de piscar */
         @keyframes blink {
-            50% {
-                border-color: transparent;
-            }
-        }
-
-        h2 {
-            font-size: 1.5rem;
+            50% { border-color: transparent; }
         }
 
         #movie-display {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             margin: 30px 0;
             color: #00ff00;
@@ -61,7 +47,7 @@
             margin: 20px 0;
             max-width: 300px;
             border: 2px solid #00ff00;
-            display: block;
+            display: none;
             margin-left: auto;
             margin-right: auto;
         }
@@ -70,6 +56,9 @@
             font-size: 1rem;
             margin: 20px;
             color: #00ff00;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         button {
@@ -88,13 +77,6 @@
             color: black;
         }
 
-        button:disabled {
-            background-color: black;
-            color: gray;
-            border-color: gray;
-            cursor: not-allowed;
-        }
-
         .container {
             margin-top: 5%;
         }
@@ -105,71 +87,81 @@
         <h1>Sorteios Filmes UAIMAX</h1>
         <h2>O filme de hoje é:</h2>
         <div id="movie-display">Aguardando sorteio...</div>
-        <img id="movie-poster" src="" alt="Pôster do filme" style="display: none;">
+        <img id="movie-poster" src="" alt="Pôster do filme">
         <div id="movie-synopsis"></div>
         <button id="draw-button">Sorteie Já</button>
     </div>
 
     <script>
-        // Lista de filmes
-        const movies = [
-            "Matrix",
-            "Blade Runner",
-            "O Exterminador do Futuro",
-            "Neuromancer",
-            "Tron"
-        ];
-
-        // API TMDb
-        const API_KEY = "395b8b6ba3e1dab472d05623c54e1089"; // Sua chave API
-        const API_URL = "https://api.themoviedb.org/3/search/movie";
-
         const drawButton = document.getElementById("draw-button");
         const movieDisplay = document.getElementById("movie-display");
         const moviePoster = document.getElementById("movie-poster");
         const movieSynopsis = document.getElementById("movie-synopsis");
 
-        // Função para buscar informações do filme na API TMDb
+        const fakeMovies = [
+            "Matrix",
+            "Blade Runner",
+            "O Exterminador do Futuro",
+            "Tron",
+            "Robocop",
+            "Ghost in the Shell",
+            "Akira",
+            "Minority Report"
+        ];
+
+        const realMovie = {
+            name: "Do the Right Thing",
+            displayName: "Faça a Coisa Certa"
+        };
+
+        const API_KEY = "395b8b6ba3e1dab472d05623c54e1089";
+        const API_URL = "https://api.themoviedb.org/3/search/movie";
+
         async function fetchMovieData(movieName) {
             try {
                 const response = await fetch(`${API_URL}?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`);
                 const data = await response.json();
+
                 if (data.results && data.results.length > 0) {
                     const movie = data.results[0];
-                    return {
-                        title: movie.title,
-                        poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                        synopsis: movie.overview
-                    };
+                    moviePoster.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                    moviePoster.style.display = "block";
+                    movieSynopsis.textContent = movie.overview;
                 } else {
-                    return null;
+                    moviePoster.style.display = "none";
+                    movieSynopsis.textContent = "Sinopse não encontrada.";
                 }
             } catch (error) {
                 console.error("Erro ao buscar dados do filme:", error);
-                return null;
-            }
-        }
-
-        // Sorteio do filme e exibição
-        async function drawMovie() {
-            const randomIndex = Math.floor(Math.random() * movies.length);
-            const selectedMovie = movies[randomIndex];
-            const movieData = await fetchMovieData(selectedMovie);
-
-            if (movieData) {
-                movieDisplay.textContent = movieData.title;
-                moviePoster.src = movieData.poster;
-                moviePoster.style.display = "block";
-                movieSynopsis.textContent = movieData.synopsis;
-            } else {
-                movieDisplay.textContent = "Filme não encontrado!";
                 moviePoster.style.display = "none";
-                movieSynopsis.textContent = "";
+                movieSynopsis.textContent = "Erro ao carregar os dados do filme.";
             }
         }
 
-        // Inicializa o sorteio imediatamente
-        drawButton.addEventListener("click", drawMovie);
+        function simulateDraw() {
+            let index = 0;
+            const totalRounds = 30; // total de trocas antes de parar no filme certo
+            const delayBase = 50;
+            let currentRound = 0;
+
+            moviePoster.style.display = "none";
+            movieSynopsis.textContent = "";
+
+            const interval = setInterval(() => {
+                // Vai alternando os filmes fakes
+                movieDisplay.textContent = fakeMovies[index];
+                index = (index + 1) % fakeMovies.length;
+                currentRound++;
+
+                if (currentRound >= totalRounds) {
+                    clearInterval(interval);
+                    movieDisplay.textContent = realMovie.displayName;
+                    fetchMovieData(realMovie.name);
+                }
+            }, delayBase + currentRound * 5); // dá uma leve desacelerada
+        }
+
+        drawButton.addEventListener("click", simulateDraw);
     </script>
 </body>
 </html>
