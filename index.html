@@ -1,176 +1,258 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sorteios Filmes UAIMAX</title>
-  <style>
-    body {
-      font-family: 'Courier New', Courier, monospace;
-      background-color: black;
-      color: #00ff00;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteios Filmes UAIMAX</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: black;
+            color: #00ff00;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
 
-    h1, h2 {
-      margin: 20px 0;
-    }
+        .background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
 
-    h1 {
-      font-size: 3rem;
-      text-shadow: 0 0 10px #00ff00;
-      overflow: hidden;
-      white-space: nowrap;
-      width: 0;
-      animation: typing 4s steps(30) 1s forwards, blink 0.75s step-end infinite;
-    }
+        .background img {
+            position: absolute;
+            width: 150px;
+            opacity: 0.05;
+            filter: blur(2px);
+            animation: floatUp 60s linear infinite;
+        }
 
-    @keyframes typing {
-      0% { width: 0; }
-      100% { width: 100%; }
-    }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh);
+            }
+            100% {
+                transform: translateY(-200px);
+            }
+        }
 
-    @keyframes blink {
-      50% { border-color: transparent; }
-    }
+        .container {
+            position: relative;
+            z-index: 1;
+            margin-top: 5%;
+        }
 
-    #movie-display {
-      font-size: 1.8rem;
-      font-weight: bold;
-      margin: 30px 0;
-      color: #00ff00;
-    }
+        h1, h2 {
+            margin: 20px 0;
+        }
 
-    #movie-poster {
-      margin: 20px 0;
-      max-width: 300px;
-      border: 2px solid #00ff00;
-      display: none;
-      margin-left: auto;
-      margin-right: auto;
-    }
+        h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 10px #00ff00;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            animation: typing 4s steps(30) 1s forwards, blink 0.75s step-end infinite;
+        }
 
-    #movie-synopsis {
-      font-size: 1rem;
-      margin: 20px;
-      color: #00ff00;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+        @keyframes typing {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
 
-    button {
-      background-color: black;
-      color: #00ff00;
-      border: 2px solid #00ff00;
-      padding: 10px 20px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
-    }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
 
-    button:hover:enabled {
-      background-color: #00ff00;
-      color: black;
-    }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
 
-    .container {
-      margin-top: 5%;
-    }
-  </style>
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        #movie-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #00ff00;
+        }
+
+        #movie-poster {
+            margin: 20px 0;
+            max-width: 300px;
+            border: 2px solid #00ff00;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #movie-synopsis {
+            font-size: 1rem;
+            margin: 20px;
+            color: #00ff00;
+        }
+
+        button {
+            background-color: black;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover:enabled {
+            background-color: #00ff00;
+            color: black;
+        }
+
+        button:disabled {
+            background-color: black;
+            color: gray;
+            border-color: gray;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Sorteios Filmes UAIMAX</h1>
-    <h2>O filme de hoje é:</h2>
-    <div id="movie-display">Aguardando sorteio...</div>
-    <img id="movie-poster" src="" alt="Pôster do filme">
-    <div id="movie-synopsis"></div>
-    <button id="draw-button">Sorteie Já</button>
-  </div>
+    <div class="background" id="background"></div>
+    <div class="container">
+        <h1>Sorteios Filmes UAIMAX</h1>
+        <h2>O filme de hoje é:</h2>
+        <div id="movie-display">Aguardando sorteio...</div>
+        <img id="movie-poster" src="" alt="Pôster do filme" style="display: none;">
+        <div id="movie-synopsis"></div>
+        <button id="draw-button">Sorteie Já</button>
+    </div>
 
-  <script>
-    const drawButton = document.getElementById("draw-button");
-    const movieDisplay = document.getElementById("movie-display");
-    const moviePoster = document.getElementById("movie-poster");
-    const movieSynopsis = document.getElementById("movie-synopsis");
+    <script>
+        const movies = [
+            "Kill Bill",
+            "O Senhor dos Anéis",
+            "Cidade de Deus",
+            "Cidade dos Sonhos",
+            "Veludo Azul",
+            "O Bom, O Mau, O feio",
+            "Pulp Fiction",
+            "Titanic",
+            "O Massacre da Serra Elétrica",
+            "Faça a Coisa Certa",
+            "Paris, Texas",
+            "Faça a Coisa Certa",
+            "Vertigo",
+            "Janela Indiscreta",
+            "Taxi Driver",
+            "Ran",
+            "Guerra dos Mundos",
+            "Rivais",
+            "Oldboy",
+            "2001 - Uma Odisseia no Espaço",
+            "Fogo Contra Fogo",
+            "A Single Man",
+            "Sweeney Todd - O Barbeiro Demoniaco da Rua Fleet",
+        ];
 
-    const fakeMovies = [
-      "Matrix",
-      "Blade Runner",
-      "O Exterminador do Futuro",
-      "Tron",
-      "Robocop",
-      "Ghost in the Shell",
-      "Akira",
-      "Minority Report",
-      "O Passageiro do Futuro"
-    ];
+        const API_KEY = "395b8b6ba3e1dab472d05623c54e1089";
+        const API_URL = "https://api.themoviedb.org/3/search/movie";
 
-    const realMovie = {
-      name: "Do the Right Thing",
-      displayName: "Faça a Coisa Certa"
-    };
+        const drawButton = document.getElementById("draw-button");
+        const movieDisplay = document.getElementById("movie-display");
+        const moviePoster = document.getElementById("movie-poster");
+        const movieSynopsis = document.getElementById("movie-synopsis");
 
-    const API_KEY = "395b8b6ba3e1dab472d05623c54e1089";
-    const API_URL = "https://api.themoviedb.org/3/search/movie";
-
-    async function fetchMovieData(movieName) {
-      try {
-        const response = await fetch(`${API_URL}?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`);
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-          const movie = data.results[0];
-          moviePoster.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-          moviePoster.style.display = "block";
-          movieSynopsis.textContent = movie.overview;
-        } else {
-          moviePoster.style.display = "none";
-          movieSynopsis.textContent = "Sinopse não encontrada.";
-        }
-      } catch (error) {
-        console.error("Erro ao buscar dados do filme:", error);
-        moviePoster.style.display = "none";
-        movieSynopsis.textContent = "Erro ao carregar os dados do filme.";
-      }
-    }
-
-    function simulateDraw(duration = 20000) {
-      let index = 0;
-      let elapsed = 0;
-      let delay = 100;
-
-      moviePoster.style.display = "none";
-      movieSynopsis.textContent = "";
-      drawButton.disabled = true;
-
-      function updateDisplay() {
-        movieDisplay.textContent = fakeMovies[index];
-        index = (index + 1) % fakeMovies.length;
-
-        elapsed += delay;
-
-        if (elapsed >= duration) {
-          movieDisplay.textContent = realMovie.displayName;
-          fetchMovieData(realMovie.name);
-          drawButton.disabled = false;
-          return;
+        async function fetchMovieData(movieName) {
+            try {
+                const response = await fetch(`${API_URL}?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    const movie = data.results[0];
+                    return {
+                        title: movie.title,
+                        poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                        synopsis: movie.overview
+                    };
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                console.error("Erro ao buscar dados do filme:", error);
+                return null;
+            }
         }
 
-        // Aumenta o delay progressivamente pra desacelerar
-        delay += 25;
+        async function drawMovie() {
+            drawButton.disabled = true;
+            let iterations = 0;
+            const chosenMovie = "Faça a Coisa Certa";
 
-        setTimeout(updateDisplay, delay);
-      }
+            function getDelay(i) {
+                return 100 + i * 50;
+            }
 
-      updateDisplay();
-    }
+            function cycleMovies() {
+                return new Promise(resolve => {
+                    function step() {
+                        if (iterations < 30) {
+                            const random = movies[Math.floor(Math.random() * movies.length)];
+                            movieDisplay.textContent = random;
+                            iterations++;
+                            setTimeout(step, getDelay(iterations));
+                        } else {
+                            movieDisplay.textContent = chosenMovie;
+                            movieDisplay.style.animation = "pulse 1s infinite";
+                            resolve();
+                        }
+                    }
+                    step();
+                });
+            }
 
-    drawButton.addEventListener("click", () => simulateDraw(20000));
-  </script>
+            await cycleMovies();
+
+            const movieData = await fetchMovieData(chosenMovie);
+            if (movieData) {
+                movieDisplay.textContent = movieData.title;
+                moviePoster.src = movieData.poster;
+                moviePoster.style.display = "block";
+                movieSynopsis.textContent = movieData.synopsis;
+            } else {
+                movieDisplay.textContent = "Filme não encontrado!";
+                moviePoster.style.display = "none";
+                movieSynopsis.textContent = "";
+            }
+
+            drawButton.disabled = false;
+        }
+
+        drawButton.addEventListener("click", drawMovie);
+
+        const background = document.getElementById("background");
+        const posters = [
+            "poster1.jpg",
+            "poster2.jpg",
+            "poster3.jpg",
+            "poster4.jpg"
+        ];
+
+        for (let i = 0; i < 20; i++) {
+            const img = document.createElement("img");
+            img.src = posters[Math.floor(Math.random() * posters.length)];
+            img.style.left = `${Math.random() * 100}%`;
+            img.style.top = `${Math.random() * 100}vh`;
+            background.appendChild(img);
+        }
+    </script>
 </body>
 </html>
