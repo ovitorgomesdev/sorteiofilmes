@@ -3,381 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Lesson: Social Problems</title>
+    <title>Tense Review Game</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Sage and Sand -->
-    <!-- Application Structure Plan: The SPA is structured into four thematic, navigable sections: 'Home', 'Explore Issues', 'Find Solutions', and 'Vocabulary Hub'. This task-oriented design transforms the linear lesson plan into an interactive learning tool. The user can freely navigate between exploring core concepts, thinking about solutions, and referencing vocabulary. The 'Explore Issues' section is the centerpiece, using interactive cards for each social problem. Clicking a card reveals a definition, discussion prompts, and a conceptual chart, creating a multi-faceted learning moment for each topic. This non-linear structure promotes user agency and engagement, which is more effective for a digital learning experience than a simple static page. -->
-    <!-- Visualization & Content Choices: 
-        - Poverty/Inequality -> Goal: Compare -> Viz: Bar Chart (Chart.js) -> Interaction: Click card to reveal chart and questions. Justification: A bar chart provides a clear, immediate visual for comparing disparities, reinforcing the concept of inequality.
-        - Environmental Degradation -> Goal: Organize/Show Components -> Viz: Doughnut Chart (Chart.js) -> Interaction: Click card to reveal chart and prompts. Justification: A doughnut chart effectively illustrates how a broad problem is composed of several key issues.
-        - Discrimination -> Goal: Inform -> Viz: Styled HTML cards -> Interaction: Click to reveal text. Justification: This topic is nuanced and better served by focused text than an oversimplified chart.
-        - Solutions Section -> Goal: Organize -> Viz: Interactive accordion (HTML/JS) -> Interaction: Click to expand and see prompts. Justification: An accordion keeps the UI clean while allowing the user to focus on one problem-solving scenario at a time.
-        - Vocabulary -> Goal: Organize/Inform -> Viz: Searchable list (HTML/JS). Interaction: Live text search. Justification: A searchable list is a highly usable reference tool, superior to a static list.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        /* Custom font for a friendly look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F7F3E9; /* Sand */
-            color: #333;
+            background-color: #e0f2fe; /* Light blue background */
         }
-        .nav-link {
-            @apply px-4 py-2 text-gray-700 hover:text-[#4A5759] hover:bg-[#E4E6E3] rounded-md transition-colors duration-300;
+        /* Custom button styles for a more engaging look */
+        .game-button {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
         }
-        .nav-link.active {
-            @apply bg-[#4A5759] text-white font-semibold shadow-md;
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
-        .content-section {
-            display: none;
+        .game-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .content-section.active {
-            display: block;
+        .correct-answer {
+            background-color: #a7f3d0; /* Light green for correct */
+            border: 2px solid #34d399;
         }
-        .card {
-            @apply bg-white p-6 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer;
+        .wrong-answer {
+            background-color: #fecaca; /* Light red for wrong */
+            border: 2px solid #ef4444;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 280px;
-            max-height: 350px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        .accordion-button {
-            @apply w-full text-left text-lg font-semibold p-4 bg-white rounded-lg shadow-md hover:bg-gray-50;
-        }
-        .accordion-content {
-            @apply max-h-0 overflow-hidden transition-all duration-500 ease-in-out;
+        .game-container {
+            max-width: 600px;
+            min-height: 450px; /* Ensure minimum height to prevent layout shifts */
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="game-container bg-white rounded-xl shadow-2xl p-6 md:p-8 text-center flex flex-col justify-between">
+        <!-- Game Title -->
+        <h1 class="text-3xl md:text-4xl font-bold text-blue-700 mb-6">Tense Master Challenge!</h1>
 
-    <div id="app" class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <!-- Score and Timer Display -->
+        <div class="flex justify-between items-center mb-6 text-xl font-semibold text-gray-700">
+            <div id="scoreDisplay">Score: 0</div>
+            <div id="timerDisplay">Time: 10:00</div>
+        </div>
 
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#4A5759]">Social Problems: An Interactive Discussion</h1>
-            <p class="text-lg text-gray-600 mt-2">An English conversation guide for B2 students</p>
-        </header>
+        <!-- Question Area -->
+        <div id="gameArea" class="flex flex-col items-center justify-center flex-grow mb-8">
+            <p id="questionSentence" class="text-2xl md:text-3xl text-gray-800 mb-4 leading-relaxed">
+                Click "Start Game" to begin!
+            </p>
+            <p id="verbHint" class="text-lg md:text-xl text-gray-600 italic">
+                (Verb: to ___ )
+            </p>
+            <div id="feedbackMessage" class="text-lg font-semibold mt-4 h-6"></div>
+        </div>
 
-        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-10 bg-white/70 backdrop-blur-sm p-3 rounded-xl shadow-sm sticky top-4 z-10">
-            <a href="#home" class="nav-link active">Home</a>
-            <a href="#explore" class="nav-link">Explore Issues</a>
-            <a href="#solutions" class="nav-link">Find Solutions</a>
-            <a href="#vocab" class="nav-link">Vocabulary Hub</a>
-        </nav>
+        <!-- Answer Buttons -->
+        <div id="answerButtons" class="flex flex-col space-y-4 mb-6">
+            <button id="option1Button" class="game-button bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200" disabled>
+                Option 1
+            </button>
+            <button id="option2Button" class="game-button bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200" disabled>
+                Option 2
+            </button>
+        </div>
 
-        <main>
-            <section id="home" class="content-section active text-center">
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h2 class="text-3xl font-bold text-[#4A5759] mb-4">Welcome!</h2>
-                    <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto">
-                        This interactive guide is designed to help you explore and discuss the complex topic of social problems. We will look at key issues, think about their causes and effects, and brainstorm potential solutions. The goal is to practice expressing your opinions and expand your vocabulary in English. Navigate through the sections using the menu above to begin.
-                    </p>
-                </div>
-            </section>
+        <!-- Start/Restart Button -->
+        <button id="startButton" class="game-button bg-green-500 text-white py-4 px-8 rounded-lg text-2xl font-bold hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300 transition-colors duration-200">
+            Start Game
+        </button>
 
-            <section id="explore" class="content-section">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-[#4A5759]">Explore the Issues</h2>
-                    <p class="text-gray-700 mt-2 max-w-3xl mx-auto">
-                        This section allows you to dive into specific social problems. Click on any topic below to see its definition, related discussion questions, and a visual representation to help you think about its impact.
-                    </p>
-                </div>
-                <div id="issues-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                </div>
-            </section>
-
-            <section id="solutions" class="content-section">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-[#4A5759]">Propose Solutions</h2>
-                    <p class="text-gray-700 mt-2 max-w-3xl mx-auto">
-                        Now, let's think about how to tackle these issues. Consider the following scenarios and think about what you would do. Click on each question to see some points to consider in your answer.
-                    </p>
-                </div>
-                <div id="solutions-accordion" class="space-y-4 max-w-4xl mx-auto">
-                </div>
-            </section>
-
-            <section id="vocab" class="content-section">
-                <div class="text-center mb-8">
-                     <h2 class="text-3xl font-bold text-[#4A5759]">Vocabulary Hub</h2>
-                    <p class="text-gray-700 mt-2 max-w-3xl mx-auto">
-                        Use this section to review key terms. You can use the search bar to quickly find a specific word.
-                    </p>
-                </div>
-                <div class="max-w-4xl mx-auto">
-                    <input type="text" id="vocab-search" placeholder="Search for a word..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-6 focus:ring-2 focus:ring-[#8E9B97] focus:border-transparent">
-                    <div id="vocab-list" class="space-y-4"></div>
-                </div>
-            </section>
-        </main>
-
+        <!-- Game Over / Score Message -->
+        <div id="gameOverScreen" class="hidden mt-8 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-blue-700 mb-4">Game Over!</p>
+            <p id="finalScore" class="text-2xl text-gray-800 mb-6">Your final score: 0</p>
+            <button id="playAgainButton" class="game-button bg-purple-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-colors duration-200">
+                Play Again!
+            </button>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const contentSections = document.querySelectorAll('.content-section');
+        // Array of questions. Each question includes the sentence, the base verb,
+        // the correct tense (present/past), and the conjugated forms for both tenses.
+        const questions = [
+            { id: 1, sentence: "Every day, I ___ to school.", verb: "go", correctTense: "present", presentForm: "go", pastForm: "went" },
+            { id: 2, sentence: "Last night, she ___ a delicious dinner.", verb: "cook", correctTense: "past", presentForm: "cooks", pastForm: "cooked" },
+            { id: 3, sentence: "They always ___ football on Saturdays.", verb: "play", correctTense: "present", presentForm: "play", pastForm: "played" },
+            { id: 4, sentence: "Two days ago, he ___ a new book.", verb: "read", correctTense: "past", presentForm: "reads", pastForm: "read" },
+            { id: 5, sentence: "We usually ___ TV in the evening.", verb: "watch", correctTense: "present", presentForm: "watch", pastForm: "watched" },
+            { id: 6, sentence: "Yesterday, they ___ to the beach.", verb: "go", correctTense: "past", presentForm: "go", pastForm: "went" },
+            { id: 7, sentence: "She ___ up early every morning.", verb: "get", correctTense: "present", presentForm: "gets", pastForm: "got" },
+            { id: 8, sentence: "Last summer, we ___ on vacation.", verb: "travel", correctTense: "past", presentForm: "travel", pastForm: "traveled" },
+            { id: 9, sentence: "He often ___ coffee in the afternoon.", verb: "drink", correctTense: "present", presentForm: "drinks", pastForm: "drank" },
+            { id: 10, sentence: "An hour ago, I ___ my homework.", verb: "finish", correctTense: "past", presentForm: "finish", pastForm: "finished" },
+            { id: 11, sentence: "Usually, my dog ___ loudly at strangers.", verb: "bark", correctTense: "present", presentForm: "barks", pastForm: "barked" },
+            { id: 12, sentence: "Last week, I ___ a letter to my grandma.", verb: "write", correctTense: "past", presentForm: "write", pastForm: "wrote" },
+            { id: 13, sentence: "Every Sunday, she ___ her grandparents.", verb: "visit", correctTense: "present", presentForm: "visits", pastForm: "visited" },
+            { id: 14, sentence: "This morning, we ___ breakfast together.", verb: "have", correctTense: "past", presentForm: "have", pastForm: "had" },
+            { id: 15, sentence: "Birds often ___ in the sky.", verb: "fly", correctTense: "present", presentForm: "fly", pastForm: "flew" },
+            { id: 16, sentence: "Yesterday, he ___ a new song.", verb: "sing", correctTense: "past", presentForm: "sings", pastForm: "sang" },
+            { id: 17, sentence: "My cat always ___ on the sofa.", verb: "sleep", correctTense: "present", presentForm: "sleeps", pastForm: "slept" },
+            { id: 18, sentence: "Last month, they ___ a big party.", verb: "organize", correctTense: "past", presentForm: "organize", pastForm: "organized" },
+        ];
 
-            const appData = {
-                issues: [
-                    {
-                        title: 'Poverty & Inequality',
-                        definition: 'Poverty is the state of being extremely poor. Inequality is the difference in status, rights, or opportunities.',
-                        prompts: [
-                            'What do you think are the main causes of poverty and economic inequality in the world today?',
-                            'What role do governments, non-governmental organizations (NGOs), and individuals play in addressing poverty?',
-                            'Do you believe that everyone should have access to the same opportunities, regardless of their background? How can we achieve this?'
-                        ],
-                        chart: {
-                            type: 'bar',
-                            data: {
-                                labels: ['Richest 10%', 'Middle 40%', 'Poorest 50%'],
-                                datasets: [{
-                                    label: 'Conceptual Wealth Distribution',
-                                    data: [65, 30, 5],
-                                    backgroundColor: ['#4A5759', '#8E9B97', '#B7C4C4'],
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: { y: { beginAtZero: true, ticks: { callback: value => value + '%' } } }
-                            }
-                        }
-                    },
-                    {
-                        title: 'Environmental Degradation',
-                        definition: 'The deterioration of the environment through depletion of resources such as air, water and soil; the destruction of ecosystems and extinction of wildlife.',
-                        prompts: [
-                            'How serious is environmental degradation as a social problem? What are its immediate and long-term effects?',
-                            'What can individuals do to contribute to environmental sustainability? What about larger corporations and governments?',
-                            'Do you think people are generally aware enough of environmental problems, or is more education needed?'
-                        ],
-                        chart: {
-                            type: 'doughnut',
-                            data: {
-                                labels: ['Industrial Pollution', 'Deforestation', 'Consumer Waste', 'Agricultural Impact'],
-                                datasets: [{
-                                    label: 'Contributors to Degradation',
-                                    data: [40, 25, 20, 15],
-                                    backgroundColor: ['#4A5759', '#6B7A7C', '#8E9B97', '#B7C4C4'],
-                                }]
-                            },
-                             options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: { legend: { position: 'top' } },
-                            }
-                        }
-                    },
-                    {
-                        title: 'Discrimination',
-                        definition: 'Unfair treatment of different categories of people, especially on the grounds of race, age, or sex.',
-                        prompts: [
-                            'What forms of discrimination (e.g., racial, gender, religious, age) are most prevalent in society today?',
-                            'How can education and awareness campaigns help combat discrimination?',
-                            'In your opinion, what is the most effective way for society to promote inclusivity and respect for diversity?'
-                        ],
-                        chart: null
-                    },
-                    {
-                        title: 'Unemployment & Homelessness',
-                        definition: 'Unemployment is the state of being without a job. Homelessness is the state of having no home.',
-                        prompts: [
-                            'How are unemployment and homelessness often linked?',
-                            'What kind of support do you think is most effective for helping people find stable housing and employment?',
-                            'What is the social stigma associated with these issues in your country?'
-                        ],
-                        chart: null
-                    },
-                     {
-                        title: 'Healthcare Disparities',
-                        definition: 'Differences in health outcomes and access to healthcare services experienced by different groups of people.',
-                        prompts: [
-                            'Why do healthcare disparities exist even in wealthy countries?',
-                            'What is the long-term impact on a society when large groups of people have poor health outcomes?',
-                            'What policies could help ensure more equitable access to healthcare for everyone?'
-                        ],
-                        chart: null
-                    }
-                ],
-                solutions: [
-                    {
-                        question: "If you were a mayor, which social problem would you prioritize and what policies would you implement?",
-                        points: [
-                            'Consider the most visible problem in your city.',
-                            'Think about long-term vs. short-term solutions.',
-                            'How would you fund your policies (e.g., taxes, partnerships)?',
-                            'How would you get public support for your plan?'
-                        ]
-                    },
-                    {
-                        question: "Can technology solve social problems, or does it create new ones?",
-                        points: [
-                            'Think of positive examples (e.g., online education, clean energy tech).',
-                            'Think of negative examples (e.g., job automation, digital divide, misinformation).',
-                            'Is technology a tool, or is it the solution itself?',
-                        ]
-                    },
-                    {
-                        question: "What is the balance between individual responsibility and collective action?",
-                        points: [
-                           'Individual actions: recycling, donating, volunteering, being respectful.',
-                           'Collective actions: voting, policy change, grassroots movements, corporate responsibility.',
-                           'Can one exist without the other? Which is more powerful for large-scale change?'
-                        ]
-                    }
-                ],
-                vocabulary: [
-                    { term: 'Poverty', definition: 'The state of being extremely poor.' },
-                    { term: 'Inequality', definition: 'Difference in status, rights, or opportunities.' },
-                    { term: 'Discrimination', definition: 'Unfair treatment of people based on race, age, sex, etc.' },
-                    { term: 'Homelessness', definition: 'The state of having no home.' },
-                    { term: 'Unemployment', definition: 'The state of being without a job.' },
-                    { term: 'Environmental Degradation', definition: 'The deterioration of the environment through depletion of resources.' },
-                    { term: 'Healthcare Disparities', definition: 'Differences in health outcomes and access to care.' },
-                    { term: 'Stigma', definition: 'A mark of disgrace associated with a particular circumstance or person.' },
-                    { term: 'Advocate', definition: 'To publicly support a particular cause or policy.' },
-                    { term: 'Sustainable', definition: 'Able to be maintained at a certain level; conserving an ecological balance.' },
-                    { term: 'Grassroots movement', definition: 'A movement that originates among ordinary people in a society.' },
-                    { term: 'Policy', definition: 'A course of action adopted by a government, party, or business.' }
-                ]
-            };
+        // Game state variables
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let timeLeft = 600; // 10 minutes in seconds
+        let timerInterval;
+        let shuffledQuestions = [];
 
-            const issuesGrid = document.getElementById('issues-grid');
-            appData.issues.forEach(issue => {
-                const issueEl = document.createElement('div');
-                issueEl.className = 'card';
-                issueEl.innerHTML = `
-                    <h3 class="text-2xl font-bold text-[#4A5759]">${issue.title}</h3>
-                    <div class="issue-details hidden mt-4">
-                        <p class="text-gray-600 mb-4"><strong>Definition:</strong> ${issue.definition}</p>
-                        <h4 class="font-semibold mb-2">Discussion Prompts:</h4>
-                        <ul class="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                            ${issue.prompts.map(p => `<li>${p}</li>`).join('')}
-                        </ul>
-                        ${issue.chart ? '<div class="chart-container mt-4"><canvas></canvas></div>' : '<p class="text-sm text-gray-500 p-4 bg-gray-50 rounded-lg">This topic is best explored through conversation. Use the prompts to guide your discussion.</p>'}
-                    </div>
-                `;
-                issuesGrid.appendChild(issueEl);
+        // DOM element references
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const questionSentence = document.getElementById('questionSentence');
+        const verbHint = document.getElementById('verbHint');
+        const option1Button = document.getElementById('option1Button');
+        const option2Button = document.getElementById('option2Button');
+        const startButton = document.getElementById('startButton');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const playAgainButton = document.getElementById('playAgainButton');
+        const gameArea = document.getElementById('gameArea');
+        const answerButtonsContainer = document.getElementById('answerButtons');
+        const feedbackMessage = document.getElementById('feedbackMessage');
 
-                issueEl.addEventListener('click', () => {
-                    const details = issueEl.querySelector('.issue-details');
-                    const wasHidden = details.classList.contains('hidden');
-                    
-                    document.querySelectorAll('.issue-details').forEach(d => d.classList.add('hidden'));
-                    
-                    if (wasHidden) {
-                        details.classList.remove('hidden');
-                        if (issue.chart) {
-                            const canvas = details.querySelector('canvas');
-                            if(canvas && !canvas.chart) { 
-                                canvas.chart = new Chart(canvas, {
-                                    type: issue.chart.type,
-                                    data: issue.chart.data,
-                                    options: issue.chart.options
-                                });
-                            }
-                        }
-                    } 
-                });
-            });
-            
-            const solutionsAccordion = document.getElementById('solutions-accordion');
-            appData.solutions.forEach(solution => {
-                const item = document.createElement('div');
-                item.innerHTML = `
-                    <button class="accordion-button flex justify-between items-center w-full">
-                        <span>${solution.question}</span>
-                        <span class="transform transition-transform duration-300">&#9662;</span>
-                    </button>
-                    <div class="accordion-content bg-white px-4 pb-4 rounded-b-lg">
-                        <ul class="list-disc list-inside text-gray-700 space-y-2 pt-4 border-t">
-                            ${solution.points.map(p => `<li>${p}</li>`).join('')}
-                        </ul>
-                    </div>
-                `;
-                solutionsAccordion.appendChild(item);
 
-                const button = item.querySelector('.accordion-button');
-                const content = item.querySelector('.accordion-content');
-                const icon = button.querySelector('span:last-child');
-                button.addEventListener('click', () => {
-                    const isOpen = content.style.maxHeight;
-                    if (isOpen && isOpen !== '0px') {
-                        content.style.maxHeight = '0px';
-                        icon.style.transform = 'rotate(0deg)';
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + 'px';
-                        icon.style.transform = 'rotate(180deg)';
-                    }
-                });
-            });
-            
-            const vocabList = document.getElementById('vocab-list');
-            const vocabSearch = document.getElementById('vocab-search');
-            
-            function renderVocab(filter = '') {
-                vocabList.innerHTML = '';
-                const filteredVocab = appData.vocabulary.filter(v => v.term.toLowerCase().includes(filter.toLowerCase()));
-                
-                if (filteredVocab.length === 0) {
-                     vocabList.innerHTML = `<p class="text-gray-500 text-center">No matching terms found.</p>`;
-                     return;
+        /**
+         * Shuffles an array in place using the Fisher-Yates (Knuth) algorithm.
+         * @param {Array} array The array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        /**
+         * Initializes and starts the game.
+         * Resets score, timer, shuffles questions, and displays the first question.
+         */
+        function startGame() {
+            score = 0;
+            currentQuestionIndex = 0;
+            timeLeft = 600; // Reset to 10 minutes
+            scoreDisplay.textContent = `Score: ${score}`;
+            feedbackMessage.textContent = ''; // Clear feedback message
+            shuffledQuestions = [...questions]; // Create a shallow copy
+            shuffleArray(shuffledQuestions);
+
+            // Hide game over screen, show game elements
+            gameOverScreen.classList.add('hidden');
+            gameArea.classList.remove('hidden');
+            answerButtonsContainer.classList.remove('hidden');
+            startButton.classList.add('hidden'); // Hide start button
+
+            // Start the timer
+            clearInterval(timerInterval); // Clear any existing timer
+            timerInterval = setInterval(updateTimer, 1000);
+
+            displayQuestion();
+        }
+
+        /**
+         * Updates the timer display and ends the game if time runs out.
+         */
+        function updateTimer() {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        /**
+         * Displays the current question, its verb hint, and sets up the answer buttons.
+         */
+        function displayQuestion() {
+            // Check if there are more questions or if time has run out
+            if (currentQuestionIndex >= shuffledQuestions.length || timeLeft <= 0) {
+                endGame();
+                return;
+            }
+
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+
+            // Reset button styles and enable them
+            option1Button.classList.remove('correct-answer', 'wrong-answer');
+            option2Button.classList.remove('correct-answer', 'wrong-answer');
+            option1Button.disabled = false;
+            option2Button.disabled = false;
+            feedbackMessage.textContent = ''; // Clear feedback message
+
+            questionSentence.textContent = currentQuestion.sentence;
+            verbHint.textContent = `(Verb: to ${currentQuestion.verb})`;
+
+            // Randomly assign present and past forms to buttons
+            const options = [currentQuestion.presentForm, currentQuestion.pastForm];
+            shuffleArray(options); // Shuffle the order of the options
+
+            option1Button.textContent = options[0];
+            option2Button.textContent = options[1];
+
+            // Attach event listeners to buttons with the correct option for checking
+            option1Button.onclick = () => checkAnswer(options[0], currentQuestion);
+            option2Button.onclick = () => checkAnswer(options[1], currentQuestion);
+        }
+
+        /**
+         * Checks the chosen answer against the correct one, updates score,
+         * provides feedback, and moves to the next question.
+         * @param {string} chosenForm The verb form chosen by the student.
+         * @param {Object} currentQuestion The current question object.
+         */
+        function checkAnswer(chosenForm, currentQuestion) {
+            // Disable buttons to prevent multiple clicks
+            option1Button.disabled = true;
+            option2Button.disabled = true;
+
+            const correctAnswerForm = currentQuestion.correctTense === 'present' ?
+                                       currentQuestion.presentForm :
+                                       currentQuestion.pastForm;
+
+            let isCorrect = (chosenForm === correctAnswerForm);
+
+            // Apply visual feedback
+            if (option1Button.textContent === chosenForm) {
+                option1Button.classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
+                if (!isCorrect) {
+                    option2Button.classList.add(currentQuestion.correctTense === 'present' ? 'correct-answer' : 'wrong-answer');
                 }
-
-                filteredVocab.forEach(v => {
-                    const item = document.createElement('div');
-                    item.className = 'bg-white p-4 rounded-lg shadow-sm';
-                    item.innerHTML = `
-                        <h4 class="font-bold text-lg text-[#4A5759]">${v.term}</h4>
-                        <p class="text-gray-600">${v.definition}</p>
-                    `;
-                    vocabList.appendChild(item);
-                });
+            } else {
+                option2Button.classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
+                 if (!isCorrect) {
+                    option1Button.classList.add(currentQuestion.correctTense === 'present' ? 'correct-answer' : 'wrong-answer');
+                }
             }
 
-            vocabSearch.addEventListener('input', (e) => renderVocab(e.target.value));
-            
-            window.addEventListener('hashchange', switchTab);
-            
-            function switchTab() {
-                const hash = window.location.hash || '#home';
-                
-                contentSections.forEach(section => {
-                    if ('#' + section.id === hash) {
-                        section.classList.add('active');
-                    } else {
-                        section.classList.remove('active');
-                    }
-                });
-
-                navLinks.forEach(link => {
-                    if (link.getAttribute('href') === hash) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
+            if (isCorrect) {
+                score += 10; // Award 10 points for a correct answer
+                feedbackMessage.textContent = 'Correct!';
+                feedbackMessage.classList.remove('text-red-600');
+                feedbackMessage.classList.add('text-green-600');
+            } else {
+                score -= 5; // Deduct 5 points for an incorrect answer
+                feedbackMessage.textContent = 'Incorrect!';
+                feedbackMessage.classList.remove('text-green-600');
+                feedbackMessage.classList.add('text-red-600');
             }
-            
-            renderVocab();
-            switchTab(); 
-        });
+            scoreDisplay.textContent = `Score: ${score}`;
+
+            // Move to the next question after a short delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                displayQuestion();
+            }, 1000); // 1-second delay for feedback
+        }
+
+        /**
+         * Ends the game, stops the timer, and displays the final score.
+         */
+        function endGame() {
+            clearInterval(timerInterval); // Stop the timer
+
+            // Hide game elements, show game over screen
+            gameArea.classList.add('hidden');
+            answerButtonsContainer.classList.add('hidden');
+            startButton.classList.remove('hidden'); // Show start button again
+            startButton.textContent = "Play Again!"; // Change text for restart
+            gameOverScreen.classList.remove('hidden');
+            finalScoreDisplay.textContent = `Your final score: ${score}`;
+            option1Button.disabled = true; // Ensure buttons are disabled at end
+            option2Button.disabled = true; // Ensure buttons are disabled at end
+        }
+
+        // Event Listeners
+        window.onload = function() {
+            startButton.addEventListener('click', startGame);
+            playAgainButton.addEventListener('click', startGame); // This button appears only after game over
+        };
     </script>
 </body>
 </html>
