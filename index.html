@@ -1,297 +1,548 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tense Review Game</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom font for a friendly look */
+import React, { useState, useEffect, useRef } from 'react';
+
+// Main App component for the Grammar Challenge game
+export default function App() {
+  // State variables for game management
+  const [gameStarted, setGameStarted] = useState(false); // Tracks if the game has started
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question
+  const [score, setScore] = useState(0); // Player's current score
+  const [showFeedback, setShowFeedback] = useState(false); // Controls visibility of feedback message
+  const [isCorrect, setIsCorrect] = useState(false); // Indicates if the last answer was correct
+  const [gameOver, setGameOver] = useState(false); // Tracks if the game is over
+  const [timeLeft, setTimeLeft] = useState(2400); // 40 minutes in seconds (40 * 60 = 2400)
+  const timerRef = useRef(null); // Ref to store the timer interval ID
+  const [shuffledQuestions, setShuffledQuestions] = useState([]); // Stores the shuffled order of questions
+
+  // A list of A1 CEFR level grammar questions
+  // Each question object contains:
+  // - question: The grammar question text
+  // - options: An array of possible answers
+  // - correctAnswerIndex: The index of the correct answer in the options array
+  const allQuestions = [
+    {
+      question: "Choose the correct form of 'to be': She ___ a student.",
+      options: ["am", "is", "are"],
+      correctAnswerIndex: 1, // is
+      grammarPoint: "To be (affirmative)"
+    },
+    {
+      question: "Complete the sentence: They ___ from Spain.",
+      options: ["isn't", "aren't", "amn't"],
+      correctAnswerIndex: 1, // aren't
+      grammarPoint: "To be (negative)"
+    },
+    {
+      question: "Ask a question: ___ he happy?",
+      options: ["Is", "Am", "Are"],
+      correctAnswerIndex: 0, // Is
+      grammarPoint: "To be (interrogative)"
+    },
+    {
+      question: "Choose the correct article: This is ___ apple.",
+      options: ["a", "an", "the"],
+      correctAnswerIndex: 1, // an
+      grammarPoint: "Articles (a/an)"
+    },
+    {
+      question: "Choose the correct article: I have ___ car.",
+      options: ["a", "an", "the"],
+      correctAnswerIndex: 0, // a
+      grammarPoint: "Articles (a/an)"
+    },
+    {
+      question: "Make it plural: one book, two ___",
+      options: ["books", "book", "bookes"],
+      correctAnswerIndex: 0, // books
+      grammarPoint: "Plural nouns (regular)"
+    },
+    {
+      question: "Make it plural: one child, two ___",
+      options: ["childs", "children", "childes"],
+      correctAnswerIndex: 1, // children
+      grammarPoint: "Plural nouns (irregular)"
+    },
+    {
+      question: "Choose the correct demonstrative: ___ is my friend (nearby, singular).",
+      options: ["These", "That", "This"],
+      correctAnswerIndex: 2, // This
+      grammarPoint: "Demonstratives (this/that)"
+    },
+    {
+      question: "Choose the correct demonstrative: Look at ___ birds (far away, plural).",
+      options: ["this", "those", "these"],
+      correctAnswerIndex: 1, // those
+      grammarPoint: "Demonstratives (these/those)"
+    },
+    {
+      question: "Choose the possessive adjective: This is ___ cat (it belongs to me).",
+      options: ["my", "your", "his"],
+      correctAnswerIndex: 0, // my
+      grammarPoint: "Possessive adjectives"
+    },
+    {
+      question: "Choose the possessive adjective: They live in ___ house (it belongs to them).",
+      options: ["our", "their", "her"],
+      correctAnswerIndex: 1, // their
+      grammarPoint: "Possessive adjectives"
+    },
+    {
+      question: "Choose the correct preposition: The book is ___ the table.",
+      options: ["in", "on", "at"],
+      correctAnswerIndex: 1, // on
+      grammarPoint: "Prepositions of place"
+    },
+    {
+      question: "Choose the correct preposition: I live ___ London.",
+      options: ["on", "at", "in"],
+      correctAnswerIndex: 2, // in
+      grammarPoint: "Prepositions of place"
+    },
+    {
+      question: "Complete the sentence: He ___ to work every day.",
+      options: ["go", "goes", "going"],
+      correctAnswerIndex: 1, // goes
+      grammarPoint: "Present Simple (affirmative)"
+    },
+    {
+      question: "Complete the sentence: We ___ like coffee.",
+      options: ["don't", "doesn't", "isn't"],
+      correctAnswerIndex: 0, // don't
+      grammarPoint: "Present Simple (negative)"
+    },
+    {
+      question: "Ask a question: ___ she speak English?",
+      options: ["Do", "Does", "Is"],
+      correctAnswerIndex: 1, // Does
+      grammarPoint: "Present Simple (interrogative)"
+    },
+    {
+      question: "Choose the correct modal verb: I ___ swim.",
+      options: ["cans", "can", "can't"],
+      correctAnswerIndex: 1, // can
+      grammarPoint: "Can/Can't (ability)"
+    },
+    {
+      question: "Choose the correct modal verb: Birds ___ fly.",
+      options: ["can", "can't", "cans"],
+      correctAnswerIndex: 0, // can
+      grammarPoint: "Can/Can't (ability)"
+    },
+    {
+      question: "Choose the correct adverb of frequency: I ___ eat breakfast.",
+      options: ["never", "always", "sometimes"],
+      correctAnswerIndex: 1, // always (assuming it's a common habit)
+      grammarPoint: "Adverbs of frequency"
+    },
+    {
+      question: "Choose the correct adverb of frequency: She ___ watches TV (not often).",
+      options: ["always", "never", "sometimes"],
+      correctAnswerIndex: 2, // sometimes
+      grammarPoint: "Adverbs of frequency"
+    },
+    {
+      question: "Choose the correct Wh-question word: ___ is your name?",
+      options: ["Where", "What", "Who"],
+      correctAnswerIndex: 1, // What
+      grammarPoint: "Wh-questions (What)"
+    },
+    {
+      question: "Choose the correct Wh-question word: ___ do you live?",
+      options: ["Who", "What", "Where"],
+      correctAnswerIndex: 2, // Where
+      grammarPoint: "Wh-questions (Where)"
+    },
+    {
+      question: "Choose the correct Wh-question word: ___ is that man?",
+      options: ["What", "Where", "Who"],
+      correctAnswerIndex: 2, // Who
+      grammarPoint: "Wh-questions (Who)"
+    },
+    {
+      question: "What number is after seven?",
+      options: ["six", "eight", "nine"],
+      correctAnswerIndex: 1, // eight
+      grammarPoint: "Numbers"
+    },
+    {
+      question: "What color is a banana?",
+      options: ["red", "yellow", "blue"],
+      correctAnswerIndex: 1, // yellow
+      grammarPoint: "Colors"
+    },
+    {
+      question: "Choose the correct word: I have two ___ for dinner.",
+      options: ["apple", "apples", "apple's"],
+      correctAnswerIndex: 1, // apples
+      grammarPoint: "Plural nouns"
+    },
+    {
+      question: "Choose the correct sentence: They ___ playing football now.",
+      options: ["is", "are", "am"],
+      correctAnswerIndex: 1, // are
+      grammarPoint: "Present Continuous (basic)"
+    },
+    {
+      question: "Complete the sentence: He ___ a new car last month.",
+      options: ["buy", "bought", "buys"],
+      correctAnswerIndex: 1, // bought
+      grammarPoint: "Past Simple (basic)"
+    },
+    {
+      question: "Choose the correct sentence: There ___ a book on the desk.",
+      options: ["are", "is", "be"],
+      correctAnswerIndex: 1, // is
+      grammarPoint: "There is / There are"
+    },
+    {
+      question: "Choose the correct sentence: There ___ many students in the class.",
+      options: ["is", "are", "am"],
+      correctAnswerIndex: 1, // are
+      grammarPoint: "There is / There are"
+    },
+    {
+      question: "Choose the correct word: I ___ a brother and a sister.",
+      options: ["have", "has", "are"],
+      correctAnswerIndex: 0, // have
+      grammarPoint: "Have/Has"
+    },
+    {
+      question: "Choose the correct word: She ___ a big house.",
+      options: ["have", "has", "is"],
+      correctAnswerIndex: 1, // has
+      grammarPoint: "Have/Has"
+    },
+    // New questions for increased challenge
+    {
+      question: "Complete the sentence: This is ___ red car.",
+      options: ["a", "an", "the"],
+      correctAnswerIndex: 0, // a
+      grammarPoint: "Articles (a/an) with adjectives"
+    },
+    {
+      question: "Choose the correct subject pronoun: ___ am a teacher.",
+      options: ["He", "She", "I"],
+      correctAnswerIndex: 2, // I
+      grammarPoint: "Subject pronouns"
+    },
+    {
+      question: "Choose the correct object pronoun: I see ___ (referring to a boy).",
+      options: ["he", "him", "his"],
+      correctAnswerIndex: 1, // him
+      grammarPoint: "Object pronouns"
+    },
+    {
+      question: "Form a possessive noun: This is John___ book.",
+      options: ["Johns", "John's", "Johns'"],
+      correctAnswerIndex: 1, // John's
+      grammarPoint: "Possessive 's"
+    },
+    {
+      question: "Give an imperative: ___ the door, please.",
+      options: ["Open", "Opening", "Opens"],
+      correctAnswerIndex: 0, // Open
+      grammarPoint: "Imperatives"
+    },
+    {
+      question: "Choose the correct sentence: They ___ in the park right now.",
+      options: ["play", "are playing", "plays"],
+      correctAnswerIndex: 1, // are playing
+      grammarPoint: "Present Continuous"
+    },
+    {
+      question: "Complete the sentence: I ___ to the cinema yesterday.",
+      options: ["go", "went", "gone"],
+      correctAnswerIndex: 1, // went
+      grammarPoint: "Past Simple (irregular)"
+    },
+    {
+      question: "Choose the correct quantifier: I have ___ milk in the fridge.",
+      options: ["any", "some", "a"],
+      correctAnswerIndex: 1, // some
+      grammarPoint: "Quantifiers (some)"
+    },
+    {
+      question: "Choose the correct quantifier: Do you have ___ questions?",
+      options: ["some", "any", "a"],
+      correctAnswerIndex: 1, // any
+      grammarPoint: "Quantifiers (any)"
+    },
+    {
+      question: "Complete the sentence: She likes ___ books.",
+      options: ["reading", "read", "to read"],
+      correctAnswerIndex: 0, // reading
+      grammarPoint: "Likes + -ing"
+    },
+    {
+      question: "What day is after Monday?",
+      options: ["Sunday", "Tuesday", "Wednesday"],
+      correctAnswerIndex: 1, // Tuesday
+      grammarPoint: "Days of the week"
+    },
+    {
+      question: "What month is after January?",
+      options: ["March", "February", "December"],
+      correctAnswerIndex: 1, // February
+      grammarPoint: "Months of the year"
+    },
+    {
+      question: "Choose the correct preposition of time: The party is ___ 7 p.m.",
+      options: ["in", "on", "at"],
+      correctAnswerIndex: 2, // at
+      grammarPoint: "Prepositions of time (at)"
+    },
+    {
+      question: "Choose the correct preposition of time: My birthday is ___ October.",
+      options: ["at", "on", "in"],
+      correctAnswerIndex: 2, // in
+      grammarPoint: "Prepositions of time (in)"
+    },
+    {
+      question: "Choose the correct preposition of time: We meet ___ Fridays.",
+      options: ["in", "at", "on"],
+      correctAnswerIndex: 2, // on
+      grammarPoint: "Prepositions of time (on)"
+    },
+    {
+      question: "Choose the correct adjective: She is a ___ girl (not old).",
+      options: ["tall", "young", "big"],
+      correctAnswerIndex: 1, // young
+      grammarPoint: "Adjectives"
+    },
+    {
+      question: "Complete the sentence: There ___ a cat on the roof.",
+      options: ["are", "is", "be"],
+      correctAnswerIndex: 1, // is
+      grammarPoint: "There is/There are"
+    },
+    {
+      question: "Complete the sentence: There ___ three pens on the desk.",
+      options: ["is", "are", "am"],
+      correctAnswerIndex: 1, // are
+      grammarPoint: "There is/There are"
+    },
+    {
+      question: "Choose the correct sentence: I ___ my homework every evening.",
+      options: ["do", "does", "doing"],
+      correctAnswerIndex: 0, // do
+      grammarPoint: "Present Simple (do/does)"
+    },
+    {
+      question: "Complete the sentence: He ___ his car on weekends.",
+      options: ["wash", "washes", "washing"],
+      correctAnswerIndex: 1, // washes
+      grammarPoint: "Present Simple (third person singular)"
+    }
+  ];
+
+  // Function to shuffle an array (Fisher-Yates algorithm)
+  const shuffleArray = (array) => {
+    let currentIndex = array.length, randomIndex;
+    // While there remain elements to shuffle.
+    while (currentIndex !== 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  };
+
+  // Effect to manage the timer
+  useEffect(() => {
+    if (gameStarted && timeLeft > 0 && !gameOver) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && gameStarted) {
+      setGameOver(true);
+      clearInterval(timerRef.current);
+    }
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(timerRef.current);
+  }, [gameStarted, timeLeft, gameOver]);
+
+  // Function to start the game
+  const startGame = () => {
+    // Shuffle the questions before starting a new game
+    setShuffledQuestions(shuffleArray([...allQuestions]));
+    setGameStarted(true);
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setGameOver(false);
+    setTimeLeft(2400); // Reset timer for new game (40 minutes)
+  };
+
+  // Function to handle answer selection
+  const handleAnswer = (selectedIndex) => {
+    // Check if the selected answer is correct against the currently displayed shuffled question
+    const correct = selectedIndex === shuffledQuestions[currentQuestionIndex].correctAnswerIndex;
+    setIsCorrect(correct);
+    setShowFeedback(true);
+
+    if (correct) {
+      setScore(score + 1); // Increase score for correct answers
+    } else {
+      setScore(prevScore => Math.max(0, prevScore - 1)); // Deduct 1 point for incorrect answers, but not below zero
+    }
+
+    // Move to the next question after a short delay to show feedback
+    setTimeout(() => {
+      setShowFeedback(false);
+      // Check against the shuffled questions array length
+      if (currentQuestionIndex < shuffledQuestions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1); // Go to next question
+      } else {
+        setGameOver(true); // End game if all questions are answered
+        clearInterval(timerRef.current); // Stop the timer
+      }
+    }, 1000); // 1 second delay for feedback
+  };
+
+  // Function to format time for display (MM:SS)
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  // Render the game UI
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center p-4 font-sans">
+      <script src="https://cdn.tailwindcss.com"></script>
+      {/* Tailwind CSS configuration for Inter font and extended colors/shadows */}
+      <style jsx>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #e0f2fe; /* Light blue background */
+          font-family: 'Inter', sans-serif;
         }
-        /* Custom button styles for a more engaging look */
-        .game-button {
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: none;
+        .timer-glow {
+          box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
         }
-        .game-button:hover {
+        .progress-bar-fill {
+          transition: width 0.5s ease-in-out;
+        }
+        .glass-effect {
+          background: rgba(255, 255, 255, 0.2);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        .pulsate {
+          animation: pulsate-anim 1.5s infinite;
+        }
+        @keyframes pulsate-anim {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+        /* Custom styles for buttons to prevent CLS */
+        .choice-button {
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .choice-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
-        .game-button:active {
+        .choice-button:active {
             transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .correct-answer {
-            background-color: #a7f3d0; /* Light green for correct */
-            border: 2px solid #34d399;
-        }
-        .wrong-answer {
-            background-color: #fecaca; /* Light red for wrong */
-            border: 2px solid #ef4444;
-        }
-        .game-container {
-            max-width: 600px;
-            min-height: 450px; /* Ensure minimum height to prevent layout shifts */
-        }
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen p-4">
-    <div class="game-container bg-white rounded-xl shadow-2xl p-6 md:p-8 text-center flex flex-col justify-between">
-        <!-- Game Title -->
-        <h1 class="text-3xl md:text-4xl font-bold text-blue-700 mb-6">Tense Master Challenge!</h1>
+      `}</style>
 
-        <!-- Score and Timer Display -->
-        <div class="flex justify-between items-center mb-6 text-xl font-semibold text-gray-700">
-            <div id="scoreDisplay">Score: 0</div>
-            <div id="timerDisplay">Time: 10:00</div>
-        </div>
+      {/* Main game container */}
+      <div className="relative bg-white bg-opacity-90 p-8 rounded-3xl shadow-2xl w-full max-w-2xl text-center border-4 border-white transform hover:scale-[1.01] transition-transform duration-300 ease-in-out">
+        {/* Game Title */}
+        <h1 className="text-4xl font-bold text-gray-800 mb-6 drop-shadow-lg">Grammar Challenge!</h1>
 
-        <!-- Question Area -->
-        <div id="gameArea" class="flex flex-col items-center justify-center flex-grow mb-8">
-            <p id="questionSentence" class="text-2xl md:text-3xl text-gray-800 mb-4 leading-relaxed">
-                Click "Start Game" to begin!
+        {/* Start Screen */}
+        {!gameStarted && !gameOver && (
+          <div className="space-y-6">
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Welcome to the A1 Grammar Challenge! Test your English grammar skills.
+              Answer questions correctly to earn points, but be careful – incorrect answers will deduct points!
+              You have 40 minutes to complete the challenge. Good luck!
             </p>
-            <p id="verbHint" class="text-lg md:text-xl text-gray-600 italic">
-                (Verb: to ___ )
+            <button
+              onClick={startGame}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300"
+            >
+              Start Game
+            </button>
+          </div>
+        )}
+
+        {/* Game Active Screen */}
+        {gameStarted && !gameOver && (
+          <div className="space-y-6">
+            {/* Timer and Score display */}
+            <div className="flex justify-between items-center mb-6 p-3 rounded-lg bg-indigo-600 text-white font-semibold shadow-md glass-effect pulsate">
+              <span className="text-xl">Time: {formatTime(timeLeft)}</span>
+              <span className="text-xl">Score: {score}</span>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 rounded-full h-4 mb-8 shadow-inner">
+              <div
+                className="bg-green-500 h-4 rounded-full progress-bar-fill"
+                // Use shuffledQuestions.length for progress calculation
+                style={{ width: `${((currentQuestionIndex + 1) / shuffledQuestions.length) * 100}%` }}
+              ></div>
+            </div>
+
+            {/* Question Card */}
+            <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
+              <p className="text-2xl font-semibold text-gray-900 mb-6">
+                Question {currentQuestionIndex + 1} of {shuffledQuestions.length}
+              </p>
+              <p className="text-3xl font-bold text-indigo-700 mb-8 leading-tight">
+                {/* Display question from shuffledQuestions array */}
+                {shuffledQuestions[currentQuestionIndex]?.question}
+              </p>
+
+              {/* Options */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Map options from shuffledQuestions array */}
+                {shuffledQuestions[currentQuestionIndex]?.options.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswer(index)}
+                    className="choice-button bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-xl text-lg font-medium shadow-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transform transition-all duration-200 ease-in-out"
+                    disabled={showFeedback} // Disable buttons while feedback is shown
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Feedback Message */}
+            {showFeedback && (
+              <div className={`mt-6 p-4 rounded-xl text-white font-bold text-xl shadow-lg transition-opacity duration-300 ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}>
+                {isCorrect ? 'Correct! 🎉' : 'Incorrect. -1 point!'}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Game Over Screen */}
+        {gameOver && (
+          <div className="space-y-6">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Game Over!</h2>
+            <p className="text-2xl text-gray-700 mb-4">
+              You answered {score} out of {shuffledQuestions.length} questions correctly.
             </p>
-            <div id="feedbackMessage" class="text-lg font-semibold mt-4 h-6"></div>
-        </div>
-
-        <!-- Answer Buttons -->
-        <div id="answerButtons" class="flex flex-col space-y-4 mb-6">
-            <button id="option1Button" class="game-button bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200" disabled>
-                Option 1
+            <p className="text-2xl text-gray-700 mb-6">
+              Time remaining: {formatTime(timeLeft)}
+            </p>
+            <button
+              onClick={startGame}
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-green-300"
+            >
+              Play Again
             </button>
-            <button id="option2Button" class="game-button bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200" disabled>
-                Option 2
-            </button>
-        </div>
-
-        <!-- Start/Restart Button -->
-        <button id="startButton" class="game-button bg-green-500 text-white py-4 px-8 rounded-lg text-2xl font-bold hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300 transition-colors duration-200">
-            Start Game
-        </button>
-
-        <!-- Game Over / Score Message -->
-        <div id="gameOverScreen" class="hidden mt-8 text-center">
-            <p class="text-3xl md:text-4xl font-bold text-blue-700 mb-4">Game Over!</p>
-            <p id="finalScore" class="text-2xl text-gray-800 mb-6">Your final score: 0</p>
-            <button id="playAgainButton" class="game-button bg-purple-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-colors duration-200">
-                Play Again!
-            </button>
-        </div>
+          </div>
+        )}
+      </div>
     </div>
-
-    <script>
-        // Array of questions. Each question includes the sentence, the base verb,
-        // the correct tense (present/past), and the conjugated forms for both tenses.
-        const questions = [
-            { id: 1, sentence: "Every day, I ___ to school.", verb: "go", correctTense: "present", presentForm: "go", pastForm: "went" },
-            { id: 2, sentence: "Last night, she ___ a delicious dinner.", verb: "cook", correctTense: "past", presentForm: "cooks", pastForm: "cooked" },
-            { id: 3, sentence: "They always ___ football on Saturdays.", verb: "play", correctTense: "present", presentForm: "play", pastForm: "played" },
-            { id: 4, sentence: "Two days ago, he ___ a new book.", verb: "read", correctTense: "past", presentForm: "reads", pastForm: "read" },
-            { id: 5, sentence: "We usually ___ TV in the evening.", verb: "watch", correctTense: "present", presentForm: "watch", pastForm: "watched" },
-            { id: 6, sentence: "Yesterday, they ___ to the beach.", verb: "go", correctTense: "past", presentForm: "go", pastForm: "went" },
-            { id: 7, sentence: "She ___ up early every morning.", verb: "get", correctTense: "present", presentForm: "gets", pastForm: "got" },
-            { id: 8, sentence: "Last summer, we ___ on vacation.", verb: "travel", correctTense: "past", presentForm: "travel", pastForm: "traveled" },
-            { id: 9, sentence: "He often ___ coffee in the afternoon.", verb: "drink", correctTense: "present", presentForm: "drinks", pastForm: "drank" },
-            { id: 10, sentence: "An hour ago, I ___ my homework.", verb: "finish", correctTense: "past", presentForm: "finish", pastForm: "finished" },
-            { id: 11, sentence: "Usually, my dog ___ loudly at strangers.", verb: "bark", correctTense: "present", presentForm: "barks", pastForm: "barked" },
-            { id: 12, sentence: "Last week, I ___ a letter to my grandma.", verb: "write", correctTense: "past", presentForm: "write", pastForm: "wrote" },
-            { id: 13, sentence: "Every Sunday, she ___ her grandparents.", verb: "visit", correctTense: "present", presentForm: "visits", pastForm: "visited" },
-            { id: 14, sentence: "This morning, we ___ breakfast together.", verb: "have", correctTense: "past", presentForm: "have", pastForm: "had" },
-            { id: 15, sentence: "Birds often ___ in the sky.", verb: "fly", correctTense: "present", presentForm: "fly", pastForm: "flew" },
-            { id: 16, sentence: "Yesterday, he ___ a new song.", verb: "sing", correctTense: "past", presentForm: "sings", pastForm: "sang" },
-            { id: 17, sentence: "My cat always ___ on the sofa.", verb: "sleep", correctTense: "present", presentForm: "sleeps", pastForm: "slept" },
-            { id: 18, sentence: "Last month, they ___ a big party.", verb: "organize", correctTense: "past", presentForm: "organize", pastForm: "organized" },
-        ];
-
-        // Game state variables
-        let score = 0;
-        let currentQuestionIndex = 0;
-        let timeLeft = 600; // 10 minutes in seconds
-        let timerInterval;
-        let shuffledQuestions = [];
-
-        // DOM element references
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const questionSentence = document.getElementById('questionSentence');
-        const verbHint = document.getElementById('verbHint');
-        const option1Button = document.getElementById('option1Button');
-        const option2Button = document.getElementById('option2Button');
-        const startButton = document.getElementById('startButton');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const finalScoreDisplay = document.getElementById('finalScore');
-        const playAgainButton = document.getElementById('playAgainButton');
-        const gameArea = document.getElementById('gameArea');
-        const answerButtonsContainer = document.getElementById('answerButtons');
-        const feedbackMessage = document.getElementById('feedbackMessage');
-
-
-        /**
-         * Shuffles an array in place using the Fisher-Yates (Knuth) algorithm.
-         * @param {Array} array The array to shuffle.
-         */
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-            }
-        }
-
-        /**
-         * Initializes and starts the game.
-         * Resets score, timer, shuffles questions, and displays the first question.
-         */
-        function startGame() {
-            score = 0;
-            currentQuestionIndex = 0;
-            timeLeft = 600; // Reset to 10 minutes
-            scoreDisplay.textContent = `Score: ${score}`;
-            feedbackMessage.textContent = ''; // Clear feedback message
-            shuffledQuestions = [...questions]; // Create a shallow copy
-            shuffleArray(shuffledQuestions);
-
-            // Hide game over screen, show game elements
-            gameOverScreen.classList.add('hidden');
-            gameArea.classList.remove('hidden');
-            answerButtonsContainer.classList.remove('hidden');
-            startButton.classList.add('hidden'); // Hide start button
-
-            // Start the timer
-            clearInterval(timerInterval); // Clear any existing timer
-            timerInterval = setInterval(updateTimer, 1000);
-
-            displayQuestion();
-        }
-
-        /**
-         * Updates the timer display and ends the game if time runs out.
-         */
-        function updateTimer() {
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerDisplay.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-            if (timeLeft <= 0) {
-                endGame();
-            }
-        }
-
-        /**
-         * Displays the current question, its verb hint, and sets up the answer buttons.
-         */
-        function displayQuestion() {
-            // Check if there are more questions or if time has run out
-            if (currentQuestionIndex >= shuffledQuestions.length || timeLeft <= 0) {
-                endGame();
-                return;
-            }
-
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-
-            // Reset button styles and enable them
-            option1Button.classList.remove('correct-answer', 'wrong-answer');
-            option2Button.classList.remove('correct-answer', 'wrong-answer');
-            option1Button.disabled = false;
-            option2Button.disabled = false;
-            feedbackMessage.textContent = ''; // Clear feedback message
-
-            questionSentence.textContent = currentQuestion.sentence;
-            verbHint.textContent = `(Verb: to ${currentQuestion.verb})`;
-
-            // Randomly assign present and past forms to buttons
-            const options = [currentQuestion.presentForm, currentQuestion.pastForm];
-            shuffleArray(options); // Shuffle the order of the options
-
-            option1Button.textContent = options[0];
-            option2Button.textContent = options[1];
-
-            // Attach event listeners to buttons with the correct option for checking
-            option1Button.onclick = () => checkAnswer(options[0], currentQuestion);
-            option2Button.onclick = () => checkAnswer(options[1], currentQuestion);
-        }
-
-        /**
-         * Checks the chosen answer against the correct one, updates score,
-         * provides feedback, and moves to the next question.
-         * @param {string} chosenForm The verb form chosen by the student.
-         * @param {Object} currentQuestion The current question object.
-         */
-        function checkAnswer(chosenForm, currentQuestion) {
-            // Disable buttons to prevent multiple clicks
-            option1Button.disabled = true;
-            option2Button.disabled = true;
-
-            const correctAnswerForm = currentQuestion.correctTense === 'present' ?
-                                       currentQuestion.presentForm :
-                                       currentQuestion.pastForm;
-
-            let isCorrect = (chosenForm === correctAnswerForm);
-
-            // Apply visual feedback
-            if (option1Button.textContent === chosenForm) {
-                option1Button.classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
-                if (!isCorrect) {
-                    option2Button.classList.add(currentQuestion.correctTense === 'present' ? 'correct-answer' : 'wrong-answer');
-                }
-            } else {
-                option2Button.classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
-                 if (!isCorrect) {
-                    option1Button.classList.add(currentQuestion.correctTense === 'present' ? 'correct-answer' : 'wrong-answer');
-                }
-            }
-
-            if (isCorrect) {
-                score += 10; // Award 10 points for a correct answer
-                feedbackMessage.textContent = 'Correct!';
-                feedbackMessage.classList.remove('text-red-600');
-                feedbackMessage.classList.add('text-green-600');
-            } else {
-                score -= 5; // Deduct 5 points for an incorrect answer
-                feedbackMessage.textContent = 'Incorrect!';
-                feedbackMessage.classList.remove('text-green-600');
-                feedbackMessage.classList.add('text-red-600');
-            }
-            scoreDisplay.textContent = `Score: ${score}`;
-
-            // Move to the next question after a short delay
-            setTimeout(() => {
-                currentQuestionIndex++;
-                displayQuestion();
-            }, 1000); // 1-second delay for feedback
-        }
-
-        /**
-         * Ends the game, stops the timer, and displays the final score.
-         */
-        function endGame() {
-            clearInterval(timerInterval); // Stop the timer
-
-            // Hide game elements, show game over screen
-            gameArea.classList.add('hidden');
-            answerButtonsContainer.classList.add('hidden');
-            startButton.classList.remove('hidden'); // Show start button again
-            startButton.textContent = "Play Again!"; // Change text for restart
-            gameOverScreen.classList.remove('hidden');
-            finalScoreDisplay.textContent = `Your final score: ${score}`;
-            option1Button.disabled = true; // Ensure buttons are disabled at end
-            option2Button.disabled = true; // Ensure buttons are disabled at end
-        }
-
-        // Event Listeners
-        window.onload = function() {
-            startButton.addEventListener('click', startGame);
-            playAgainButton.addEventListener('click', startGame); // This button appears only after game over
-        };
-    </script>
-</body>
-</html>
+  );
+}
