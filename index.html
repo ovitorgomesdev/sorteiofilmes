@@ -1,548 +1,337 @@
-import React, { useState, useEffect, useRef } from 'react';
 
-// Main App component for the Grammar Challenge game
-export default function App() {
-  // State variables for game management
-  const [gameStarted, setGameStarted] = useState(false); // Tracks if the game has started
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question
-  const [score, setScore] = useState(0); // Player's current score
-  const [showFeedback, setShowFeedback] = useState(false); // Controls visibility of feedback message
-  const [isCorrect, setIsCorrect] = useState(false); // Indicates if the last answer was correct
-  const [gameOver, setGameOver] = useState(false); // Tracks if the game is over
-  const [timeLeft, setTimeLeft] = useState(2400); // 40 minutes in seconds (40 * 60 = 2400)
-  const timerRef = useRef(null); // Ref to store the timer interval ID
-  const [shuffledQuestions, setShuffledQuestions] = useState([]); // Stores the shuffled order of questions
-
-  // A list of A1 CEFR level grammar questions
-  // Each question object contains:
-  // - question: The grammar question text
-  // - options: An array of possible answers
-  // - correctAnswerIndex: The index of the correct answer in the options array
-  const allQuestions = [
-    {
-      question: "Choose the correct form of 'to be': She ___ a student.",
-      options: ["am", "is", "are"],
-      correctAnswerIndex: 1, // is
-      grammarPoint: "To be (affirmative)"
-    },
-    {
-      question: "Complete the sentence: They ___ from Spain.",
-      options: ["isn't", "aren't", "amn't"],
-      correctAnswerIndex: 1, // aren't
-      grammarPoint: "To be (negative)"
-    },
-    {
-      question: "Ask a question: ___ he happy?",
-      options: ["Is", "Am", "Are"],
-      correctAnswerIndex: 0, // Is
-      grammarPoint: "To be (interrogative)"
-    },
-    {
-      question: "Choose the correct article: This is ___ apple.",
-      options: ["a", "an", "the"],
-      correctAnswerIndex: 1, // an
-      grammarPoint: "Articles (a/an)"
-    },
-    {
-      question: "Choose the correct article: I have ___ car.",
-      options: ["a", "an", "the"],
-      correctAnswerIndex: 0, // a
-      grammarPoint: "Articles (a/an)"
-    },
-    {
-      question: "Make it plural: one book, two ___",
-      options: ["books", "book", "bookes"],
-      correctAnswerIndex: 0, // books
-      grammarPoint: "Plural nouns (regular)"
-    },
-    {
-      question: "Make it plural: one child, two ___",
-      options: ["childs", "children", "childes"],
-      correctAnswerIndex: 1, // children
-      grammarPoint: "Plural nouns (irregular)"
-    },
-    {
-      question: "Choose the correct demonstrative: ___ is my friend (nearby, singular).",
-      options: ["These", "That", "This"],
-      correctAnswerIndex: 2, // This
-      grammarPoint: "Demonstratives (this/that)"
-    },
-    {
-      question: "Choose the correct demonstrative: Look at ___ birds (far away, plural).",
-      options: ["this", "those", "these"],
-      correctAnswerIndex: 1, // those
-      grammarPoint: "Demonstratives (these/those)"
-    },
-    {
-      question: "Choose the possessive adjective: This is ___ cat (it belongs to me).",
-      options: ["my", "your", "his"],
-      correctAnswerIndex: 0, // my
-      grammarPoint: "Possessive adjectives"
-    },
-    {
-      question: "Choose the possessive adjective: They live in ___ house (it belongs to them).",
-      options: ["our", "their", "her"],
-      correctAnswerIndex: 1, // their
-      grammarPoint: "Possessive adjectives"
-    },
-    {
-      question: "Choose the correct preposition: The book is ___ the table.",
-      options: ["in", "on", "at"],
-      correctAnswerIndex: 1, // on
-      grammarPoint: "Prepositions of place"
-    },
-    {
-      question: "Choose the correct preposition: I live ___ London.",
-      options: ["on", "at", "in"],
-      correctAnswerIndex: 2, // in
-      grammarPoint: "Prepositions of place"
-    },
-    {
-      question: "Complete the sentence: He ___ to work every day.",
-      options: ["go", "goes", "going"],
-      correctAnswerIndex: 1, // goes
-      grammarPoint: "Present Simple (affirmative)"
-    },
-    {
-      question: "Complete the sentence: We ___ like coffee.",
-      options: ["don't", "doesn't", "isn't"],
-      correctAnswerIndex: 0, // don't
-      grammarPoint: "Present Simple (negative)"
-    },
-    {
-      question: "Ask a question: ___ she speak English?",
-      options: ["Do", "Does", "Is"],
-      correctAnswerIndex: 1, // Does
-      grammarPoint: "Present Simple (interrogative)"
-    },
-    {
-      question: "Choose the correct modal verb: I ___ swim.",
-      options: ["cans", "can", "can't"],
-      correctAnswerIndex: 1, // can
-      grammarPoint: "Can/Can't (ability)"
-    },
-    {
-      question: "Choose the correct modal verb: Birds ___ fly.",
-      options: ["can", "can't", "cans"],
-      correctAnswerIndex: 0, // can
-      grammarPoint: "Can/Can't (ability)"
-    },
-    {
-      question: "Choose the correct adverb of frequency: I ___ eat breakfast.",
-      options: ["never", "always", "sometimes"],
-      correctAnswerIndex: 1, // always (assuming it's a common habit)
-      grammarPoint: "Adverbs of frequency"
-    },
-    {
-      question: "Choose the correct adverb of frequency: She ___ watches TV (not often).",
-      options: ["always", "never", "sometimes"],
-      correctAnswerIndex: 2, // sometimes
-      grammarPoint: "Adverbs of frequency"
-    },
-    {
-      question: "Choose the correct Wh-question word: ___ is your name?",
-      options: ["Where", "What", "Who"],
-      correctAnswerIndex: 1, // What
-      grammarPoint: "Wh-questions (What)"
-    },
-    {
-      question: "Choose the correct Wh-question word: ___ do you live?",
-      options: ["Who", "What", "Where"],
-      correctAnswerIndex: 2, // Where
-      grammarPoint: "Wh-questions (Where)"
-    },
-    {
-      question: "Choose the correct Wh-question word: ___ is that man?",
-      options: ["What", "Where", "Who"],
-      correctAnswerIndex: 2, // Who
-      grammarPoint: "Wh-questions (Who)"
-    },
-    {
-      question: "What number is after seven?",
-      options: ["six", "eight", "nine"],
-      correctAnswerIndex: 1, // eight
-      grammarPoint: "Numbers"
-    },
-    {
-      question: "What color is a banana?",
-      options: ["red", "yellow", "blue"],
-      correctAnswerIndex: 1, // yellow
-      grammarPoint: "Colors"
-    },
-    {
-      question: "Choose the correct word: I have two ___ for dinner.",
-      options: ["apple", "apples", "apple's"],
-      correctAnswerIndex: 1, // apples
-      grammarPoint: "Plural nouns"
-    },
-    {
-      question: "Choose the correct sentence: They ___ playing football now.",
-      options: ["is", "are", "am"],
-      correctAnswerIndex: 1, // are
-      grammarPoint: "Present Continuous (basic)"
-    },
-    {
-      question: "Complete the sentence: He ___ a new car last month.",
-      options: ["buy", "bought", "buys"],
-      correctAnswerIndex: 1, // bought
-      grammarPoint: "Past Simple (basic)"
-    },
-    {
-      question: "Choose the correct sentence: There ___ a book on the desk.",
-      options: ["are", "is", "be"],
-      correctAnswerIndex: 1, // is
-      grammarPoint: "There is / There are"
-    },
-    {
-      question: "Choose the correct sentence: There ___ many students in the class.",
-      options: ["is", "are", "am"],
-      correctAnswerIndex: 1, // are
-      grammarPoint: "There is / There are"
-    },
-    {
-      question: "Choose the correct word: I ___ a brother and a sister.",
-      options: ["have", "has", "are"],
-      correctAnswerIndex: 0, // have
-      grammarPoint: "Have/Has"
-    },
-    {
-      question: "Choose the correct word: She ___ a big house.",
-      options: ["have", "has", "is"],
-      correctAnswerIndex: 1, // has
-      grammarPoint: "Have/Has"
-    },
-    // New questions for increased challenge
-    {
-      question: "Complete the sentence: This is ___ red car.",
-      options: ["a", "an", "the"],
-      correctAnswerIndex: 0, // a
-      grammarPoint: "Articles (a/an) with adjectives"
-    },
-    {
-      question: "Choose the correct subject pronoun: ___ am a teacher.",
-      options: ["He", "She", "I"],
-      correctAnswerIndex: 2, // I
-      grammarPoint: "Subject pronouns"
-    },
-    {
-      question: "Choose the correct object pronoun: I see ___ (referring to a boy).",
-      options: ["he", "him", "his"],
-      correctAnswerIndex: 1, // him
-      grammarPoint: "Object pronouns"
-    },
-    {
-      question: "Form a possessive noun: This is John___ book.",
-      options: ["Johns", "John's", "Johns'"],
-      correctAnswerIndex: 1, // John's
-      grammarPoint: "Possessive 's"
-    },
-    {
-      question: "Give an imperative: ___ the door, please.",
-      options: ["Open", "Opening", "Opens"],
-      correctAnswerIndex: 0, // Open
-      grammarPoint: "Imperatives"
-    },
-    {
-      question: "Choose the correct sentence: They ___ in the park right now.",
-      options: ["play", "are playing", "plays"],
-      correctAnswerIndex: 1, // are playing
-      grammarPoint: "Present Continuous"
-    },
-    {
-      question: "Complete the sentence: I ___ to the cinema yesterday.",
-      options: ["go", "went", "gone"],
-      correctAnswerIndex: 1, // went
-      grammarPoint: "Past Simple (irregular)"
-    },
-    {
-      question: "Choose the correct quantifier: I have ___ milk in the fridge.",
-      options: ["any", "some", "a"],
-      correctAnswerIndex: 1, // some
-      grammarPoint: "Quantifiers (some)"
-    },
-    {
-      question: "Choose the correct quantifier: Do you have ___ questions?",
-      options: ["some", "any", "a"],
-      correctAnswerIndex: 1, // any
-      grammarPoint: "Quantifiers (any)"
-    },
-    {
-      question: "Complete the sentence: She likes ___ books.",
-      options: ["reading", "read", "to read"],
-      correctAnswerIndex: 0, // reading
-      grammarPoint: "Likes + -ing"
-    },
-    {
-      question: "What day is after Monday?",
-      options: ["Sunday", "Tuesday", "Wednesday"],
-      correctAnswerIndex: 1, // Tuesday
-      grammarPoint: "Days of the week"
-    },
-    {
-      question: "What month is after January?",
-      options: ["March", "February", "December"],
-      correctAnswerIndex: 1, // February
-      grammarPoint: "Months of the year"
-    },
-    {
-      question: "Choose the correct preposition of time: The party is ___ 7 p.m.",
-      options: ["in", "on", "at"],
-      correctAnswerIndex: 2, // at
-      grammarPoint: "Prepositions of time (at)"
-    },
-    {
-      question: "Choose the correct preposition of time: My birthday is ___ October.",
-      options: ["at", "on", "in"],
-      correctAnswerIndex: 2, // in
-      grammarPoint: "Prepositions of time (in)"
-    },
-    {
-      question: "Choose the correct preposition of time: We meet ___ Fridays.",
-      options: ["in", "at", "on"],
-      correctAnswerIndex: 2, // on
-      grammarPoint: "Prepositions of time (on)"
-    },
-    {
-      question: "Choose the correct adjective: She is a ___ girl (not old).",
-      options: ["tall", "young", "big"],
-      correctAnswerIndex: 1, // young
-      grammarPoint: "Adjectives"
-    },
-    {
-      question: "Complete the sentence: There ___ a cat on the roof.",
-      options: ["are", "is", "be"],
-      correctAnswerIndex: 1, // is
-      grammarPoint: "There is/There are"
-    },
-    {
-      question: "Complete the sentence: There ___ three pens on the desk.",
-      options: ["is", "are", "am"],
-      correctAnswerIndex: 1, // are
-      grammarPoint: "There is/There are"
-    },
-    {
-      question: "Choose the correct sentence: I ___ my homework every evening.",
-      options: ["do", "does", "doing"],
-      correctAnswerIndex: 0, // do
-      grammarPoint: "Present Simple (do/does)"
-    },
-    {
-      question: "Complete the sentence: He ___ his car on weekends.",
-      options: ["wash", "washes", "washing"],
-      correctAnswerIndex: 1, // washes
-      grammarPoint: "Present Simple (third person singular)"
-    }
-  ];
-
-  // Function to shuffle an array (Fisher-Yates algorithm)
-  const shuffleArray = (array) => {
-    let currentIndex = array.length, randomIndex;
-    // While there remain elements to shuffle.
-    while (currentIndex !== 0) {
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-    return array;
-  };
-
-  // Effect to manage the timer
-  useEffect(() => {
-    if (gameStarted && timeLeft > 0 && !gameOver) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
-    } else if (timeLeft === 0 && gameStarted) {
-      setGameOver(true);
-      clearInterval(timerRef.current);
-    }
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(timerRef.current);
-  }, [gameStarted, timeLeft, gameOver]);
-
-  // Function to start the game
-  const startGame = () => {
-    // Shuffle the questions before starting a new game
-    setShuffledQuestions(shuffleArray([...allQuestions]));
-    setGameStarted(true);
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setGameOver(false);
-    setTimeLeft(2400); // Reset timer for new game (40 minutes)
-  };
-
-  // Function to handle answer selection
-  const handleAnswer = (selectedIndex) => {
-    // Check if the selected answer is correct against the currently displayed shuffled question
-    const correct = selectedIndex === shuffledQuestions[currentQuestionIndex].correctAnswerIndex;
-    setIsCorrect(correct);
-    setShowFeedback(true);
-
-    if (correct) {
-      setScore(score + 1); // Increase score for correct answers
-    } else {
-      setScore(prevScore => Math.max(0, prevScore - 1)); // Deduct 1 point for incorrect answers, but not below zero
-    }
-
-    // Move to the next question after a short delay to show feedback
-    setTimeout(() => {
-      setShowFeedback(false);
-      // Check against the shuffled questions array length
-      if (currentQuestionIndex < shuffledQuestions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1); // Go to next question
-      } else {
-        setGameOver(true); // End game if all questions are answered
-        clearInterval(timerRef.current); // Stop the timer
-      }
-    }, 1000); // 1 second delay for feedback
-  };
-
-  // Function to format time for display (MM:SS)
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
-  // Render the game UI
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center p-4 font-sans">
-      <script src="https://cdn.tailwindcss.com"></script>
-      {/* Tailwind CSS configuration for Inter font and extended colors/shadows */}
-      <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sashay Your Way to Present Perfect Perfection, Dani!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
         body {
-          font-family: 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #fce4ec; /* Soft pink background */
         }
-        .timer-glow {
-          box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        .section-card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* Rounded corners */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+            transition: transform 0.2s ease-in-out;
         }
-        .progress-bar-fill {
-          transition: width 0.5s ease-in-out;
+        .section-card:hover {
+            transform: translateY(-8px); /* More noticeable lift on hover */
         }
-        .glass-effect {
-          background: rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        .example-box {
+            background-color: #fff0f5; /* Lighter pink */
+            border-left: 5px solid #ff69b4; /* Hot pink border */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-style: italic;
         }
-        .pulsate {
-          animation: pulsate-anim 1.5s infinite;
+        .yet-box {
+            background-color: #ffebee; /* Very light red */
+            border-left: 5px solid #ef5350; /* Brighter red border */
         }
-        @keyframes pulsate-anim {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-          100% { transform: scale(1); }
+        .already-box {
+            background-color: #e8f5e9; /* Light green */
+            border-left: 5px solid #66bb6a; /* Brighter green border */
         }
-        /* Custom styles for buttons to prevent CLS */
-        .choice-button {
-            transition: background-color 0.3s ease, transform 0.1s ease;
+        .quiz-option {
+            background-color: #fbe9e7; /* Light peach for options */
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            border: 1px solid #ffab91; /* Soft orange border */
         }
-        .choice-button:hover {
-            transform: translateY(-2px);
+        .quiz-option:hover {
+            background-color: #ffccbc; /* Darker peach on hover */
+            transform: scale(1.02);
         }
-        .choice-button:active {
-            transform: translateY(0);
+        .quiz-option.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
         }
-      `}</style>
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+        .feedback-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+        .feedback-message.correct {
+            background-color: #a7f3d0;
+            color: #065f46;
+        }
+        .feedback-message.incorrect {
+            background-color: #fecaca;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
 
-      {/* Main game container */}
-      <div className="relative bg-white bg-opacity-90 p-8 rounded-3xl shadow-2xl w-full max-w-2xl text-center border-4 border-white transform hover:scale-[1.01] transition-transform duration-300 ease-in-out">
-        {/* Game Title */}
-        <h1 className="text-4xl font-bold text-gray-800 mb-6 drop-shadow-lg">Grammar Challenge!</h1>
+    <header class="text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-pink-700 leading-tight mb-2">
+            👑 Sashay Your Way to <span class="text-purple-600">Present Perfect</span> Perfection, Dani! ✨
+        </h1>
+        <p class="text-xl text-gray-700">Alright, my darling Dani! Get ready to snatch that perfect grammar wig with the one and only Present Perfect. It's time to serve some serious verb tense realness that connects your fabulous past to your dazzling present. No shade, no tea, just pure grammatical glow-up!</p>
+    </header>
 
-        {/* Start Screen */}
-        {!gameStarted && !gameOver && (
-          <div className="space-y-6">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Welcome to the A1 Grammar Challenge! Test your English grammar skills.
-              Answer questions correctly to earn points, but be careful – incorrect answers will deduct points!
-              You have 40 minutes to complete the challenge. Good luck!
+    <main class="max-w-4xl mx-auto">
+
+        <!-- 1. What is the Present Perfect? -->
+        <section class="section-card">
+            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
+                <span class="mr-2 text-4xl">🤔</span> What's the T, Sister? (What is the Present Perfect?)
+            </h2>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                The <strong>Present Perfect</strong> is a fierce verb tense that acts like a fabulous runway walk, connecting your past glamorous moments to your current show-stopping presence. It's used for actions that started in the past but are still *serving* some relevance or connection to right now.
             </p>
-            <button
-              onClick={startGame}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300"
-            >
-              Start Game
-            </button>
-          </div>
-        )}
+            <div class="example-box">
+                <p class="text-lg">Example: "Dani, you <span class="font-semibold text-pink-700">have served</span> fierce looks at the ball for five years!"</p>
+                <p class="text-sm text-gray-600"> (You started serving looks then, and honey, you're *still* serving them now!)</p>
+            </div>
+        </section>
 
-        {/* Game Active Screen */}
-        {gameStarted && !gameOver && (
-          <div className="space-y-6">
-            {/* Timer and Score display */}
-            <div className="flex justify-between items-center mb-6 p-3 rounded-lg bg-indigo-600 text-white font-semibold shadow-md glass-effect pulsate">
-              <span className="text-xl">Time: {formatTime(timeLeft)}</span>
-              <span className="text-xl">Score: {score}</span>
+        <!-- 2. How to Form the Present Perfect? -->
+        <section class="section-card">
+            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
+                <span class="mr-2 text-4xl">🛠️</span> Getting Ready: How to Form This Glamorous Tense!
+            </h2>
+            <p class="text-lg text-gray-700 mb-4">The formation is as stunningly simple as your favorite lip sync routine:</p>
+
+            <div class="mb-6 p-4 bg-fuchsia-50 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-semibold text-fuchsia-700 mb-3">✅ Affirmative Form: Own That Stage!</h3>
+                <p class="text-lg font-mono bg-fuchsia-100 p-2 rounded-md inline-block mb-3">
+                    <span class="font-bold">SUBJECT + HAVE / HAS + PAST PARTICIPLE VERB</span>
+                </p>
+                <ul class="list-disc list-inside text-lg text-gray-700 ml-4">
+                    <li>I / You / We / They <span class="font-bold text-fuchsia-600">HAVE</span> + Past Participle</li>
+                    <li>He / She / It <span class="font-bold text-fuchsia-600">HAS</span> + Past Participle</li>
+                </ul>
+                <div class="example-box">
+                    <p>She <span class="font-semibold text-fuchsia-700">has finished</span> her makeup tutorial. (And she looks flawless!)</p>
+                    <p>We <span class="font-semibold text-fuchsia-700">have visited</span> so many iconic clubs. (Honey, the stories!)</p>
+                </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-200 rounded-full h-4 mb-8 shadow-inner">
-              <div
-                className="bg-green-500 h-4 rounded-full progress-bar-fill"
-                // Use shuffledQuestions.length for progress calculation
-                style={{ width: `${((currentQuestionIndex + 1) / shuffledQuestions.length) * 100}%` }}
-              ></div>
+            <div class="mb-6 p-4 bg-red-50 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-semibold text-red-700 mb-3">❌ Negative Form: Not Quite There, Hunny!</h3>
+                <p class="text-lg font-mono bg-red-100 p-2 rounded-md inline-block mb-3">
+                    <span class="font-bold">SUBJECT + HAVE NOT / HAS NOT + PAST PARTICIPLE VERB</span>
+                </p>
+                <ul class="list-disc list-inside text-lg text-gray-700 ml-4">
+                    <li>I / You / We / They <span class="font-bold text-red-600">HAVEN'T</span> (have not) + Past Participle</li>
+                    <li>He / She / It <span class="font-bold text-red-600">HASN'T</span> (has not) + Past Participle</li>
+                </ul>
+                <div class="example-box">
+                    <p>He <span class="font-semibold text-red-700">hasn't arrived</span> for rehearsal yet. (Tardy!)</p>
+                    <p>They <span class="font-semibold text-red-700">haven't eaten</span> anything before the show. (Gotta fuel up!)</p>
+                </div>
             </div>
 
-            {/* Question Card */}
-            <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
-              <p className="text-2xl font-semibold text-gray-900 mb-6">
-                Question {currentQuestionIndex + 1} of {shuffledQuestions.length}
-              </p>
-              <p className="text-3xl font-bold text-indigo-700 mb-8 leading-tight">
-                {/* Display question from shuffledQuestions array */}
-                {shuffledQuestions[currentQuestionIndex]?.question}
-              </p>
+            <div class="p-4 bg-emerald-50 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-semibold text-emerald-700 mb-3">❓ Interrogative Form: Spill the Tea!</h3>
+                <p class="text-lg font-mono bg-emerald-100 p-2 rounded-md inline-block mb-3">
+                    <span class="font-bold">HAVE / HAS + SUBJECT + PAST PARTICIPLE VERB?</span>
+                </p>
+                <ul class="list-disc list-inside text-lg text-gray-700 ml-4">
+                    <li><span class="font-bold text-emerald-600">HAVE</span> I / You / We / They + Past Participle?</li>
+                    <li><span class="font-bold text-emerald-600">HAS</span> He / She / It + Past Participle?</li>
+                </ul>
+                <div class="example-box">
+                    <p><span class="font-semibold text-emerald-700">Have you seen</span> her legendary talent show performance, Dani?</p>
+                    <p><span class="font-semibold text-emerald-700">Has she finished</span> gluing on all those rhinestones?</p>
+                </div>
+            </div>
+        </section>
 
-              {/* Options */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Map options from shuffledQuestions array */}
-                {shuffledQuestions[currentQuestionIndex]?.options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswer(index)}
-                    className="choice-button bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-xl text-lg font-medium shadow-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transform transition-all duration-200 ease-in-out"
-                    disabled={showFeedback} // Disable buttons while feedback is shown
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+        <!-- 3. Uses of the Present Perfect -->
+        <section class="section-card">
+            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
+                <span class="mr-2 text-4xl">🎯</span> When to Werk It: Uses of the Present Perfect!
+            </h2>
+            <p class="text-lg text-gray-700 mb-4">This tense is a versatile queen, used in several situations. Here are the main ones:</p>
+
+            <div class="mb-4 p-4 bg-pink-50 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-semibold text-pink-700 mb-2">1. Actions that started in the past and are still ongoing, darling!</h3>
+                <p class="text-lg text-gray-700 mb-2">
+                    We usually use <span class="font-bold">"for"</span> for durations (like for how many fabulous years) and <span class="font-bold">"since"</span> for a specific point in time (like since your first sashay).
+                </p>
+                <div class="example-box">
+                    <p>They <span class="font-semibold text-pink-700">have rehearsed</span> their lip sync <span class="font-bold">for</span> hours. (They're still perfecting it!)</p>
+                    <p>She <span class="font-semibold text-pink-700">has performed</span> at this club <span class="font-bold">since</span> her first sashay in 2020.</p>
+                </div>
             </div>
 
-            {/* Feedback Message */}
-            {showFeedback && (
-              <div className={`mt-6 p-4 rounded-xl text-white font-bold text-xl shadow-lg transition-opacity duration-300 ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}>
-                {isCorrect ? 'Correct! 🎉' : 'Incorrect. -1 point!'}
-              </div>
-            )}
-          </div>
-        )}
+            <div class="mb-4 p-4 bg-pink-50 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-semibold text-pink-700 mb-2">2. Life experiences: Your personal glam history!</h3>
+                <p class="text-lg text-gray-700 mb-2">
+                    Actions that happened at some point in your life, without spilling *exactly* when they happened.
+                </p>
+                <div class="example-box">
+                    <p>I <span class="font-semibold text-pink-700">have never worn</span> a gown quite *that* sparkly. (A new experience awaits!)</p>
+                    <p>He <span class="font-semibold text-pink-700">has met</span> so many legendary queens. (He's lived a full drag life!)</p>
+                </div>
+            </div>
 
-        {/* Game Over Screen */}
-        {gameOver && (
-          <div className="space-y-6">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Game Over!</h2>
-            <p className="text-2xl text-gray-700 mb-4">
-              You answered {score} out of {shuffledQuestions.length} questions correctly.
+            <div class="p-4 bg-pink-50 rounded-lg shadow-inner">
+                <h3 class="text-2xl font-semibold text-pink-700 mb-2">3. Recent actions with a *current* fabulous result!</h3>
+                <p class="text-lg text-gray-700 mb-2">
+                    When something just happened and the effect is still visible or relevant right now.
+                </p>
+                <div class="example-box">
+                    <p>Oh no, Dani! I <span class="font-semibold text-pink-700">have just spilled</span> my glitter! (The result is a sparkling mess on the floor!)</p>
+                    <p>The judge <span class="font-semibold text-pink-700">has just given</span> the critique. (And we're all gagged!)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. "Yet" - Not Ready to Serve / Already in Questions -->
+        <section class="section-card yet-box">
+            <h2 class="text-3xl font-bold text-red-700 mb-4 flex items-center">
+                <span class="mr-2 text-4xl">⏳</span> "Yet" - Is It Time, Hunny? (Still Not / Already?)
+            </h2>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                We use <strong>"yet"</strong> in <strong>negative</strong> and <strong>interrogative</strong> sentences. It usually goes at the <strong>very end of the sentence</strong>, like a dramatic mic drop!
             </p>
-            <p className="text-2xl text-gray-700 mb-6">
-              Time remaining: {formatTime(timeLeft)}
+            <div class="example-box yet-box">
+                <h3 class="text-xl font-semibold text-red-800 mb-2">In Negative Sentences: Means "still not"</h3>
+                <p>The dress <span class="font-semibold text-red-700">hasn't been sequined</span> <span class="font-bold text-red-800">yet</span>. (Still waiting for that sparkle!)</p>
+                <p>They <span class="font-semibold text-red-700">haven't powdered</span> their faces <span class="font-bold text-red-800">yet</span>. (Still a few steps to go!)</p>
+            </div>
+            <div class="example-box yet-box mt-4">
+                <h3 class="text-xl font-semibold text-red-800 mb-2">In Interrogative Sentences: Means "already" or "still"</h3>
+                <p><span class="font-semibold text-red-700">Have you finished</span> your contour <span class="font-bold text-red-800">yet</span>, Dani? (Are you already snatched?)</p>
+                <p><span class="font-semibold text-red-700">Has the music started</span> <span class="font-bold text-red-800">yet</span>? (Is it still not playing?)</p>
+            </div>
+        </section>
+
+        <!-- 5. "Already" - You've Already Snatched It! -->
+        <section class="section-card already-box">
+            <h2 class="text-3xl font-bold text-green-700 mb-4 flex items-center">
+                <span class="mr-2 text-4xl">✅</span> "Already" - You're So Ahead of the Game!
+            </h2>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                We use <strong>"already"</strong> to show that something happened sooner than expected or has already been done. It's common in <strong>affirmative</strong> sentences. It usually struts its stuff <strong>between "have/has" and the past participle</strong>.
             </p>
-            <button
-              onClick={startGame}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-green-300"
-            >
-              Play Again
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+            <div class="example-box already-box">
+                <h3 class="text-xl font-semibold text-green-800 mb-2">In Affirmative Sentences: Means "already"</h3>
+                <p>I <span class="font-semibold text-green-700">have <span class="font-bold text-green-800">already</span> chosen</span> my wig for tonight. (I'm prepared!)</p>
+                <p>The audience <span class="font-semibold text-green-700">has <span class="font-bold text-green-800">already</span> given</span> a standing ovation. (They loved it so much!)</p>
+            </div>
+            <div class="example-box already-box mt-4">
+                <h3 class="text-xl font-semibold text-green-800 mb-2">In Interrogative Sentences (rare): Means "already" (with a touch of surprise!)</h3>
+                <p><span class="font-semibold text-green-700">Have you <span class="font-bold text-green-800">already</span> learned</span> that whole lip sync routine, Dani? (Wow, you're fast!)</p>
+            </div>
+        </section>
+
+        <!-- 6. Interactive Exercises -->
+        <section class="section-card">
+            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
+                <span class="mr-2 text-4xl">🧠</span> Time to Slay the Quiz!
+            </h2>
+            <p class="text-lg text-gray-700 mb-6">Choose the best option to complete these fabulous sentences with 'yet' or 'already'. Show us what you've learned, Dani!</p>
+
+            <div id="quiz-container">
+                <!-- Question 1 -->
+                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
+                    <p class="text-xl font-semibold mb-3">1. She hasn't applied her lipstick _____.</p>
+                    <div class="quiz-option" data-question="1" data-answer="yet">yet</div>
+                    <div class="quiz-option" data-question="1" data-answer="already">already</div>
+                    <div id="feedback-1" class="feedback-message hidden"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
+                    <p class="text-xl font-semibold mb-3">2. I have _____ chosen my stage name.</p>
+                    <div class="quiz-option" data-question="2" data-answer="already">already</div>
+                    <div class="quiz-option" data-question="2" data-answer="yet">yet</div>
+                    <div id="feedback-2" class="feedback-message hidden"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
+                    <p class="text-xl font-semibold mb-3">3. Have you rehearsed your choreography _____?</p>
+                    <div class="quiz-option" data-question="3" data-answer="yet">yet</div>
+                    <div class="quiz-option" data-question="3" data-answer="already">already</div>
+                    <div id="feedback-3" class="feedback-message hidden"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
+                    <p class="text-xl font-semibold mb-3">4. They have _____ prepared their runway outfits.</p>
+                    <div class="quiz-option" data-question="4" data-answer="already">already</div>
+                    <div class="quiz-option" data-question="4" data-answer="yet">yet</div>
+                    <div id="feedback-4" class="feedback-message hidden"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
+                    <p class="text-xl font-semibold mb-3">5. He hasn't glued down his brows _____.</p>
+                    <div class="quiz-option" data-question="5" data-answer="yet">yet</div>
+                    <div class="quiz-option" data-question="5" data-answer="already">already</div>
+                    <div id="feedback-5" class="feedback-message hidden"></div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-8 py-4 text-gray-500 text-sm">
+        <p>&copy; 2025 Your English Tutorial. Now go out there and werk it, Dani! ✨</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizOptions = document.querySelectorAll('.quiz-option');
+
+            quizOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNumber = this.dataset.question;
+                    const selectedAnswer = this.dataset.answer;
+                    const feedbackElement = document.getElementById(`feedback-${questionNumber}`);
+                    
+                    // Define correct answers
+                    const correctAnswers = {
+                        "1": "yet",
+                        "2": "already",
+                        "3": "yet",
+                        "4": "already",
+                        "5": "yet"
+                    };
+
+                    // Reset previous selections for this question
+                    document.querySelectorAll(`.quiz-option[data-question="${questionNumber}"]`).forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    if (selectedAnswer === correctAnswers[questionNumber]) {
+                        this.classList.add('correct');
+                        feedbackElement.textContent = "✅ Correct! You're a winner, baby!";
+                        feedbackElement.classList.add('correct');
+                        feedbackElement.classList.remove('incorrect', 'hidden');
+                    } else {
+                        this.classList.add('incorrect');
+                        feedbackElement.textContent = "❌ Incorrect. No shade, but try again, hunny!";
+                        feedbackElement.classList.add('incorrect');
+                        feedbackElement.classList.remove('correct', 'hidden');
+                        // Optionally, reveal the correct answer visually if desired
+                        // document.querySelector(`.quiz-option[data-question="${questionNumber}"][data-answer="${correctAnswers[questionNumber]}"]`).classList.add('correct');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
