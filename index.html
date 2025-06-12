@@ -1,335 +1,411 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sashay Your Way to Present Perfect Perfection, Dani!</title>
+    <title>Art in Society: An English Conversation Class</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0pReWSgeQznnOwFxQZJjX/QQfS9H/pW+oH+dE8M7y/u0vQZqR9x0+w5o0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fce4ec; /* Soft pink background */
+            background: linear-gradient(to bottom right, #f8fafc, #e0f2f7); /* Subtle gradient background */
+            color: #334155; /* Darker text */
         }
-        .section-card {
+        .container {
+            max-width: 960px; /* Max width for content */
+        }
+        .section-heading {
+            border-bottom: 3px solid #60a5fa; /* More prominent blue border */
+            padding-bottom: 0.75rem;
+            margin-bottom: 2.5rem;
+            color: #1e293b; /* Even darker heading */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow */
+        }
+        .card {
             background-color: #ffffff;
-            border-radius: 1rem; /* Rounded corners */
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
-            transition: transform 0.2s ease-in-out;
+            border-radius: 1.25rem; /* More rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Stronger shadow */
+            padding: 2rem;
+            transition: transform 0.3s ease; /* Smooth transition for hover effect */
         }
-        .section-card:hover {
-            transform: translateY(-8px); /* More noticeable lift on hover */
+        .card:hover {
+            transform: translateY(-5px); /* Lift card on hover */
         }
-        .example-box {
-            background-color: #fff0f5; /* Lighter pink */
-            border-left: 5px solid #ff69b4; /* Hot pink border */
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-style: italic;
+        .gallery-image {
+            width: 100%;
+            height: 400px; /* Fixed height for consistency */
+            object-fit: contain; /* Ensure image fits without cropping */
+            border-radius: 1rem;
+            background-color: #e2e8f0; /* Placeholder background */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1); /* Inner shadow for depth */
         }
-        .yet-box {
-            background-color: #ffebee; /* Very light red */
-            border-left: 5px solid #ef5350; /* Brighter red border */
-        }
-        .already-box {
-            background-color: #e8f5e9; /* Light green */
-            border-left: 5px solid #66bb6a; /* Brighter green border */
-        }
-        .quiz-option {
-            background-color: #fbe9e7; /* Light peach for options */
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            border: 1px solid #ffab91; /* Soft orange border */
-        }
-        .quiz-option:hover {
-            background-color: #ffccbc; /* Darker peach on hover */
-            transform: scale(1.02);
-        }
-        .quiz-option.correct {
-            background-color: #d1fae5;
-            border-color: #10b981;
-        }
-        .quiz-option.incorrect {
-            background-color: #fee2e2;
-            border-color: #ef4444;
-        }
-        .feedback-message {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
+        .nav-button {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Pill shape */
             font-weight: 600;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        .feedback-message.correct {
-            background-color: #a7f3d0;
-            color: #065f46;
+        .nav-button:hover {
+            background-color: #2563eb; /* Darker blue on hover */
+            transform: scale(1.05); /* Slight scale on hover */
         }
-        .feedback-message.incorrect {
-            background-color: #fecaca;
-            color: #991b1b;
+        .nav-button:disabled {
+            background-color: #94a3b8; /* Gray when disabled */
+            cursor: not-allowed;
+            transform: none;
+        }
+        .vocabulary-item {
+            display: flex;
+            align-items: flex-start; /* Align icon/button at the top */
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-left: 5px solid #60a5fa; /* Artistic left border */
+            border-radius: 0.5rem;
+            background-color: #f0f9ff; /* Very light blue background for items */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+            transition: background-color 0.2s ease;
+        }
+        .vocabulary-item:hover {
+            background-color: #e0f2f7; /* Lighter blue on hover */
+        }
+        .vocabulary-icon {
+            font-size: 1.8rem;
+            color: #1d4ed8; /* Darker blue for icon */
+            margin-right: 1rem;
+            align-self: center; /* Center icon vertically */
+        }
+        .vocabulary-content {
+            flex-grow: 1;
+        }
+        .vocabulary-term {
+            font-weight: 700; /* Bolder term */
+            color: #0f172a; /* Even darker for terms */
+            font-size: 1.25rem; /* Larger font size */
+            margin-bottom: 0.25rem;
+        }
+        .vocabulary-definition {
+            margin-top: 0.25rem;
+            font-style: italic;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+        .vocabulary-example {
+            margin-top: 0.5rem;
+            color: #334155;
+            font-size: 0.9rem;
+            background-color: #eef2ff; /* Very light purple-blue background */
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border-left: 3px solid #a78bfa; /* Purple border */
+        }
+        .pronunciation-button {
+            background-color: #10b981; /* Green */
+            color: white;
+            border-radius: 9999px; /* Pill shape */
+            padding: 0.5rem 0.8rem;
+            margin-left: 0.75rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .pronunciation-button:hover {
+            background-color: #059669; /* Darker green on hover */
+            transform: scale(1.1);
+        }
+        .discussion-question {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            padding: 0.75rem 1rem;
+            background-color: #f0f9ff;
+            border-radius: 0.75rem;
+            border-left: 4px solid #3b82f6; /* Blue border */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: background-color 0.2s ease;
+        }
+        .discussion-question:hover {
+            background-color: #e0f2f7;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-6">
+    <div class="container mx-auto">
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-blue-800 mb-4 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-indigo-100 shadow-lg border-b-4 border-blue-500">
+                Art in Society: An English Conversation Class
+            </h1>
+            <p class="text-xl text-gray-700">Explore, Reflect, Discuss</p>
+        </header>
 
-    <header class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-pink-700 leading-tight mb-2">
-            👑 Sashay Your Way to <span class="text-purple-600">Present Perfect</span> Perfection, Dani! ✨
-        </h1>
-        <p class="text-xl text-gray-700">Alright, my darling Dani! Get ready to snatch that perfect grammar wig with the one and only Present Perfect. It's time to serve some serious verb tense realness that connects your fabulous past to your dazzling present. No shade, no tea, just pure grammatical glow-up!</p>
-    </header>
-
-    <main class="max-w-4xl mx-auto">
-
-        <!-- 1. What is the Present Perfect? -->
-        <section class="section-card">
-            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
-                <span class="mr-2 text-4xl">🤔</span> What's the T, Sister? (What is the Present Perfect?)
-            </h2>
-            <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                The <strong>Present Perfect</strong> is a fierce verb tense that acts like a fabulous runway walk, connecting your past glamorous moments to your current show-stopping presence. It's used for actions that started in the past but are still *serving* some relevance or connection to right now.
-            </p>
-            <div class="example-box">
-                <p class="text-lg">Example: "Dani, you <span class="font-semibold text-pink-700">have served</span> fierce looks at the ball for five years!"</p>
-                <p class="text-sm text-gray-600"> (You started serving looks then, and honey, you're *still* serving them now!)</p>
-            </div>
-        </section>
-
-        <!-- 2. How to Form the Present Perfect? -->
-        <section class="section-card">
-            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
-                <span class="mr-2 text-4xl">🛠️</span> Getting Ready: How to Form This Glamorous Tense!
-            </h2>
-            <p class="text-lg text-gray-700 mb-4">The formation is as stunningly simple as your favorite lip sync routine:</p>
-
-            <div class="mb-6 p-4 bg-fuchsia-50 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-semibold text-fuchsia-700 mb-3">✅ Affirmative Form: Own That Stage!</h3>
-                <p class="text-lg font-mono bg-fuchsia-100 p-2 rounded-md inline-block mb-3">
-                    <span class="font-bold">SUBJECT + HAVE / HAS + PAST PARTICIPLE VERB</span>
-                </p>
-                <ul class="list-disc list-inside text-lg text-gray-700 ml-4">
-                    <li>I / You / We / They <span class="font-bold text-fuchsia-600">HAVE</span> + Past Participle</li>
-                    <li>He / She / It <span class="font-bold text-fuchsia-600">HAS</span> + Past Participle</li>
-                </ul>
-                <div class="example-box">
-                    <p>She <span class="font-semibold text-fuchsia-700">has finished</span> her makeup tutorial. (And she looks flawless!)</p>
-                    <p>We <span class="font-semibold text-fuchsia-700">have visited</span> so many iconic clubs. (Honey, the stories!)</p>
-                </div>
-            </div>
-
-            <div class="mb-6 p-4 bg-red-50 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-semibold text-red-700 mb-3">❌ Negative Form: Not Quite There, Hunny!</h3>
-                <p class="text-lg font-mono bg-red-100 p-2 rounded-md inline-block mb-3">
-                    <span class="font-bold">SUBJECT + HAVE NOT / HAS NOT + PAST PARTICIPLE VERB</span>
-                </p>
-                <ul class="list-disc list-inside text-lg text-gray-700 ml-4">
-                    <li>I / You / We / They <span class="font-bold text-red-600">HAVEN'T</span> (have not) + Past Participle</li>
-                    <li>He / She / It <span class="font-bold text-red-600">HASN'T</span> (has not) + Past Participle</li>
-                </ul>
-                <div class="example-box">
-                    <p>He <span class="font-semibold text-red-700">hasn't arrived</span> for rehearsal yet. (Tardy!)</p>
-                    <p>They <span class="font-semibold text-red-700">haven't eaten</span> anything before the show. (Gotta fuel up!)</p>
-                </div>
-            </div>
-
-            <div class="p-4 bg-emerald-50 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-semibold text-emerald-700 mb-3">❓ Interrogative Form: Spill the Tea!</h3>
-                <p class="text-lg font-mono bg-emerald-100 p-2 rounded-md inline-block mb-3">
-                    <span class="font-bold">HAVE / HAS + SUBJECT + PAST PARTICIPLE VERB?</span>
-                </p>
-                <ul class="list-disc list-inside text-lg text-gray-700 ml-4">
-                    <li><span class="font-bold text-emerald-600">HAVE</span> I / You / We / They + Past Participle?</li>
-                    <li><span class="font-bold text-emerald-600">HAS</span> He / She / It + Past Participle?</li>
-                </ul>
-                <div class="example-box">
-                    <p><span class="font-semibold text-emerald-700">Have you seen</span> her legendary talent show performance, Dani?</p>
-                    <p><span class="font-semibold text-emerald-700">Has she finished</span> gluing on all those rhinestones?</p>
+        <!-- Virtual Art Gallery Section -->
+        <section id="gallery" class="mb-12 card">
+            <h2 class="text-3xl font-bold section-heading">Virtual Art Gallery</h2>
+            <div class="flex flex-col items-center">
+                <img id="galleryImage" src="" alt="Artwork" class="gallery-image mb-6">
+                <h3 id="imageTitle" class="text-2xl font-semibold text-gray-800 mb-2 text-center"></h3>
+                <p id="imageArtist" class="text-lg text-gray-600 mb-2 text-center"></p>
+                <p id="imageDescription" class="text-md text-gray-700 mb-6 text-center italic max-w-lg"></p> <!-- New line for description -->
+                <div class="flex justify-between w-full max-w-sm">
+                    <button id="prevButton" class="nav-button"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button id="nextButton" class="nav-button">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
         </section>
 
-        <!-- 3. Uses of the Present Perfect -->
-        <section class="section-card">
-            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
-                <span class="mr-2 text-4xl">🎯</span> When to Werk It: Uses of the Present Perfect!
-            </h2>
-            <p class="text-lg text-gray-700 mb-4">This tense is a versatile queen, used in several situations. Here are the main ones:</p>
-
-            <div class="mb-4 p-4 bg-pink-50 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-semibold text-pink-700 mb-2">1. Actions that started in the past and are still ongoing, darling!</h3>
-                <p class="text-lg text-gray-700 mb-2">
-                    We usually use <span class="font-bold">"for"</span> for durations (like for how many fabulous years) and <span class="font-bold">"since"</span> for a specific point in time (like since your first sashay).
-                </p>
-                <div class="example-box">
-                    <p>They <span class="font-semibold text-pink-700">have rehearsed</span> their lip sync <span class="font-bold">for</span> hours. (They're still perfecting it!)</p>
-                    <p>She <span class="font-semibold text-pink-700">has performed</span> at this club <span class="font-bold">since</span> her first sashay in 2020.</p>
-                </div>
-            </div>
-
-            <div class="mb-4 p-4 bg-pink-50 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-semibold text-pink-700 mb-2">2. Life experiences: Your personal glam history!</h3>
-                <p class="text-lg text-gray-700 mb-2">
-                    Actions that happened at some point in your life, without spilling *exactly* when they happened.
-                </p>
-                <div class="example-box">
-                    <p>I <span class="font-semibold text-pink-700">have never worn</span> a gown quite *that* sparkly. (A new experience awaits!)</p>
-                    <p>He <span class="font-semibold text-pink-700">has met</span> so many legendary queens. (He's lived a full drag life!)</p>
-                </div>
-            </div>
-
-            <div class="p-4 bg-pink-50 rounded-lg shadow-inner">
-                <h3 class="text-2xl font-semibold text-pink-700 mb-2">3. Recent actions with a *current* fabulous result!</h3>
-                <p class="text-lg text-gray-700 mb-2">
-                    When something just happened and the effect is still visible or relevant right now.
-                </p>
-                <div class="example-box">
-                    <p>Oh no, Dani! I <span class="font-semibold text-pink-700">have just spilled</span> my glitter! (The result is a sparkling mess on the floor!)</p>
-                    <p>The judge <span class="font-semibold text-pink-700">has just given</span> the critique. (And we're all gagged!)</p>
-                </div>
+        <!-- Vocabulary Section -->
+        <section id="vocabulary" class="mb-12 card">
+            <h2 class="text-3xl font-bold section-heading">Key Vocabulary for Art Discussion</h2>
+            <div id="vocabularyList">
+                <!-- Vocabulary items will be injected here by JavaScript -->
             </div>
         </section>
 
-        <!-- 4. "Yet" - Not Ready to Serve / Already in Questions -->
-        <section class="section-card yet-box">
-            <h2 class="text-3xl font-bold text-red-700 mb-4 flex items-center">
-                <span class="mr-2 text-4xl">⏳</span> "Yet" - Is It Time, Hunny? (Still Not / Already?)
-            </h2>
-            <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                We use <strong>"yet"</strong> in <strong>negative</strong> and <strong>interrogative</strong> sentences. It usually goes at the <strong>very end of the sentence</strong>, like a dramatic mic drop!
-            </p>
-            <div class="example-box yet-box">
-                <h3 class="text-xl font-semibold text-red-800 mb-2">In Negative Sentences: Means "still not"</h3>
-                <p>The dress <span class="font-semibold text-red-700">hasn't been sequined</span> <span class="font-bold text-red-800">yet</span>. (Still waiting for that sparkle!)</p>
-                <p>They <span class="font-semibold text-red-700">haven't powdered</span> their faces <span class="font-bold text-red-800">yet</span>. (Still a few steps to go!)</p>
-            </div>
-            <div class="example-box yet-box mt-4">
-                <h3 class="text-xl font-semibold text-red-800 mb-2">In Interrogative Sentences: Means "already" or "still"</h3>
-                <p><span class="font-semibold text-red-700">Have you finished</span> your contour <span class="font-bold text-red-800">yet</span>, Dani? (Are you already snatched?)</p>
-                <p><span class="font-semibold text-red-700">Has the music started</span> <span class="font-bold text-red-800">yet</span>? (Is it still not playing?)</p>
+        <!-- Discussion Questions Section -->
+        <section id="discussion" class="mb-12 card">
+            <h2 class="text-3xl font-bold section-heading">Discussion Questions</h2>
+            <div id="discussionQuestionsList">
+                <!-- Discussion questions will be injected here by JavaScript -->
             </div>
         </section>
-
-        <!-- 5. "Already" - You've Already Snatched It! -->
-        <section class="section-card already-box">
-            <h2 class="text-3xl font-bold text-green-700 mb-4 flex items-center">
-                <span class="mr-2 text-4xl">✅</span> "Already" - You're So Ahead of the Game!
-            </h2>
-            <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                We use <strong>"already"</strong> to show that something happened sooner than expected or has already been done. It's common in <strong>affirmative</strong> sentences. It usually struts its stuff <strong>between "have/has" and the past participle</strong>.
-            </p>
-            <div class="example-box already-box">
-                <h3 class="text-xl font-semibold text-green-800 mb-2">In Affirmative Sentences: Means "already"</h3>
-                <p>I <span class="font-semibold text-green-700">have <span class="font-bold text-green-800">already</span> chosen</span> my wig for tonight. (I'm prepared!)</p>
-                <p>The audience <span class="font-semibold text-green-700">has <span class="font-bold text-green-800">already</span> given</span> a standing ovation. (They loved it so much!)</p>
-            </div>
-            <div class="example-box already-box mt-4">
-                <h3 class="text-xl font-semibold text-green-800 mb-2">In Interrogative Sentences (rare): Means "already" (with a touch of surprise!)</h3>
-                <p><span class="font-semibold text-green-700">Have you <span class="font-bold text-green-800">already</span> learned</span> that whole lip sync routine, Dani? (Wow, you're fast!)</p>
-            </div>
-        </section>
-
-        <!-- 6. Interactive Exercises -->
-        <section class="section-card">
-            <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center">
-                <span class="mr-2 text-4xl">🧠</span> Time to Slay the Quiz!
-            </h2>
-            <p class="text-lg text-gray-700 mb-6">Choose the best option to complete these fabulous sentences with 'yet' or 'already'. Show us what you've learned, Dani!</p>
-
-            <div id="quiz-container">
-                <!-- Question 1 -->
-                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
-                    <p class="text-xl font-semibold mb-3">1. She hasn't applied her lipstick _____.</p>
-                    <div class="quiz-option" data-question="1" data-answer="yet">yet</div>
-                    <div class="quiz-option" data-question="1" data-answer="already">already</div>
-                    <div id="feedback-1" class="feedback-message hidden"></div>
-                </div>
-
-                <!-- Question 2 -->
-                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
-                    <p class="text-xl font-semibold mb-3">2. I have _____ chosen my stage name.</p>
-                    <div class="quiz-option" data-question="2" data-answer="already">already</div>
-                    <div class="quiz-option" data-question="2" data-answer="yet">yet</div>
-                    <div id="feedback-2" class="feedback-message hidden"></div>
-                </div>
-
-                <!-- Question 3 -->
-                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
-                    <p class="text-xl font-semibold mb-3">3. Have you rehearsed your choreography _____?</p>
-                    <div class="quiz-option" data-question="3" data-answer="yet">yet</div>
-                    <div class="quiz-option" data-question="3" data-answer="already">already</div>
-                    <div id="feedback-3" class="feedback-message hidden"></div>
-                </div>
-
-                <!-- Question 4 -->
-                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
-                    <p class="text-xl font-semibold mb-3">4. They have _____ prepared their runway outfits.</p>
-                    <div class="quiz-option" data-question="4" data-answer="already">already</div>
-                    <div class="quiz-option" data-question="4" data-answer="yet">yet</div>
-                    <div id="feedback-4" class="feedback-message hidden"></div>
-                </div>
-
-                <!-- Question 5 -->
-                <div class="mb-6 p-4 border border-pink-200 rounded-lg">
-                    <p class="text-xl font-semibold mb-3">5. He hasn't glued down his brows _____.</p>
-                    <div class="quiz-option" data-question="5" data-answer="yet">yet</div>
-                    <div class="quiz-option" data-question="5" data-answer="already">already</div>
-                    <div id="feedback-5" class="feedback-message hidden"></div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="text-center mt-8 py-4 text-gray-500 text-sm">
-        <p>&copy; 2025 Your English Tutorial. Now go out there and werk it, Dani! ✨</p>
-    </footer>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const quizOptions = document.querySelectorAll('.quiz-option');
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryImages = [
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/960px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+                    title: "The Starry Night",
+                    artist: "Vincent van Gogh",
+                    sentiment: "positive",
+                    description: "This iconic painting captures a vibrant, swirling night sky over a peaceful village. Its dynamic brushstrokes and luminous stars often evoke feelings of wonder, awe, and serenity. It is a masterpiece of post-impressionism."
+                },
+                {
+                    src: "https://www.claude-monet.com/assets/img/paintings/impression-sunrise.jpg",
+                    title: "Impression, Sunrise",
+                    artist: "Claude Monet",
+                    sentiment: "positive",
+                    description: "A foundational work of Impressionism, this painting depicts a hazy harbor scene with a striking orange sun. It often conveys a sense of calm, new beginnings, and the beauty of fleeting moments."
+                },
+                {
+                    src: "https://lineupgallery.com/wp-content/uploads/2020/11/henri-matisse-la-danse-lineupgallery.jpg",
+                    title: "Dance (La Danse)",
+                    artist: "Henri Matisse",
+                    sentiment: "positive",
+                    description: "This large decorative panel shows five dancing figures. Its simple forms and bold colors create a sense of joyous movement, freedom, and communal celebration. It's an excellent example of figurative art."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Tsunami_by_hokusai_19th_century.jpg",
+                    title: "The Great Wave off Kanagawa",
+                    artist: "Katsushika Hokusai",
+                    sentiment: "positive",
+                    description: "Part of a series of woodblock prints, this depicts a massive wave threatening boats near Mount Fuji. It can evoke feelings of awe for nature's power and a profound sense of human vulnerability, yet its beauty is undeniable."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Grant_DeVolson_Wood_-_American_Gothic.jpg/960px-Grant_DeVolson_Wood_-_American_Gothic.jpg",
+                    title: "American Gothic",
+                    artist: "Grant Wood",
+                    sentiment: "neutral/somber",
+                    description: "This painting portrays a farmer and a young woman standing in front of a white house. It's often seen as a portrayal of rural American life, evoking feelings of stoicism, resilience, and sometimes a sense of harsh reality or isolation."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg",
+                    title: "The Scream",
+                    artist: "Edvard Munch",
+                    sentiment: "negative",
+                    description: "An iconic image of modern art, showing a figure with an agonizing expression against a swirling, blood-red sky. It profoundly expresses anxiety, despair, and existential dread, making it a powerful example of abstract emotion."
+                },
+                {
+                    src: "https://smarthistory.org/wp-content/uploads/2015/08/PicassoGuernica.jpg",
+                    title: "Guernica",
+                    artist: "Pablo Picasso",
+                    sentiment: "negative",
+                    description: "A large oil painting depicting the suffering inflicted upon people and animals by violence and chaos. Created in response to the bombing of Guernica, it powerfully conveys the horrors of war and the agony of its victims. It's a profound critique of conflict."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg/1200px-Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg",
+                    title: "Saturn Devouring His Son",
+                    artist: "Francisco Goya",
+                    sentiment: "negative",
+                    description: "One of Goya's 'Black Paintings,' this depicts the mythological Titan Saturn consuming one of his children. It is a profoundly disturbing and dark image, evoking feelings of horror, madness, and the destructive nature of power."
+                }
+            ];
 
-            quizOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const questionNumber = this.dataset.question;
-                    const selectedAnswer = this.dataset.answer;
-                    const feedbackElement = document.getElementById(`feedback-${questionNumber}`);
-                    
-                    // Define correct answers
-                    const correctAnswers = {
-                        "1": "yet",
-                        "2": "already",
-                        "3": "yet",
-                        "4": "already",
-                        "5": "yet"
-                    };
+            let currentImageIndex = 0;
 
-                    // Reset previous selections for this question
-                    document.querySelectorAll(`.quiz-option[data-question="${questionNumber}"]`).forEach(opt => {
-                        opt.classList.remove('correct', 'incorrect');
-                    });
-                    
-                    if (selectedAnswer === correctAnswers[questionNumber]) {
-                        this.classList.add('correct');
-                        feedbackElement.textContent = "✅ Correct! You're a winner, baby!";
-                        feedbackElement.classList.add('correct');
-                        feedbackElement.classList.remove('incorrect', 'hidden');
-                    } else {
-                        this.classList.add('incorrect');
-                        feedbackElement.textContent = "❌ Incorrect. No shade, but try again, hunny!";
-                        feedbackElement.classList.add('incorrect');
-                        feedbackElement.classList.remove('correct', 'hidden');
-                        // Optionally, reveal the correct answer visually if desired
-                        // document.querySelector(`.quiz-option[data-question="${questionNumber}"][data-answer="${correctAnswers[questionNumber]}"]`).classList.add('correct');
-                    }
+            const galleryImage = document.getElementById('galleryImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const imageArtist = document.getElementById('imageArtist');
+            const imageDescription = document.getElementById('imageDescription'); // Get description element
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+
+            function loadImage(index) {
+                const image = galleryImages[index];
+                if (image) {
+                    galleryImage.src = image.src;
+                    galleryImage.alt = `${image.title} by ${image.artist}`;
+                    imageTitle.textContent = image.title;
+                    imageArtist.textContent = image.artist;
+                    imageDescription.textContent = image.description; // Set description
+                }
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                prevButton.disabled = currentImageIndex === 0;
+                nextButton.disabled = currentImageIndex === galleryImages.length - 1;
+            }
+
+            prevButton.addEventListener('click', function() {
+                if (currentImageIndex > 0) {
+                    currentImageIndex--;
+                    loadImage(currentImageIndex);
+                }
+            });
+
+            nextButton.addEventListener('click', function() {
+                if (currentImageIndex < galleryImages.length - 1) {
+                    currentImageIndex++;
+                    loadImage(currentImageIndex);
+                }
+            });
+
+            // Initial load
+            loadImage(currentImageIndex);
+
+            // Function to speak text
+            function speakText(text) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US'; // Set language to English (US)
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    console.warn('SpeechSynthesis API not supported in this browser.');
+                }
+            }
+
+            // Vocabulary Section Data
+            const vocabulary = [
+                {
+                    term: "Awe",
+                    definition: "A feeling of reverential respect mixed with wonder.",
+                    example: "The vastness of the Grand Canyon filled the tourists with **awe**.",
+                    icon: "fas fa-star" // Example icon
+                },
+                {
+                    term: "Contemplation",
+                    definition: "The act of thinking deeply about something.",
+                    example: "She spent hours in quiet **contemplation** of the ancient sculpture.",
+                    icon: "fas fa-brain"
+                },
+                {
+                    term: "Evoke",
+                    definition: "To bring or recall to the conscious mind.",
+                    example: "The painting's vibrant colors **evoked** a sense of joy and excitement.",
+                    icon: "fas fa-lightbulb"
+                },
+                {
+                    term: "Profound",
+                    definition: "Very great or intense; having or showing great knowledge or insight.",
+                    example: "The artist's work had a **profound** impact on contemporary art.",
+                    icon: "fas fa-meteor"
+                },
+                {
+                    term: "Abstract",
+                    definition: "Art that does not attempt to represent external reality, but rather seeks to achieve its effect using shapes, forms, colors, and textures.",
+                    example: "Jackson Pollock is famous for his **abstract** expressionist drip paintings.",
+                    icon: "fas fa-shapes"
+                },
+                {
+                    term: "Figurative",
+                    definition: "Representing forms that are recognizably derived from reality, as opposed to abstract art.",
+                    example: "His early works were strictly **figurative**, focusing on portraits and landscapes.",
+                    icon: "fas fa-user-friends"
+                },
+                {
+                    term: "Masterpiece",
+                    definition: "A work of outstanding artistry, skill, or workmanship.",
+                    example: "Leonardo da Vinci's Mona Lisa is considered a true **masterpiece**.",
+                    icon: "fas fa-crown"
+                },
+                {
+                    term: "Critique",
+                    definition: "A detailed analysis and assessment of something, especially a literary or philosophical theory.",
+                    example: "The art critic published a scathing **critique** of the new exhibition.",
+                    icon: "fas fa-comment-dots"
+                },
+                {
+                    term: "Interpretation",
+                    definition: "The action of explaining the meaning of something; the way something is explained or understood.",
+                    example: "Every viewer had a different **interpretation** of the symbolic elements in the sculpture.",
+                    icon: "fas fa-search-plus"
+                },
+                {
+                    term: "Sublime",
+                    definition: "Of such excellence, grandeur, or beauty as to inspire great admiration or awe.",
+                    example: "The symphony reached a **sublime** crescendo that left the audience breathless.",
+                    icon: "fas fa-gem"
+                }
+            ];
+
+            const vocabularyListDiv = document.getElementById('vocabularyList');
+            vocabulary.forEach(item => {
+                const vocabItemDiv = document.createElement('div');
+                vocabItemDiv.classList.add('vocabulary-item');
+                vocabItemDiv.innerHTML = `
+                    <i class="${item.icon} vocabulary-icon"></i>
+                    <div class="vocabulary-content">
+                        <p class="vocabulary-term">${item.term} <button class="pronunciation-button" data-text="${item.term}. ${item.definition}"><i class="fas fa-volume-up"></i></button></p>
+                        <p class="vocabulary-definition">${item.definition}</p>
+                        <p class="vocabulary-example">Example: ${item.example}</p>
+                    </div>
+                `;
+                vocabularyListDiv.appendChild(vocabItemDiv);
+            });
+
+            // Add event listeners for pronunciation buttons
+            document.querySelectorAll('.pronunciation-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const textToSpeak = this.dataset.text;
+                    speakText(textToSpeak);
                 });
+            });
+
+
+            // Discussion Questions Section Data
+            const discussionQuestions = [
+                "1. How does art reflect society's values and beliefs?",
+                "2. Can art truly change the world, and if so, how?",
+                "3. Is beauty in art subjective (in the eye of the beholder) or objective (universally recognized)? Explain your opinion.",
+                "4. What role does personal experience and background play in our perception and understanding of art?",
+                "5. Should art always be understandable, or is ambiguity important for deeper interpretation?",
+                "6. How has technology influenced modern art, and what are some examples?",
+                "7. What is the importance of art education for future generations, and what skills does it foster?",
+                "8. Have you ever felt a strong emotional connection to a piece of art? Describe the artwork and your feelings.",
+                "9. Do you think there are limits to artistic expression, or should artists be completely free?",
+                "10. In what ways can art help us understand different cultures and historical periods?"
+            ];
+
+            const discussionQuestionsListDiv = document.getElementById('discussionQuestionsList');
+            discussionQuestions.forEach(question => {
+                const questionP = document.createElement('p');
+                questionP.classList.add('discussion-question');
+                questionP.textContent = question;
+                discussionQuestionsListDiv.appendChild(questionP);
             });
         });
     </script>
