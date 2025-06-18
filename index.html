@@ -3,242 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 1: Introduction to UX/UI</title>
+    <title>Art in Society: An English Conversation Class</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0pReWSgeQznnOwFxQZJjX/QQfS9H/pW+oH+dE8M7y/u0vQZqR9x0+w5o0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* Custom font for a clean, modern look */
         body {
             font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #f8fafc, #e0f2f7); /* Subtle gradient background */
+            color: #334155; /* Darker text */
+        }
+        .container {
+            max-width: 960px; /* Max width for content */
+        }
+        .section-heading {
+            border-bottom: 3px solid #60a5fa; /* More prominent blue border */
+            padding-bottom: 0.75rem;
+            margin-bottom: 2.5rem;
+            color: #1e293b; /* Even darker heading */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow */
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.25rem; /* More rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Stronger shadow */
+            padding: 2rem;
+            transition: transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+        .card:hover {
+            transform: translateY(-5px); /* Lift card on hover */
+        }
+        .gallery-image {
+            width: 100%;
+            height: 400px; /* Fixed height for consistency */
+            object-fit: contain; /* Ensure image fits without cropping */
+            border-radius: 1rem;
+            background-color: #e2e8f0; /* Placeholder background */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1); /* Inner shadow for depth */
+        }
+        .nav-button {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .nav-button:hover {
+            background-color: #2563eb; /* Darker blue on hover */
+            transform: scale(1.05); /* Slight scale on hover */
+        }
+        .nav-button:disabled {
+            background-color: #94a3b8; /* Gray when disabled */
+            cursor: not-allowed;
+            transform: none;
+        }
+        .vocabulary-item {
+            display: flex;
+            align-items: flex-start; /* Align icon/button at the top */
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-left: 5px solid #60a5fa; /* Artistic left border */
+            border-radius: 0.5rem;
+            background-color: #f0f9ff; /* Very light blue background for items */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+            transition: background-color 0.2s ease;
+        }
+        .vocabulary-item:hover {
+            background-color: #e0f2f7; /* Lighter blue on hover */
+        }
+        .vocabulary-icon {
+            font-size: 1.8rem;
+            color: #1d4ed8; /* Darker blue for icon */
+            margin-right: 1rem;
+            align-self: center; /* Center icon vertically */
+        }
+        .vocabulary-content {
+            flex-grow: 1;
+        }
+        .vocabulary-term {
+            font-weight: 700; /* Bolder term */
+            color: #0f172a; /* Even darker for terms */
+            font-size: 1.25rem; /* Larger font size */
+            margin-bottom: 0.25rem;
+        }
+        .vocabulary-definition {
+            margin-top: 0.25rem;
+            font-style: italic;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+        .vocabulary-example {
+            margin-top: 0.5rem;
+            color: #334155;
+            font-size: 0.9rem;
+            background-color: #eef2ff; /* Very light purple-blue background */
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border-left: 3px solid #a78bfa; /* Purple border */
+        }
+        .pronunciation-button {
+            background-color: #10b981; /* Green */
+            color: white;
+            border-radius: 9999px; /* Pill shape */
+            padding: 0.5rem 0.8rem;
+            margin-left: 0.75rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .pronunciation-button:hover {
+            background-color: #059669; /* Darker green on hover */
+            transform: scale(1.1);
+        }
+        .discussion-question {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            padding: 0.75rem 1rem;
+            background-color: #f0f9ff;
+            border-radius: 0.75rem;
+            border-left: 4px solid #3b82f6; /* Blue border */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: background-color 0.2s ease;
+        }
+        .discussion-question:hover {
+            background-color: #e0f2f7;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-blue-100 text-gray-800 min-h-screen flex items-center justify-center py-10">
-    <div class="container mx-auto p-4 md:p-8 bg-white shadow-xl rounded-2xl max-w-4xl border border-gray-200">
+<body class="p-6">
+    <div class="container mx-auto">
         <!-- Header Section -->
-        <header class="text-center mb-10 pb-5 border-b-2 border-indigo-200">
-            <h1 class="text-5xl font-extrabold text-indigo-700 mb-2">Week 1: Getting Started with UX/UI</h1>
-            <p class="text-xl text-gray-600 font-semibold">Teacher: Vítor Gomes</p>
-            <p class="text-lg text-gray-500 mt-4">Welcome! Let's start our journey to understand User Experience (UX) and User Interface (UI) design!</p>
+        <header class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-blue-800 mb-4 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-indigo-100 shadow-lg border-b-4 border-blue-500">
+                Art in Society: An English Conversation Class
+            </h1>
+            <p class="text-xl text-gray-700">Explore, Reflect, Discuss</p>
         </header>
 
-        <!-- Objectives Section -->
-        <section class="mb-8 p-6 bg-indigo-50 rounded-xl shadow-md">
-            <h2 class="text-3xl font-bold text-indigo-600 mb-4">What You Will Learn</h2>
-            <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
-                <li>You will learn basic ideas about <strong class="text-indigo-800">UX/UI</strong>.</li>
-                <li>You will practice how to <strong class="text-indigo-800">introduce yourself</strong> for a job interview.</li>
-                <li>You will talk about <strong class="text-indigo-800">why you want to work</strong> in UX/UI.</li>
-            </ul>
+        <!-- Virtual Art Gallery Section -->
+        <section id="gallery" class="mb-12 card">
+            <h2 class="text-3xl font-bold section-heading">Virtual Art Gallery</h2>
+            <div class="flex flex-col items-center">
+                <img id="galleryImage" src="" alt="Artwork" class="gallery-image mb-6">
+                <h3 id="imageTitle" class="text-2xl font-semibold text-gray-800 mb-2 text-center"></h3>
+                <p id="imageArtist" class="text-lg text-gray-600 mb-2 text-center"></p>
+                <p id="imageDescription" class="text-md text-gray-700 mb-6 text-center italic max-w-lg"></p> <!-- New line for description -->
+                <div class="flex justify-between w-full max-w-sm">
+                    <button id="prevButton" class="nav-button"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button id="nextButton" class="nav-button">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
         </section>
 
         <!-- Vocabulary Section -->
-        <section class="mb-8 p-6 bg-blue-50 rounded-xl shadow-md">
-            <h2 class="text-3xl font-bold text-blue-600 mb-4">New Words</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg text-gray-700">
-                <ul class="list-disc list-inside space-y-1">
-                    <li><strong class="text-blue-800">UX</strong> (User Experience)</li>
-                    <li><strong class="text-blue-800">UI</strong> (User Interface)</li>
-                    <li><strong class="text-blue-800">User</strong> (The person who uses a product)</li>
-                    <li><strong class="text-blue-800">Experience</strong> (How a user feels)</li>
-                    <li><strong class="text-blue-800">Interface</strong> (What a user sees and clicks)</li>
-                </ul>
-                <ul class="list-disc list-inside space-y-1">
-                    <li><strong class="text-blue-800">Design</strong> (How things are made)</li>
-                    <li><strong class="text-blue-800">Product</strong> (Something like an app or website)</li>
-                    <li><strong class="text-blue-800">Empathy</strong> (Understanding other people's feelings)</li>
-                    <li><strong class="text-blue-800">User-centered design</strong> (Making things for users first)</li>
-                    <li><strong class="text-blue-800">Portfolio</strong> (Your collection of work)</li>
-                </ul>
-            </div>
-            <p class="mt-4 text-gray-600"><em>You can use online flashcards (like Quizlet) to help remember these words.</em></p>
-        </section>
-
-        <!-- Grammar/Functional Language Section -->
-        <section class="mb-8 p-6 bg-green-50 rounded-xl shadow-md">
-            <h2 class="text-3xl font-bold text-green-600 mb-4">How to Speak / Grammar Tips</h2>
-            <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
-                <li><strong class="text-green-800">Present Simple:</strong> Use this for facts (things that are always true). <br> (Example: "UX *is* about how a user uses an app.")</li>
-                <li><strong class="text-green-800">Past Simple:</strong> Use this to talk about your past journey. <br> (Example: "I *started* learning design two years ago.")</li>
-                <li><strong class="text-green-800">Saying You Are Interested:</strong> Use these phrases:
-                    <ul class="list-circle list-inside ml-5 space-y-1">
-                        <li>"I'm interested in..."</li>
-                        <li>"What excites me is..."</li>
-                        <li>"I'm passionate about..."</li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-
-        <!-- Activities Section -->
-        <section class="mb-8 p-6 bg-yellow-50 rounded-xl shadow-md">
-            <h2 class="text-3xl font-bold text-yellow-600 mb-4">Activities for Today</h2>
-            <div class="space-y-6 text-lg text-gray-700">
-                <div>
-                    <h3 class="text-2xl font-semibold text-yellow-700 mb-2">Warm-up: Talk in Class</h3>
-                    <ul class="list-disc list-inside ml-5 space-y-1">
-                        <li>"Why are you interested in this job field?"</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-semibold text-yellow-700 mb-2">New Words: Learn the Main Ideas</h3>
-                    <p>We will learn the main UX/UI words with clear meanings and simple examples. We'll use online flashcards to help remember them.</p>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-semibold text-yellow-700 mb-2">Speaking: Learn to Introduce Yourself Well! 🎤</h3>
-                    <p>This part will help you speak perfectly for the "Tell me about yourself" question in job interviews. We will focus on speaking smoothly, correctly, and clearly.</p>
-
-                    <h4 class="text-xl font-semibold text-gray-700 mb-2 mt-4">Step 1: Plan Your Introduction (Easy Prompts) 📝</h4>
-                    <p class="text-gray-600 mb-2">Use these simple questions to help you write your introduction. Try to make it 1 to 2 minutes long.</p>
-                    <ul class="list-disc list-inside ml-5 space-y-2 text-base text-gray-700 bg-yellow-100 p-4 rounded-lg border border-yellow-200">
-                        <li>✅ <strong>Who are you? What do you do now?</strong> <br> (Example: "I am a UX/UI designer. I have X years of experience.")</li>
-                        <li>✅ <strong>What are your best skills? What do you love to do in UX/UI?</strong> <br> (Example: "I am good at user research and making designs. I love creating easy-to-use apps.")</li>
-                        <li>✅ <strong>Why did you start UX/UI? What makes you excited about it?</strong> <br> (Example: "I started UX/UI because I like solving problems for people. I feel happy when users like my designs.")</li>
-                        <li>✅ <strong>Why this job? Why this company?</strong> <br> (Example: "I like this job at [Company Name] because you focus on [say something specific about the company's work].")</li>
-                        <li>✅ <strong>What do you want to do in the future? (Optional)</strong> <br> (Example: "I want to keep learning and grow in this field.")</li>
-                    </ul>
-
-                    <h4 class="text-xl font-semibold text-gray-700 mb-2 mt-6">Step 2: Practice & Get Help from AI (Feedback) 🤖</h4>
-                    <p class="text-gray-600 mb-2">Write your introduction here. Click "Get Feedback" to see suggestions from our AI helper. It will tell you if your text is clear, good for UX/UI, and sounds professional.</p>
-                    <textarea id="selfIntroTextarea" class="w-full p-3 border border-gray-300 rounded-lg mt-4 focus:ring-2 focus:ring-indigo-300 focus:border-transparent text-base" rows="7" placeholder="Write your self-introduction here, using the questions above..."></textarea>
-                    <button id="getFeedbackBtn" class="mt-4 px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        Get Feedback
-                    </button>
-                    <div id="loadingIndicator" class="hidden mt-4 text-indigo-600 font-semibold">Generating feedback...</div>
-                    <div id="feedbackOutput" class="mt-6 p-4 bg-gray-100 rounded-lg border border-gray-200 hidden">
-                        <h4 class="text-xl font-semibold text-gray-700 mb-2">Feedback:</h4>
-                        <p id="feedbackContent" class="text-gray-800 text-base"></p>
-                    </div>
-
-                    <h4 class="text-xl font-semibold text-gray-700 mb-2 mt-6">Step 3: Practice with Dialogues! (Role Play) 🎭</h4>
-                    <p class="text-gray-600 mb-2">Let's practice! One person is the **Interviewer** (asks questions), and the other is the **Candidate** (answers). Follow these examples:</p>
-
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-                        <h5 class="text-xl font-semibold text-gray-700 mb-2">Dialogue Example 1: Simple Introduction</h5>
-                        <p class="mb-2"><strong class="text-indigo-700">Interviewer:</strong> Hello [Candidate's Name]. Tell me about yourself.</p>
-                        <p class="mb-2"><strong class="text-purple-700">Candidate:</strong> Hello! My name is [Your Name]. I am a UX/UI designer with three years of experience. I am good at user research and making designs. I love creating easy-to-use apps. I started UX/UI because I like solving problems for people. I feel happy when users like my designs.</p>
-                    </div>
-
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-                        <h5 class="text-xl font-semibold text-gray-700 mb-2">Dialogue Example 2: More Details</h5>
-                        <p class="mb-2"><strong class="text-indigo-700">Interviewer:</strong> Can you tell me a little about your background and why you are interested in this UX/UI role?</p>
-                        <p class="mb-2"><strong class="text-purple-700">Candidate:</strong> Yes, sure! I am [Your Name]. I have worked as a UX/UI designer for five years. I enjoy finding out what users need and then making designs that help them. I am good at making wireframes and prototypes. I am very interested in this job at [Company Name] because your company builds apps for education, and I am passionate about learning and making things better for students. In the future, I want to learn more about accessibility in design.</p>
-                    </div>
-
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h5 class="text-xl font-semibold text-gray-700 mb-2">Dialogue Example 3: Focus on Skills</h5>
-                        <p class="mb-2"><strong class="text-indigo-700">Interviewer:</strong> Tell me about your skills and what excites you about UX/UI design.</p>
-                        <p class="mb-2"><strong class="text-purple-700">Candidate:</strong> My name is [Your Name], and I am a UX/UI designer with two years of experience. I specialize in creating user flows and testing designs with real users. What excites me most is the chance to make products that are not just beautiful but also very simple to use. I believe good design can help many people. I am very interested in this job because I see that [Company Name] makes products with the user first, and this is very important to me.</p>
-                    </div>
-
-                    <h4 class="text-xl font-semibold text-gray-700 mb-2 mt-6">Step 4: Speak Clearly & Smoothly (Pronunciation Tips) 🗣️</h4>
-                    <p class="text-gray-600 mb-2">Speaking well and clearly is very important for a good impression. Use these tips:</p>
-                    <ul class="list-disc list-inside ml-5 space-y-2 text-base text-gray-700 bg-green-100 p-4 rounded-lg border border-green-200">
-                        <li>🐢 <strong>Speak Slowly:</strong> Do not rush. This helps you say each word clearly.</li>
-                        <li>⬆️⬇️ <strong>Change Your Voice (Intonation):</strong> Make your voice go up and down. Say important words a little louder or higher. Don't speak flatly. (Example: "I love <em>user-centered design</em>.")</li>
-                        <li>🔗 <strong>Connect Words:</strong> Try to say words together smoothly. (Example: "user experience" often sounds like "user_experience").</li>
-                        <li>👂 <strong>Listen and Copy:</strong> Watch videos of native English speakers. Try to speak like them. Copy their speed and how they say words.</li>
-                        <li>✂️ <strong>Practice Small Parts:</strong> Don't try to say everything at once. Practice one sentence, then two, then a whole paragraph.</li>
-                    </ul>
-
-                    <h4 class="text-xl font-semibold text-gray-700 mb-2 mt-6">Step 5: Remember Your Introduction (Memorization Tips) 🧠</h4>
-                    <p class="text-gray-600 mb-2">To speak without problems, you need to remember your introduction well:</p>
-                    <ul class="list-disc list-inside ml-5 space-y-2 text-base text-gray-700 bg-purple-100 p-4 rounded-lg border border-purple-200">
-                        <li>🔑 <strong>Remember Main Ideas, Not Every Word:</strong> Don't try to remember every single word. Just remember the main points and how you connect them.</li>
-                        <li>📅 <strong>Practice Every Day (Short Breaks):</strong> Practice your introduction for a few minutes each day. Take short breaks between practice times. This helps your brain remember it for a long time.</li>
-                        <li>録 <strong>Record Yourself Speaking:</strong> Use your phone to record your voice. Listen back. Did you speak clearly? Was your speed good?</li>
-                        <li>🪞 <strong>Practice in Front of a Mirror:</strong> Look at yourself. How do you look when you speak? Are you making eye contact?</li>
-                        <li>🔄 <strong>Practice in Different Places:</strong> Try practicing when you walk, when you sit. This helps you speak well no matter where you are.</li>
-                        <li>❓ <strong>Think About Questions:</strong> After your introduction, what questions might the interviewer ask? Think about short answers for them.</li>
-                    </ul>
-
-                </div>
+        <section id="vocabulary" class="mb-12 card">
+            <h2 class="text-3xl font-bold section-heading">Key Vocabulary for Art Discussion</h2>
+            <div id="vocabularyList">
+                <!-- Vocabulary items will be injected here by JavaScript -->
             </div>
         </section>
 
-        <!-- Homework Section -->
-        <section class="p-6 bg-purple-50 rounded-xl shadow-md">
-            <h2 class="text-3xl font-bold text-purple-600 mb-4">Homework for You! 📚</h2>
-            <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
-                <li>Write a <strong class="text-purple-800">150-word self-introduction</strong>.</li>
-                <li>Record a <strong class="text-purple-800">1-minute audio</strong> of your self-introduction. Listen to yourself to see how you did. Try to use all the pronunciation and fluency tips you learned today.</li>
-            </ul>
-            <p class="mt-4 text-gray-600"><em>Use the practice tool above to make your introduction perfect before you do your homework!</em></p>
+        <!-- Discussion Questions Section -->
+        <section id="discussion" class="mb-12 card">
+            <h2 class="text-3xl font-bold section-heading">Discussion Questions</h2>
+            <div id="discussionQuestionsList">
+                <!-- Discussion questions will be injected here by JavaScript -->
+            </div>
         </section>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const selfIntroTextarea = document.getElementById('selfIntroTextarea');
-            const getFeedbackBtn = document.getElementById('getFeedbackBtn');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-            const feedbackOutput = document.getElementById('feedbackOutput');
-            const feedbackContent = document.getElementById('feedbackContent');
-
-            getFeedbackBtn.addEventListener('click', async () => {
-                const promptText = selfIntroTextarea.value.trim();
-
-                if (promptText.length === 0) {
-                    feedbackContent.textContent = "Please write your introduction to get feedback.";
-                    feedbackOutput.classList.remove('hidden');
-                    return;
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryImages = [
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/960px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+                    title: "The Starry Night",
+                    artist: "Vincent van Gogh",
+                    sentiment: "positive",
+                    description: "This iconic painting captures a vibrant, swirling night sky over a peaceful village. Its dynamic brushstrokes and luminous stars often evoke feelings of wonder, awe, and serenity. It is a masterpiece of post-impressionism."
+                },
+                {
+                    src: "https://www.claude-monet.com/assets/img/paintings/impression-sunrise.jpg",
+                    title: "Impression, Sunrise",
+                    artist: "Claude Monet",
+                    sentiment: "positive",
+                    description: "A foundational work of Impressionism, this painting depicts a hazy harbor scene with a striking orange sun. It often conveys a sense of calm, new beginnings, and the beauty of fleeting moments."
+                },
+                {
+                    src: "https://lineupgallery.com/wp-content/uploads/2020/11/henri-matisse-la-danse-lineupgallery.jpg",
+                    title: "Dance (La Danse)",
+                    artist: "Henri Matisse",
+                    sentiment: "positive",
+                    description: "This large decorative panel shows five dancing figures. Its simple forms and bold colors create a sense of joyous movement, freedom, and communal celebration. It's an excellent example of figurative art."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Tsunami_by_hokusai_19th_century.jpg",
+                    title: "The Great Wave off Kanagawa",
+                    artist: "Katsushika Hokusai",
+                    sentiment: "positive",
+                    description: "Part of a series of woodblock prints, this depicts a massive wave threatening boats near Mount Fuji. It can evoke feelings of awe for nature's power and a profound sense of human vulnerability, yet its beauty is undeniable."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Grant_DeVolson_Wood_-_American_Gothic.jpg/960px-Grant_DeVolson_Wood_-_American_Gothic.jpg",
+                    title: "American Gothic",
+                    artist: "Grant Wood",
+                    sentiment: "neutral/somber",
+                    description: "This painting portrays a farmer and a young woman standing in front of a white house. It's often seen as a portrayal of rural American life, evoking feelings of stoicism, resilience, and sometimes a sense of harsh reality or isolation."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg",
+                    title: "The Scream",
+                    artist: "Edvard Munch",
+                    sentiment: "negative",
+                    description: "An iconic image of modern art, showing a figure with an agonizing expression against a swirling, blood-red sky. It profoundly expresses anxiety, despair, and existential dread, making it a powerful example of abstract emotion."
+                },
+                {
+                    src: "https://smarthistory.org/wp-content/uploads/2015/08/PicassoGuernica.jpg",
+                    title: "Guernica",
+                    artist: "Pablo Picasso",
+                    sentiment: "negative",
+                    description: "A large oil painting depicting the suffering inflicted upon people and animals by violence and chaos. Created in response to the bombing of Guernica, it powerfully conveys the horrors of war and the agony of its victims. It's a profound critique of conflict."
+                },
+                {
+                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg/1200px-Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg",
+                    title: "Saturn Devouring His Son",
+                    artist: "Francisco Goya",
+                    sentiment: "negative",
+                    description: "One of Goya's 'Black Paintings,' this depicts the mythological Titan Saturn consuming one of his children. It is a profoundly disturbing and dark image, evoking feelings of horror, madness, and the destructive nature of power."
                 }
+            ];
 
-                loadingIndicator.classList.remove('hidden');
-                feedbackOutput.classList.add('hidden');
-                feedbackContent.textContent = ''; // Clear previous feedback
+            let currentImageIndex = 0;
 
-                try {
-                    let chatHistory = [];
-                    // Craft the prompt to specifically ask for feedback relevant to a UX/UI interview context,
-                    // including emphasis on fluency, accuracy, and professional tone.
-                    chatHistory.push({
-                        role: "user",
-                        parts: [{
-                            text: `Review the following self-introduction for a UX/UI job interview. Your feedback should be very clear and easy for a B1 English student to understand.
-                            Focus on:
-                            1.  **Clarity and Simplicity:** Is the language easy to follow?
-                            2.  **Relevance to UX/UI:** Does it clearly connect to UX/UI work?
-                            3.  **Motivation:** Does the student sound motivated and interested?
-                            4.  **Professional Tone:** Does it sound good for an interview?
-                            5.  **Grammar and Vocabulary:** Are there any easy corrections needed for words or sentences?
-                            6.  **Flow for Speaking:** Does it flow well? Are there parts that might be hard to say smoothly?
+            const galleryImage = document.getElementById('galleryImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const imageArtist = document.getElementById('imageArtist');
+            const imageDescription = document.getElementById('imageDescription'); // Get description element
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
 
-                            Suggest specific, simple improvements if needed. Keep the advice simple and direct.
-
-                            Self-introduction:
-                            "${promptText}"`
-                        }]
-                    });
-
-                    const payload = { contents: chatHistory };
-                    const apiKey = ""; // Canvas will automatically provide the API key
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const result = await response.json(); // Await the JSON parsing
-
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        feedbackContent.innerHTML = text.replace(/\n/g, '<br>'); // Display feedback, maintaining newlines
-                    } else {
-                        feedbackContent.textContent = "Sorry, I could not give feedback. Please try again.";
-                        console.error("Unexpected API response structure:", result);
-                    }
-                } catch (error) {
-                    feedbackContent.textContent = "An error happened. Please try again later.";
-                    console.error("Error fetching from Gemini API:", error);
-                } finally {
-                    loadingIndicator.classList.add('hidden');
-                    feedbackOutput.classList.remove('hidden');
+            function loadImage(index) {
+                const image = galleryImages[index];
+                if (image) {
+                    galleryImage.src = image.src;
+                    galleryImage.alt = `${image.title} by ${image.artist}`;
+                    imageTitle.textContent = image.title;
+                    imageArtist.textContent = image.artist;
+                    imageDescription.textContent = image.description; // Set description
                 }
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                prevButton.disabled = currentImageIndex === 0;
+                nextButton.disabled = currentImageIndex === galleryImages.length - 1;
+            }
+
+            prevButton.addEventListener('click', function() {
+                if (currentImageIndex > 0) {
+                    currentImageIndex--;
+                    loadImage(currentImageIndex);
+                }
+            });
+
+            nextButton.addEventListener('click', function() {
+                if (currentImageIndex < galleryImages.length - 1) {
+                    currentImageIndex++;
+                    loadImage(currentImageIndex);
+                }
+            });
+
+            // Initial load
+            loadImage(currentImageIndex);
+
+            // Function to speak text
+            function speakText(text) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US'; // Set language to English (US)
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    console.warn('SpeechSynthesis API not supported in this browser.');
+                }
+            }
+
+            // Vocabulary Section Data
+            const vocabulary = [
+                {
+                    term: "Awe",
+                    definition: "A feeling of reverential respect mixed with wonder.",
+                    example: "The vastness of the Grand Canyon filled the tourists with **awe**.",
+                    icon: "fas fa-star" // Example icon
+                },
+                {
+                    term: "Contemplation",
+                    definition: "The act of thinking deeply about something.",
+                    example: "She spent hours in quiet **contemplation** of the ancient sculpture.",
+                    icon: "fas fa-brain"
+                },
+                {
+                    term: "Evoke",
+                    definition: "To bring or recall to the conscious mind.",
+                    example: "The painting's vibrant colors **evoked** a sense of joy and excitement.",
+                    icon: "fas fa-lightbulb"
+                },
+                {
+                    term: "Profound",
+                    definition: "Very great or intense; having or showing great knowledge or insight.",
+                    example: "The artist's work had a **profound** impact on contemporary art.",
+                    icon: "fas fa-meteor"
+                },
+                {
+                    term: "Abstract",
+                    definition: "Art that does not attempt to represent external reality, but rather seeks to achieve its effect using shapes, forms, colors, and textures.",
+                    example: "Jackson Pollock is famous for his **abstract** expressionist drip paintings.",
+                    icon: "fas fa-shapes"
+                },
+                {
+                    term: "Figurative",
+                    definition: "Representing forms that are recognizably derived from reality, as opposed to abstract art.",
+                    example: "His early works were strictly **figurative**, focusing on portraits and landscapes.",
+                    icon: "fas fa-user-friends"
+                },
+                {
+                    term: "Masterpiece",
+                    definition: "A work of outstanding artistry, skill, or workmanship.",
+                    example: "Leonardo da Vinci's Mona Lisa is considered a true **masterpiece**.",
+                    icon: "fas fa-crown"
+                },
+                {
+                    term: "Critique",
+                    definition: "A detailed analysis and assessment of something, especially a literary or philosophical theory.",
+                    example: "The art critic published a scathing **critique** of the new exhibition.",
+                    icon: "fas fa-comment-dots"
+                },
+                {
+                    term: "Interpretation",
+                    definition: "The action of explaining the meaning of something; the way something is explained or understood.",
+                    example: "Every viewer had a different **interpretation** of the symbolic elements in the sculpture.",
+                    icon: "fas fa-search-plus"
+                },
+                {
+                    term: "Sublime",
+                    definition: "Of such excellence, grandeur, or beauty as to inspire great admiration or awe.",
+                    example: "The symphony reached a **sublime** crescendo that left the audience breathless.",
+                    icon: "fas fa-gem"
+                }
+            ];
+
+            const vocabularyListDiv = document.getElementById('vocabularyList');
+            vocabulary.forEach(item => {
+                const vocabItemDiv = document.createElement('div');
+                vocabItemDiv.classList.add('vocabulary-item');
+                vocabItemDiv.innerHTML = `
+                    <i class="${item.icon} vocabulary-icon"></i>
+                    <div class="vocabulary-content">
+                        <p class="vocabulary-term">${item.term} <button class="pronunciation-button" data-text="${item.term}. ${item.definition}"><i class="fas fa-volume-up"></i></button></p>
+                        <p class="vocabulary-definition">${item.definition}</p>
+                        <p class="vocabulary-example">Example: ${item.example}</p>
+                    </div>
+                `;
+                vocabularyListDiv.appendChild(vocabItemDiv);
+            });
+
+            // Add event listeners for pronunciation buttons
+            document.querySelectorAll('.pronunciation-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const textToSpeak = this.dataset.text;
+                    speakText(textToSpeak);
+                });
+            });
+
+
+            // Discussion Questions Section Data
+            const discussionQuestions = [
+                "1. How does art reflect society's values and beliefs?",
+                "2. Can art truly change the world, and if so, how?",
+                "3. Is beauty in art subjective (in the eye of the beholder) or objective (universally recognized)? Explain your opinion.",
+                "4. What role does personal experience and background play in our perception and understanding of art?",
+                "5. Should art always be understandable, or is ambiguity important for deeper interpretation?",
+                "6. How has technology influenced modern art, and what are some examples?",
+                "7. What is the importance of art education for future generations, and what skills does it foster?",
+                "8. Have you ever felt a strong emotional connection to a piece of art? Describe the artwork and your feelings.",
+                "9. Do you think there are limits to artistic expression, or should artists be completely free?",
+                "10. In what ways can art help us understand different cultures and historical periods?"
+            ];
+
+            const discussionQuestionsListDiv = document.getElementById('discussionQuestionsList');
+            discussionQuestions.forEach(question => {
+                const questionP = document.createElement('p');
+                questionP.classList.add('discussion-question');
+                questionP.textContent = question;
+                discussionQuestionsListDiv.appendChild(questionP);
             });
         });
     </script>
