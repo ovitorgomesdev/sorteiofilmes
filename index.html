@@ -3,411 +3,718 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art in Society: An English Conversation Class</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Week 2: Core UX/UI Concepts & Definitions</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0pReWSgeQznnOwFxQZJjX/QQfS9H/pW+oH+dE8M7y/u0vQZqR9x0+w5o0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom right, #f8fafc, #e0f2f7); /* Subtle gradient background */
-            color: #334155; /* Darker text */
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151; /* Dark gray text */
         }
         .container {
-            max-width: 960px; /* Max width for content */
-        }
-        .section-heading {
-            border-bottom: 3px solid #60a5fa; /* More prominent blue border */
-            padding-bottom: 0.75rem;
-            margin-bottom: 2.5rem;
-            color: #1e293b; /* Even darker heading */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow */
-        }
-        .card {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 1.5rem;
             background-color: #ffffff;
-            border-radius: 1.25rem; /* More rounded corners */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Stronger shadow */
-            padding: 2rem;
-            transition: transform 0.3s ease; /* Smooth transition for hover effect */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        .card:hover {
-            transform: translateY(-5px); /* Lift card on hover */
+        h1, h2, h3 {
+            color: #1f2937; /* Darker heading text */
+            font-weight: 700;
         }
-        .gallery-image {
-            width: 100%;
-            height: 400px; /* Fixed height for consistency */
-            object-fit: contain; /* Ensure image fits without cropping */
-            border-radius: 1rem;
-            background-color: #e2e8f0; /* Placeholder background */
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1); /* Inner shadow for depth */
-        }
-        .nav-button {
-            background-color: #3b82f6; /* Blue */
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px; /* Pill shape */
-            font-weight: 600;
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        .nav-button:hover {
-            background-color: #2563eb; /* Darker blue on hover */
-            transform: scale(1.05); /* Slight scale on hover */
-        }
-        .nav-button:disabled {
-            background-color: #94a3b8; /* Gray when disabled */
-            cursor: not-allowed;
-            transform: none;
-        }
-        .vocabulary-item {
-            display: flex;
-            align-items: flex-start; /* Align icon/button at the top */
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-left: 5px solid #60a5fa; /* Artistic left border */
-            border-radius: 0.5rem;
-            background-color: #f0f9ff; /* Very light blue background for items */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
-            transition: background-color 0.2s ease;
-        }
-        .vocabulary-item:hover {
-            background-color: #e0f2f7; /* Lighter blue on hover */
-        }
-        .vocabulary-icon {
-            font-size: 1.8rem;
-            color: #1d4ed8; /* Darker blue for icon */
-            margin-right: 1rem;
-            align-self: center; /* Center icon vertically */
-        }
-        .vocabulary-content {
-            flex-grow: 1;
-        }
-        .vocabulary-term {
-            font-weight: 700; /* Bolder term */
-            color: #0f172a; /* Even darker for terms */
-            font-size: 1.25rem; /* Larger font size */
-            margin-bottom: 0.25rem;
-        }
-        .vocabulary-definition {
-            margin-top: 0.25rem;
-            font-style: italic;
-            color: #475569;
-            font-size: 0.95rem;
-        }
-        .vocabulary-example {
-            margin-top: 0.5rem;
-            color: #334155;
-            font-size: 0.9rem;
-            background-color: #eef2ff; /* Very light purple-blue background */
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            border-left: 3px solid #a78bfa; /* Purple border */
-        }
-        .pronunciation-button {
-            background-color: #10b981; /* Green */
-            color: white;
-            border-radius: 9999px; /* Pill shape */
-            padding: 0.5rem 0.8rem;
-            margin-left: 0.75rem;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .pronunciation-button:hover {
-            background-color: #059669; /* Darker green on hover */
-            transform: scale(1.1);
-        }
-        .discussion-question {
+        h1 {
+            font-size: 2.5rem;
             margin-bottom: 1rem;
-            line-height: 1.8;
-            padding: 0.75rem 1rem;
-            background-color: #f0f9ff;
+            text-align: center;
+        }
+        h2 {
+            font-size: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .section-card {
+            background-color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
             border-radius: 0.75rem;
-            border-left: 4px solid #3b82f6; /* Blue border */
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* Darker indigo */
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* Gray */
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Darker gray */
+            transform: translateY(-2px);
+        }
+        .answer-box {
+            background-color: #eef2ff; /* Light blue */
+            border-left: 4px solid #6366f1; /* Indigo border */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 0.75rem;
+            color: #312e81; /* Dark blue text */
+        }
+        .quiz-question {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #fefce8; /* Light yellow */
+            border: 1px solid #fde68a; /* Yellow border */
+            border-radius: 0.75rem;
+        }
+        .quiz-option {
+            display: block;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            cursor: pointer;
             transition: background-color 0.2s ease;
         }
-        .discussion-question:hover {
-            background-color: #e0f2f7;
+        .quiz-option:hover {
+            background-color: #eff6ff;
+        }
+        .quiz-option input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        .feedback {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .feedback.correct {
+            background-color: #d1fae5; /* Light green */
+            color: #065f46; /* Dark green */
+            border: 1px solid #34d399;
+        }
+        .feedback.incorrect {
+            background-color: #fee2e2; /* Light red */
+            color: #991b1b; /* Dark red */
+            border: 1px solid #ef4444;
+        }
+
+        .flashcard-container {
+            perspective: 1000px; /* For 3D flip effect */
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            margin: 2rem auto;
+            position: relative; /* Needed for absolute positioning of front/back */
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: absolute; /* Position within container */
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background-color: #ffffff;
+            border: 1px solid #d1d5db;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background-color: #ecfdf5; /* Very light green */
+            color: #065f46; /* Dark green */
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            display: block; /* Allow text wrapping */
+            text-align: left;
+            overflow-y: auto; /* Enable scrolling for long definitions */
+        }
+        .flashcard-back strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+
+        ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        ol {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        strong {
+            color: #1f2937;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
-<body class="p-6">
-    <div class="container mx-auto">
-        <!-- Header Section -->
-        <header class="text-center mb-10">
-            <h1 class="text-5xl font-extrabold text-blue-800 mb-4 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-indigo-100 shadow-lg border-b-4 border-blue-500">
-                Art in Society: An English Conversation Class
-            </h1>
-            <p class="text-xl text-gray-700">Explore, Reflect, Discuss</p>
+<body class="p-4">
+    <div class="container">
+        <header class="text-center mb-8">
+            <h1 class="text-indigo-700">Week 2: Core UX/UI Concepts & Definitions Adventure!</h1>
+            <p class="text-lg text-gray-600">Get ready to dive deeper into fundamental UX/UI terms, unravel tricky concepts, and supercharge your understanding!</p>
         </header>
 
-        <!-- Virtual Art Gallery Section -->
-        <section id="gallery" class="mb-12 card">
-            <h2 class="text-3xl font-bold section-heading">Virtual Art Gallery</h2>
-            <div class="flex flex-col items-center">
-                <img id="galleryImage" src="" alt="Artwork" class="gallery-image mb-6">
-                <h3 id="imageTitle" class="text-2xl font-semibold text-gray-800 mb-2 text-center"></h3>
-                <p id="imageArtist" class="text-lg text-gray-600 mb-2 text-center"></p>
-                <p id="imageDescription" class="text-md text-gray-700 mb-6 text-center italic max-w-lg"></p> <!-- New line for description -->
-                <div class="flex justify-between w-full max-w-sm">
-                    <button id="prevButton" class="nav-button"><i class="fas fa-arrow-left"></i> Previous</button>
-                    <button id="nextButton" class="nav-button">Next <i class="fas fa-arrow-right"></i></button>
+        <section id="objectives" class="section-card">
+            <h2 class="text-indigo-600">Your Mission Objectives 🚀</h2>
+            <ul class="list-disc ml-6 text-gray-700">
+                <li>You'll master the fundamental UX/UI terms like a pro.</li>
+                <li>You'll learn to spot the key differences between related concepts.</li>
+                <li>You'll be able to explain the real-world value of these core UX/UI ideas.</li>
+            </ul>
+        </section>
+
+        <section id="vocabulary" class="section-card">
+            <h2 class="text-indigo-600">New Vocabulary Power-Ups! 💪</h2>
+            <p class="mb-4 text-gray-700">Ready to expand your UX/UI lexicon? Click "Show Definition" to reveal the secret meanings and cool examples!</p>
+
+            <!-- Vocabulary Item: Accessibility -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Accessibility</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('accessibility-def')">Show Definition</button>
+                <div id="accessibility-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> Designing products, devices, services, or environments so that people with disabilities can use them.</p>
+                    <p><strong>Contextual Example:</strong> Adding descriptive "alt text" to images on a website allows screen readers to describe the image content to visually impaired users.</p>
+                    <p><strong>Value:</strong> Ensures that digital products can be used by the widest possible audience, promoting inclusivity and reaching more users.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Affordance -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Affordance</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('affordance-def')">Show Definition</button>
+                <div id="affordance-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> The perceived properties of an object that suggest how it can be used. It's about how an object's design communicates its function.</p>
+                    <p><strong>Contextual Example:</strong> A button that is slightly raised and has a shadow visually "affords" being pressed or clicked. A scrollbar affords scrolling because it looks like it can be moved up and down.</p>
+                    <p><strong>Value:</strong> Guides users intuitively on how to interact with an interface, reducing confusion and the need for explicit instructions.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Agile -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Agile</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('agile-def')">Show Definition</button>
+                <div id="agile-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> An iterative and incremental approach to project management and software development that delivers value in small, frequent cycles.</p>
+                    <p><strong>Contextual Example:</strong> A team developing a mobile app might release a new version with a few new features every two weeks (a "sprint"), gathering feedback constantly.</p>
+                    <p><strong>Value:</strong> Allows for flexibility, rapid adaptation to change, continuous feedback, and faster delivery of working software.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Back-end/Front-end -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Back-end/Front-end</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('backend-frontend-def')">Show Definition</button>
+                <div id="backend-frontend-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> <strong>Front-end</strong> refers to the client-side of a website or application, what users see and interact with (UI). <strong>Back-end</strong> refers to the server-side, which handles data storage, logic, and communication with databases.</p>
+                    <p><strong>Contextual Example:</strong> When you fill out a form on a website, the form itself (buttons, text fields) is front-end. When you submit the form, the back-end processes your data and stores it.</p>
+                    <p><strong>Value:</strong> Understanding this distinction is crucial for knowing where design and development efforts are focused (e.g., UX/UI is primarily front-end, while database management is back-end).</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Backlog -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Backlog</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('backlog-def')">Show Definition</button>
+                <div id="backlog-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> A prioritized list of features, bug fixes, technical tasks, or work items that a product development team needs to address for a product.</p>
+                    <p><strong>Contextual Example:</strong> Before starting a new feature, a product team reviews the product backlog to decide what to work on next, based on importance and urgency.</p>
+                    <p><strong>Value:</strong> Provides a clear roadmap for development, ensures that the most valuable work is done first, and helps in managing project scope.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Beta Testing -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Beta Testing</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('beta-testing-def')">Show Definition</button>
+                <div id="beta-testing-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> A stage of product development where a nearly complete version of a product is released to a limited group of external users for real-world testing before official launch.</p>
+                    <p><strong>Contextual Example:</strong> A software company invites a small group of users to try out their new mobile app for a month to identify any bugs or usability issues before its public release.</p>
+                    <p><strong>Value:</strong> Helps identify bugs, usability problems, and performance issues in a real-world environment that might have been missed during internal testing, leading to a more robust final product.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Breadcrumb -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Breadcrumb</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('breadcrumb-def')">Show Definition</button>
+                <div id="breadcrumb-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> A secondary navigation aid that shows users their location within a website or application, typically as a horizontal list of links.</p>
+                    <p><strong>Contextual Example:</strong> On an e-commerce site, you might see "Home > Electronics > Laptops > Gaming Laptops" at the top of the page, indicating your current location.</p>
+                    <p><strong>Value:</strong> Improves website usability by helping users understand their current location in the site hierarchy and providing an easy way to navigate back to previous sections.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Bug -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Bug</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('bug-def')">Show Definition</button>
+                <div id="bug-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> An error, flaw, or fault in a computer program or system that causes it to produce an incorrect or unexpected result, or to behave in unintended ways.</p>
+                    <p><strong>Contextual Example:</strong> A user clicks a "Submit" button on a form, but nothing happens. This indicates a bug in the code preventing the form submission.</p>
+                    <p><strong>Value:</strong> Identifying and fixing bugs is crucial for ensuring product stability, reliability, and a positive user experience. Unaddressed bugs can lead to user frustration and product abandonment.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Call-to-Action (CTA) -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Call-to-Action (CTA)</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('cta-def')">Show Definition</button>
+                <div id="cta-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> A prompt on a website or application that tells the user to take a specific, desired action, often in the form of a button or hyperlink.</p>
+                    <p><strong>Contextual Example:</strong> Buttons like "Sign Up Now", "Add to Cart", "Download Free Ebook", or "Learn More" are all examples of CTAs.</p>
+                    <p><strong>Value:</strong> Guides users towards conversion goals (e.g., making a purchase, signing up for a newsletter) and improves the effectiveness of marketing and user flows.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Item: Card Sorting -->
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <h3 class="text-gray-800">Card Sorting</h3>
+                <button class="btn btn-primary text-sm mt-2 mb-2" onclick="toggleVisibility('card-sorting-def')">Show Definition</button>
+                <div id="card-sorting-def" class="answer-box hidden">
+                    <p><strong>Definition:</strong> A UX research technique used to understand how users categorize and organize information. Participants sort cards (representing website content or features) into groups that make sense to them.</p>
+                    <p><strong>Contextual Example:</strong> During website redesign, users might be given cards with terms like "Shipping Information," "Contact Us," "Order History," and "Product Categories," and asked to group them and label the groups.</p>
+                    <p><strong>Value:</strong> Helps in designing intuitive information architectures, navigation menus, and content structures that align with users' mental models, making content easier to find.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Vocabulary Section -->
-        <section id="vocabulary" class="mb-12 card">
-            <h2 class="text-3xl font-bold section-heading">Key Vocabulary for Art Discussion</h2>
-            <div id="vocabularyList">
-                <!-- Vocabulary items will be injected here by JavaScript -->
+        <section id="grammar" class="section-card">
+            <h2 class="text-indigo-600">Grammar & Functional Language Toolkit 🛠️</h2>
+            <p class="mb-4 text-gray-700">When you talk UX/UI, precision is key! Here's how to sound super smart when defining and explaining value:</p>
+            <ul class="list-disc ml-6 text-gray-700">
+                <li><strong>Comparative Adjectives (for distinguishing concepts):</strong> Use these when you're comparing two awesome concepts!
+                    <ul>
+                        <li>"UX is <strong>broader</strong> than UI – like a whole journey versus a single amazing view!"</li>
+                        <li>"Accessibility is <strong>more important</strong> for inclusive design than just making things look pretty."</li>
+                    </ul>
+                </li>
+                <li><strong>Superlative Adjectives:</strong> Use these when something is the absolute best or most significant among a group!
+                    <ul>
+                        <li>"Agile is often considered the <strong>most effective</strong> methodology for rapid development because it's so flexible."</li>
+                        <li>"A clear CTA is the <strong>most crucial</strong> element for conversion; it's the big 'GO!' button!"</li>
+                    </ul>
+                </li>
+                <li><strong>Phrases for Defining:</strong> Get ready to define like a dictionary!
+                    <ul>
+                        <li>"X <strong>is defined as</strong>..."</li>
+                        <li>"X <strong>refers to</strong>..."</li>
+                        <li>"X <strong>is essentially</strong>..."</li>
+                    </ul>
+                </li>
+                <li><strong>Phrases for Explaining Value:</strong> Show off *why* these concepts matter!
+                    <ul>
+                        <li>"The value of X <strong>is that it enables</strong>... users to feel empowered."</li>
+                        <li>"X <strong>helps to</strong> improve/reduce/ensure... a super smooth user journey."</li>
+                        <li>"X <strong>is crucial because it leads to</strong>... happier users and successful products!"</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section id="activities" class="section-card">
+            <h2 class="text-indigo-600">Awesome Activities! 🎉</h2>
+
+            <div id="warmup" class="mb-6">
+                <h3 class="text-gray-800">Warm-up: Week 1 Vocabulary Blitz! ⚡</h3>
+                <p class="text-gray-700 mb-2">Let's check your Week 1 superpowers! Select an answer and click "Check Answer".</p>
+
+                <div class="quiz-question">
+                    <p class="font-medium text-gray-800">1. What does UX primarily focus on?</p>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="a"> A. Visual aesthetics and branding
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="b"> B. The overall experience a user has with a product
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q1" value="c"> C. Database management
+                    </label>
+                    <button class="btn btn-secondary text-sm mt-2" onclick="checkQuizAnswer('q1', 'b', 'q1-feedback')">Check Answer</button>
+                    <div id="q1-feedback" class="feedback mt-2 hidden"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p class="font-medium text-gray-800">2. Which term describes the visual and interactive elements of a product?</p>
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="a"> A. User Experience (UX)
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="b"> B. Information Architecture (IA)
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q2" value="c"> C. User Interface (UI)
+                    </label>
+                    <button class="btn btn-secondary text-sm mt-2" onclick="checkQuizAnswer('q2', 'c', 'q2-feedback')">Check Answer</button>
+                    <div id="q2-feedback" class="feedback mt-2 hidden"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p class="font-medium text-gray-800">3. A wireframe is primarily used for:</p>
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="a"> A. Final visual design
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="b"> B. Showing the skeletal structure and layout of a page
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q3" value="c"> C. Storing user data
+                    </label>
+                    <button class="btn btn-secondary text-sm mt-2" onclick="checkQuizAnswer('q3', 'b', 'q3-feedback')">Check Answer</button>
+                    <div id="q3-feedback" class="feedback mt-2 hidden"></div>
+                </div>
+
+                <div class="quiz-question">
+                    <p class="font-medium text-gray-800">4. What is the main purpose of user research?</p>
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="a"> A. To create visually appealing graphics
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="b"> B. To gather insights into user needs, behaviors, and motivations
+                    </label>
+                    <label class="quiz-option">
+                        <input type="radio" name="q4" value="c"> C. To write code for the backend of an application
+                    </label>
+                    <button class="btn btn-secondary text-sm mt-2" onclick="checkQuizAnswer('q4', 'b', 'q4-feedback')">Check Answer</button>
+                    <div id="q4-feedback" class="feedback mt-2 hidden"></div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary" onclick="resetQuiz()">Restart Quiz</button>
+                    <p id="quiz-score" class="mt-2 text-lg font-semibold text-gray-700"></p>
+                </div>
+            </div>
+
+            <div id="vocab-intro" class="mb-6">
+                <h3 class="text-gray-800">Vocabulary Introduction & Reinforcement</h3>
+                <p class="text-gray-700">We introduced new terms above with definitions and examples. For reinforcement:</p>
+                <ul class="list-disc ml-6 text-gray-700">
+                    <li><strong>Matching Games:</strong> Use tools like Quizlet (simulated by our "Show Definition" buttons above) or physical flashcards to match terms with their definitions.</li>
+                    <li><strong>Contextual Examples:</strong> Think of real-world applications or websites that demonstrate each new vocabulary term.</li>
+                </ul>
+            </div>
+
+            <!-- Flashcard Practice Section -->
+            <div id="flashcard-practice" class="mb-6 p-4 bg-indigo-50 rounded-lg shadow-md border border-indigo-200">
+                <h3 class="text-indigo-700">Flashcard Fun! 🧠</h3>
+                <p class="text-gray-700 mb-4">Flip and learn! Test your vocabulary with these dynamic flashcards.</p>
+
+                <div class="flashcard-container">
+                    <div id="flashcard" class="flashcard" onclick="flipCard()">
+                        <div id="flashcard-front" class="flashcard-front"></div>
+                        <div id="flashcard-back" class="flashcard-back hidden"></div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col items-center justify-center space-y-3 mt-4">
+                    <p id="card-counter" class="text-base text-gray-600 font-medium">Card 1 of 10</p>
+                    <div class="flex space-x-4">
+                        <button class="btn btn-primary" onclick="flipCard()">Flip Card</button>
+                        <button class="btn btn-primary" onclick="nextCard()">Next Card</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="speaking" class="mb-6">
+                <h3 class="text-gray-800">Speaking Activity: "What is X?" and "What's the difference between X and Y?" 🗣️</h3>
+                <p class="text-gray-700">Team up and become UX/UI explanation masters! In pairs, take turns asking and answering questions about the new vocabulary.</p>
+                <ul class="list-disc ml-6 text-gray-700">
+                    <li><strong>"What is X?":</strong> One student asks "What is Accessibility?" The other student defines it and gives an example.</li>
+                    <li><strong>"What's the difference between X and Y?":</strong> One student asks "What's the difference between Back-end and Front-end?" The other student explains the distinction, focusing on clarity and precision. Example: UX vs. UI.</li>
+                </ul>
+            </div>
+
+            <div id="reading" class="mb-6">
+                <h3 class="text-gray-800">Reading Adventure: Deep Dives! 📚</h3>
+                <p class="text-gray-700">Read short articles or blog posts explaining 2-3 core concepts. Focus on Agile and Accessibility to unlock deeper insights!</p>
+                <ul class="list-disc ml-6 text-gray-700">
+                    <li><a href="https://www.interaction-design.org/literature/topics/agile-development" target="_blank" class="text-indigo-500 hover:underline">Introduction to Agile Development</a> (Interaction Design Foundation - Placeholder)</li>
+                    <li><a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/" target="_blank" class="text-indigo-500 hover:underline">Web Accessibility Introduction</a> (W3C Web Accessibility Initiative - Placeholder)</li>
+                </ul>
+            </div>
+
+            <div id="discussion" class="mb-6">
+                <h3 class="text-gray-800">Discussion: Lightbulb Moments! 💡</h3>
+                <p class="text-gray-700">After your reading adventure, discuss your "aha!" moments in pairs. What did you find most interesting or surprising about Agile or Accessibility? How do these concepts apply to everyday websites and apps you use?</p>
+            </div>
+
+            <!-- New Concept Application Challenge Section -->
+            <div id="concept-challenge" class="mb-6 p-4 bg-purple-50 rounded-lg shadow-md border border-purple-200">
+                <h3 class="text-purple-700">Concept Application Challenge: You're the UX Hero! 🦸</h3>
+                <p class="text-gray-700 mb-4">Put on your UX/UI hero cape! Read the scenario below and think about how you'd apply the concepts you've learned. Write down your thoughts, then reveal the suggested solution!</p>
+                
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Scenario: The Confusing Checkout 🛒</h4>
+                <p class="text-gray-700 mb-4">You're tasked with improving the checkout process for an online store. Users are constantly abandoning their carts at the final step, complaining it's "too hard to use." What UX/UI concepts from this week would you focus on to fix this, and why?</p>
+
+                <textarea id="challenge-answer" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 mt-2 h-32" placeholder="Write your awesome answer here..."></textarea>
+                
+                <div class="flex justify-center mt-4">
+                    <button class="btn btn-primary" onclick="toggleVisibility('challenge-solution')">Reveal Solution</button>
+                </div>
+                <div id="challenge-solution" class="answer-box hidden mt-4">
+                    <p><strong>Suggested Solution Focus:</strong></p>
+                    <ul class="list-disc ml-6">
+                        <li><strong>Affordance:</strong> Ensure all clickable elements (buttons, links) *look* like they can be clicked. Is the "Place Order" button clearly a button?</li>
+                        <li><strong>Call-to-Action (CTA):</strong> Is the primary "Place Order" or "Complete Purchase" CTA highly visible, clear, and persuasive? Is there only one primary CTA on the page?</li>
+                        <li><strong>Breadcrumb:</strong> Is there a clear breadcrumb navigation (e.g., Cart > Shipping > Payment > Review) to show users where they are in the process and how to go back? This reduces confusion and "bug-like" feelings.</li>
+                        <li><strong>Beta Testing (for improvement):</strong> After implementing changes, conduct beta testing with real users to catch any remaining issues before a full launch.</li>
+                        <li><strong>Bug Fixing:</strong> Investigate if there are actual technical bugs causing forms to fail or pages to not load correctly, which directly impacts the user experience and leads to abandonment.</li>
+                    </ul>
+                    <p class="mt-2 text-sm text-gray-600">These concepts are crucial for creating a smooth, intuitive, and trustworthy checkout experience, ultimately reducing cart abandonment!</p>
+                </div>
+            </div>
+
+            <!-- Job Interview Practice Section - Made more prominent -->
+            <div id="job-interview" class="mb-6 p-4 bg-emerald-50 rounded-lg shadow-md border border-emerald-200">
+                <h3 class="text-emerald-700">Job Interview Practice: Ace that Interview! 💼</h3>
+                <p class="text-gray-700 mb-4">Time to shine! Practice explaining UX/UI concepts like a true professional. This activity will help you articulate your understanding clearly and confidently, focusing on the value and practical application of each term.</p>
+                
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Instructions:</h4>
+                <ol class="list-decimal ml-6 text-gray-700">
+                    <li>Pair up with a classmate and take turns being the "interviewer" and the "candidate."</li>
+                    <li>The interviewer picks a question from the list below and asks the candidate.</li>
+                    <li>The candidate should define the concept, explain its value, and ideally provide a great example.</li>
+                    <li>The interviewer gives constructive feedback on clarity, completeness, and how confident the candidate sounds!</li>
+                </ol>
+
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Sample Interview Questions:</h4>
+                <ul class="list-disc ml-6 text-gray-700">
+                    <li>"Could you explain what <strong class="text-gray-800">Accessibility</strong> means in the context of web design and why it's super important?"</li>
+                    <li>"How would you describe <strong class="text-gray-800">Affordance</strong>, and can you give an example of good vs. poor affordance in a digital product?"</li>
+                    <li>"Our team uses an <strong class="text-gray-800">Agile</strong> methodology. What does Agile mean to you, and how does it benefit a design team in the real world?"</li>
+                    <li>"What's the primary difference between <strong class="text-gray-800">Front-end</strong> and <strong class="text-gray-800">Back-end</strong> development, and how do they relate to UX/UI in your work?"</li>
+                    <li>"Imagine a website has a <strong class="text-gray-800">bug</strong> that prevents users from submitting a form. How might this mess up the user experience, and what's the value of quickly squashing that bug?"</li>
+                    <li>"Can you give an example of a compelling <strong class="text-gray-800">Call-to-Action (CTA)</strong> you've seen, and what made it so effective?"</li>
+                </ul>
+
+                <h4 class="font-semibold text-gray-700 mt-4 mb-2">Pro Tips for Answering:</h4>
+                <ul class="list-disc ml-6 text-gray-700">
+                    <li><strong>Define Clearly:</strong> Start with a precise, punchy definition.</li>
+                    <li><strong>Explain Value/Impact:</strong> Articulate *why* the concept is a game-changer (its benefits, how it tackles problems).</li>
+                    <li><strong>Provide Awesome Examples:</strong> Use real-world or clever hypothetical examples to make your point shine!</li>
+                    <li><strong>Be Concise:</strong> Aim for clear, to-the-point answers – like a mini-superpower explanation!</li>
+                    <li><strong>Use Functional Language:</strong> Practice using phrases like "X is defined as...", "The value of X is...", "X helps to...".</li>
+                </ul>
             </div>
         </section>
 
-        <!-- Discussion Questions Section -->
-        <section id="discussion" class="mb-12 card">
-            <h2 class="text-3xl font-bold section-heading">Discussion Questions</h2>
-            <div id="discussionQuestionsList">
-                <!-- Discussion questions will be injected here by JavaScript -->
-            </div>
+        <section id="homework" class="section-card">
+            <h2 class="text-indigo-600">Homework Challenge! 📝</h2>
+            <ul class="list-disc ml-6 text-gray-700">
+                <li>Write short paragraphs (3-5 sentences each) defining and explaining the value of 3-4 key terms from this week's vocabulary. Pick the terms you found most exciting or challenging!</li>
+                <li>Create flashcards (digital or physical) for all new vocabulary terms. Make them pop! Include the term on one side and the definition and a concise example on the other.</li>
+            </ul>
         </section>
+
+        <footer>
+            <p>&copy; 2025 UX/UI Learning Platform. Designed with fun and learning in mind! ✨</p>
+        </footer>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const galleryImages = [
-                {
-                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/960px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
-                    title: "The Starry Night",
-                    artist: "Vincent van Gogh",
-                    sentiment: "positive",
-                    description: "This iconic painting captures a vibrant, swirling night sky over a peaceful village. Its dynamic brushstrokes and luminous stars often evoke feelings of wonder, awe, and serenity. It is a masterpiece of post-impressionism."
-                },
-                {
-                    src: "https://www.claude-monet.com/assets/img/paintings/impression-sunrise.jpg",
-                    title: "Impression, Sunrise",
-                    artist: "Claude Monet",
-                    sentiment: "positive",
-                    description: "A foundational work of Impressionism, this painting depicts a hazy harbor scene with a striking orange sun. It often conveys a sense of calm, new beginnings, and the beauty of fleeting moments."
-                },
-                {
-                    src: "https://lineupgallery.com/wp-content/uploads/2020/11/henri-matisse-la-danse-lineupgallery.jpg",
-                    title: "Dance (La Danse)",
-                    artist: "Henri Matisse",
-                    sentiment: "positive",
-                    description: "This large decorative panel shows five dancing figures. Its simple forms and bold colors create a sense of joyous movement, freedom, and communal celebration. It's an excellent example of figurative art."
-                },
-                {
-                    src: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Tsunami_by_hokusai_19th_century.jpg",
-                    title: "The Great Wave off Kanagawa",
-                    artist: "Katsushika Hokusai",
-                    sentiment: "positive",
-                    description: "Part of a series of woodblock prints, this depicts a massive wave threatening boats near Mount Fuji. It can evoke feelings of awe for nature's power and a profound sense of human vulnerability, yet its beauty is undeniable."
-                },
-                {
-                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Grant_DeVolson_Wood_-_American_Gothic.jpg/960px-Grant_DeVolson_Wood_-_American_Gothic.jpg",
-                    title: "American Gothic",
-                    artist: "Grant Wood",
-                    sentiment: "neutral/somber",
-                    description: "This painting portrays a farmer and a young woman standing in front of a white house. It's often seen as a portrayal of rural American life, evoking feelings of stoicism, resilience, and sometimes a sense of harsh reality or isolation."
-                },
-                {
-                    src: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg",
-                    title: "The Scream",
-                    artist: "Edvard Munch",
-                    sentiment: "negative",
-                    description: "An iconic image of modern art, showing a figure with an agonizing expression against a swirling, blood-red sky. It profoundly expresses anxiety, despair, and existential dread, making it a powerful example of abstract emotion."
-                },
-                {
-                    src: "https://smarthistory.org/wp-content/uploads/2015/08/PicassoGuernica.jpg",
-                    title: "Guernica",
-                    artist: "Pablo Picasso",
-                    sentiment: "negative",
-                    description: "A large oil painting depicting the suffering inflicted upon people and animals by violence and chaos. Created in response to the bombing of Guernica, it powerfully conveys the horrors of war and the agony of its victims. It's a profound critique of conflict."
-                },
-                {
-                    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg/1200px-Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg",
-                    title: "Saturn Devouring His Son",
-                    artist: "Francisco Goya",
-                    sentiment: "negative",
-                    description: "One of Goya's 'Black Paintings,' this depicts the mythological Titan Saturn consuming one of his children. It is a profoundly disturbing and dark image, evoking feelings of horror, madness, and the destructive nature of power."
-                }
-            ];
-
-            let currentImageIndex = 0;
-
-            const galleryImage = document.getElementById('galleryImage');
-            const imageTitle = document.getElementById('imageTitle');
-            const imageArtist = document.getElementById('imageArtist');
-            const imageDescription = document.getElementById('imageDescription'); // Get description element
-            const prevButton = document.getElementById('prevButton');
-            const nextButton = document.getElementById('nextButton');
-
-            function loadImage(index) {
-                const image = galleryImages[index];
-                if (image) {
-                    galleryImage.src = image.src;
-                    galleryImage.alt = `${image.title} by ${image.artist}`;
-                    imageTitle.textContent = image.title;
-                    imageArtist.textContent = image.artist;
-                    imageDescription.textContent = image.description; // Set description
-                }
-                updateNavigationButtons();
+        // JavaScript function to toggle visibility of elements
+        function toggleVisibility(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('hidden');
             }
+        }
 
-            function updateNavigationButtons() {
-                prevButton.disabled = currentImageIndex === 0;
-                nextButton.disabled = currentImageIndex === galleryImages.length - 1;
+        // --- Quiz Logic ---
+        let score = 0;
+        const totalQuizQuestions = 4; // Update this if you add/remove questions
+
+        function checkQuizAnswer(questionName, correctAnswer, feedbackId) {
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+            const feedbackElement = document.getElementById(feedbackId);
+            const quizScoreElement = document.getElementById('quiz-score');
+            
+            feedbackElement.classList.remove('hidden', 'correct', 'incorrect');
+
+            // Disable radio buttons for this question after checking
+            document.querySelectorAll(`input[name="${questionName}"]`).forEach(radio => radio.disabled = true);
+
+            if (selectedOption && selectedOption.value === correctAnswer) {
+                feedbackElement.textContent = '🎉 Correct! Awesome job!';
+                feedbackElement.classList.add('correct');
+                score++;
+            } else {
+                feedbackElement.textContent = '😬 Not quite! Review the definitions.';
+                feedbackElement.classList.add('incorrect');
             }
+            quizScoreElement.textContent = `Your score: ${score} / ${totalQuizQuestions}`;
+        }
 
-            prevButton.addEventListener('click', function() {
-                if (currentImageIndex > 0) {
-                    currentImageIndex--;
-                    loadImage(currentImageIndex);
-                }
+        function resetQuiz() {
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.checked = false;
+                radio.disabled = false; // Re-enable radio buttons
             });
 
-            nextButton.addEventListener('click', function() {
-                if (currentImageIndex < galleryImages.length - 1) {
-                    currentImageIndex++;
-                    loadImage(currentImageIndex);
-                }
+            const feedbackElements = document.querySelectorAll('.feedback');
+            feedbackElements.forEach(feedback => {
+                feedback.classList.add('hidden');
+                feedback.classList.remove('correct', 'incorrect');
+                feedback.textContent = '';
             });
+            score = 0;
+            document.getElementById('quiz-score').textContent = ''; // Clear score display
+        }
 
-            // Initial load
-            loadImage(currentImageIndex);
+        // --- Flashcard Logic ---
+        const vocabularyData = [
+            { term: "Accessibility", definition: "Designing products, devices, services, or environments so that people with disabilities can use them." },
+            { term: "Affordance", definition: "The perceived properties of an object that suggest how it can be used. It's about how an object's design communicates its function." },
+            { term: "Agile", definition: "An iterative and incremental approach to project management and software development that delivers value in small, frequent cycles." },
+            { term: "Back-end/Front-end", definition: "Front-end: what users see and interact with (UI). Back-end: handles data storage, logic, and communication with databases." },
+            { term: "Backlog", definition: "A prioritized list of features, bug fixes, technical tasks, or work items that a product development team needs to address for a product." },
+            { term: "Beta Testing", definition: "A stage of product development where a nearly complete version of a product is released to a limited group of external users for real-world testing before official launch." },
+            { term: "Breadcrumb", definition: "A secondary navigation aid that shows users their location within a website or application, typically as a horizontal list of links." },
+            { term: "Bug", definition: "An error, flaw, or fault in a computer program or system that causes it to produce an incorrect or unexpected result, or to behave in unintended ways." },
+            { term: "Call-to-Action (CTA)", definition: "A prompt on a website or application that tells the user to take a specific, desired action, often in the form of a button or hyperlink." },
+            { term: "Card Sorting", definition: "A UX research technique used to understand how users categorize and organize information. Participants sort cards (representing website content or features) into groups that make sense to them." }
+        ];
 
-            // Function to speak text
-            function speakText(text) {
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'en-US'; // Set language to English (US)
-                    window.speechSynthesis.speak(utterance);
+        let currentCardIndex = 0;
+        let shuffledVocabulary = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateCardCounter() {
+            document.getElementById('card-counter').textContent = `Card ${currentCardIndex + 1} of ${shuffledVocabulary.length}`;
+        }
+
+        function loadCard(stayFlipped = false) {
+            const flashcardElement = document.getElementById('flashcard');
+            const frontElement = document.getElementById('flashcard-front');
+            const backElement = document.getElementById('flashcard-back');
+
+            if (shuffledVocabulary.length === 0 || currentCardIndex >= shuffledVocabulary.length) {
+                shuffledVocabulary = shuffleArray([...vocabularyData]); // Create a new shuffled copy
+                currentCardIndex = 0;
+            }
+
+            const card = shuffledVocabulary[currentCardIndex];
+            frontElement.textContent = card.term;
+            backElement.innerHTML = `<strong>Definition:</strong> ${card.definition}`;
+            
+            // Ensure card is flipped to the front unless explicitly staying flipped
+            if (!stayFlipped) {
+                flashcardElement.classList.remove('flipped');
+                frontElement.classList.remove('hidden');
+                backElement.classList.add('hidden');
+            } else {
+                 // If staying flipped, ensure the back content is visible immediately
+                if (flashcardElement.classList.contains('flipped')) {
+                    frontElement.classList.add('hidden');
+                    backElement.classList.remove('hidden');
                 } else {
-                    console.warn('SpeechSynthesis API not supported in this browser.');
+                    frontElement.classList.remove('hidden');
+                    backElement.classList.add('hidden');
                 }
             }
+            updateCardCounter();
+        }
 
-            // Vocabulary Section Data
-            const vocabulary = [
-                {
-                    term: "Awe",
-                    definition: "A feeling of reverential respect mixed with wonder.",
-                    example: "The vastness of the Grand Canyon filled the tourists with **awe**.",
-                    icon: "fas fa-star" // Example icon
-                },
-                {
-                    term: "Contemplation",
-                    definition: "The act of thinking deeply about something.",
-                    example: "She spent hours in quiet **contemplation** of the ancient sculpture.",
-                    icon: "fas fa-brain"
-                },
-                {
-                    term: "Evoke",
-                    definition: "To bring or recall to the conscious mind.",
-                    example: "The painting's vibrant colors **evoked** a sense of joy and excitement.",
-                    icon: "fas fa-lightbulb"
-                },
-                {
-                    term: "Profound",
-                    definition: "Very great or intense; having or showing great knowledge or insight.",
-                    example: "The artist's work had a **profound** impact on contemporary art.",
-                    icon: "fas fa-meteor"
-                },
-                {
-                    term: "Abstract",
-                    definition: "Art that does not attempt to represent external reality, but rather seeks to achieve its effect using shapes, forms, colors, and textures.",
-                    example: "Jackson Pollock is famous for his **abstract** expressionist drip paintings.",
-                    icon: "fas fa-shapes"
-                },
-                {
-                    term: "Figurative",
-                    definition: "Representing forms that are recognizably derived from reality, as opposed to abstract art.",
-                    example: "His early works were strictly **figurative**, focusing on portraits and landscapes.",
-                    icon: "fas fa-user-friends"
-                },
-                {
-                    term: "Masterpiece",
-                    definition: "A work of outstanding artistry, skill, or workmanship.",
-                    example: "Leonardo da Vinci's Mona Lisa is considered a true **masterpiece**.",
-                    icon: "fas fa-crown"
-                },
-                {
-                    term: "Critique",
-                    definition: "A detailed analysis and assessment of something, especially a literary or philosophical theory.",
-                    example: "The art critic published a scathing **critique** of the new exhibition.",
-                    icon: "fas fa-comment-dots"
-                },
-                {
-                    term: "Interpretation",
-                    definition: "The action of explaining the meaning of something; the way something is explained or understood.",
-                    example: "Every viewer had a different **interpretation** of the symbolic elements in the sculpture.",
-                    icon: "fas fa-search-plus"
-                },
-                {
-                    term: "Sublime",
-                    definition: "Of such excellence, grandeur, or beauty as to inspire great admiration or awe.",
-                    example: "The symphony reached a **sublime** crescendo that left the audience breathless.",
-                    icon: "fas fa-gem"
+        function flipCard() {
+            const flashcardElement = document.getElementById('flashcard');
+            const frontElement = document.getElementById('flashcard-front');
+            const backElement = document.getElementById('flashcard-back');
+
+            flashcardElement.classList.toggle('flipped');
+            
+            // Toggle visibility after the flip transition for smoother effect
+            setTimeout(() => {
+                if (flashcardElement.classList.contains('flipped')) {
+                    frontElement.classList.add('hidden');
+                    backElement.classList.remove('hidden');
+                } else {
+                    frontElement.classList.remove('hidden');
+                    backElement.classList.add('hidden');
                 }
-            ];
+            }, 300); // Half of the transition time
+        }
 
-            const vocabularyListDiv = document.getElementById('vocabularyList');
-            vocabulary.forEach(item => {
-                const vocabItemDiv = document.createElement('div');
-                vocabItemDiv.classList.add('vocabulary-item');
-                vocabItemDiv.innerHTML = `
-                    <i class="${item.icon} vocabulary-icon"></i>
-                    <div class="vocabulary-content">
-                        <p class="vocabulary-term">${item.term} <button class="pronunciation-button" data-text="${item.term}. ${item.definition}"><i class="fas fa-volume-up"></i></button></p>
-                        <p class="vocabulary-definition">${item.definition}</p>
-                        <p class="vocabulary-example">Example: ${item.example}</p>
-                    </div>
-                `;
-                vocabularyListDiv.appendChild(vocabItemDiv);
-            });
+        function nextCard() {
+            currentCardIndex++;
+            loadCard(false); // Load next card, ensuring it's on the front side
+        }
 
-            // Add event listeners for pronunciation buttons
-            document.querySelectorAll('.pronunciation-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const textToSpeak = this.dataset.text;
-                    speakText(textToSpeak);
-                });
-            });
-
-
-            // Discussion Questions Section Data
-            const discussionQuestions = [
-                "1. How does art reflect society's values and beliefs?",
-                "2. Can art truly change the world, and if so, how?",
-                "3. Is beauty in art subjective (in the eye of the beholder) or objective (universally recognized)? Explain your opinion.",
-                "4. What role does personal experience and background play in our perception and understanding of art?",
-                "5. Should art always be understandable, or is ambiguity important for deeper interpretation?",
-                "6. How has technology influenced modern art, and what are some examples?",
-                "7. What is the importance of art education for future generations, and what skills does it foster?",
-                "8. Have you ever felt a strong emotional connection to a piece of art? Describe the artwork and your feelings.",
-                "9. Do you think there are limits to artistic expression, or should artists be completely free?",
-                "10. In what ways can art help us understand different cultures and historical periods?"
-            ];
-
-            const discussionQuestionsListDiv = document.getElementById('discussionQuestionsList');
-            discussionQuestions.forEach(question => {
-                const questionP = document.createElement('p');
-                questionP.classList.add('discussion-question');
-                questionP.textContent = question;
-                discussionQuestionsListDiv.appendChild(questionP);
-            });
-        });
+        // Initialize flashcards and quiz on page load
+        window.onload = function() {
+            loadCard();
+            resetQuiz(); // Initialize quiz score to 0
+        };
     </script>
 </body>
 </html>
