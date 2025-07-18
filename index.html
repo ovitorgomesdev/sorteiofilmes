@@ -1,495 +1,430 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Conversation Class: The Airport Journey</title>
+    <title>Week 6: Presenting Portfolio Projects Effectively</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Sky Gradient -->
-    <!-- Application Structure Plan: The SPA is structured as a complete lesson plan. It starts with a "Warm-up" of open-ended questions for discussion. A "Vocabulary Builder" section follows for explicit learning. The core of the app is the chronological journey through an airport (Check-in, Security, etc.) with interactive dialogues. A final quiz assesses comprehension. This structure mirrors a natural teaching flow, from introduction to practice and assessment. -->
-    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method. 1. Pre-class Discussion -> Goal: Engage & Activate -> Open-Ended Questions (HTML/CSS) -> Purely for conversation -> Primes students for the topic. 2. Vocabulary Learning -> Goal: Memorize Terms -> Interactive Accordion List (HTML/CSS/JS) -> Click to expand/collapse definition -> More professional and space-efficient than flashcards. 3. Conversational Practice -> Goal: Contextualize -> Interactive Dialogues (HTML/CSS/JS) -> Hover for tooltips -> Shows language in a natural flow. 4. Learning Assessment -> Goal: Test Comprehension -> Multiple-Choice Quiz (HTML/JS) & Bar Chart (Chart.js) -> Immediate feedback and visual summary -> Reinforces learning and provides measurable results. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Study -->
+    <!-- Application Structure Plan: The application is structured as a linear, interactive learning module to guide students through the lesson plan step-by-step. The flow is designed for educational effectiveness: 1. Introduction & Objectives to set context. 2. Interactive Vocabulary Flashcards for active learning. 3. A Visual Guide to Presentation Structure to provide a clear framework. 4. An Interactive Language & Metrics section with a chart to make abstract concepts tangible. 5. Practice Activities to apply knowledge. 6. A concluding Homework section. This sequential, interactive design transforms the static lesson plan into an engaging experience that reinforces learning at each stage. -->
+    <!-- Visualization & Content Choices: Objectives -> Goal: Inform -> Method: Styled List -> Interaction: Static. Vocabulary -> Goal: Organize/Inform -> Method: HTML/JS Flashcards -> Interaction: Click-to-reveal. Justification: Active recall is superior to passive reading for learning terms. Presentation Structure -> Goal: Organize/Inform -> Method: Numbered HTML/CSS Cards -> Interaction: Static visual guide. Justification: Clearly visualizes the narrative flow. Quantifying Impact -> Goal: Compare/Inform -> Method: Chart.js Bar Chart -> Interaction: Hover tooltips. Justification: Visually demonstrates the impact of using metrics. Functional Language -> Goal: Organize/Inform -> Method: JS-powered Tabs -> Interaction: Click to switch content. Justification: Neatly organizes text snippets. Listening Activity -> Goal: Analyze -> Method: Interactive Text Block -> Interaction: Click to reveal analysis. Justification: Simulates an analytical task interactively. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-image: url('https://images.unsplash.com/photo-1558526323-8744a57b3a2f?q=80&w=2574&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #333;
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #4A4A4A;
         }
-        .main-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(80px);
-            -webkit-backdrop-filter: blur(80px);
-            z-index: -1;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1.5rem; /* 24px */
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        }
-        .header-glass {
-             background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .nav-link {
-            transition: color 0.3s, border-color 0.3s;
-        }
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            border-bottom: 2px dotted #3B82F6;
-            cursor: pointer;
+        .nav-button.active {
+            background-color: #4F46E5;
+            color: #FFFFFF;
             font-weight: 600;
-            color: #1E40AF;
         }
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 180px;
-            background-color: #374151;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px 5px;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -90px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-weight: 400;
-        }
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        .quiz-option, .vocab-item {
+        .nav-button {
             transition: all 0.3s ease;
         }
-        .quiz-option:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        .vocab-card {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
         }
-        .chart-container {
-            position: relative; 
-            width: 100%; 
-            max-width: 500px; 
-            margin-left: auto; 
-            margin-right: auto;
-            height: 250px; 
-            max-height: 300px;
+        .vocab-card.is-flipped {
+            transform: rotateY(180deg);
         }
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        .vocab-card-face {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
-        .fade-in-section.is-visible {
-            opacity: 1;
-            transform: translateY(0);
+        .vocab-card-back {
+            transform: rotateY(180deg);
         }
-        .vocab-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+        .tab-content {
+            display: none;
         }
-        .vocab-item.is-open .vocab-content {
-            max-height: 100px;
-            padding-top: 0.5rem;
-            padding-bottom: 1rem;
+        .tab-content.active {
+            display: block;
         }
-        .vocab-item.is-open .vocab-arrow {
-            transform: rotate(180deg);
+        .tab-button.active {
+            border-bottom-color: #4F46E5;
+            color: #4F46E5;
+            font-weight: 600;
         }
-        .vocab-arrow {
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        .chat-bubble {
-            padding: 0.75rem 1.25rem;
-            border-radius: 1.25rem;
-            max-width: 80%;
-        }
-        .chat-agent {
-            background-color: #E0E7FF;
-            color: #3730A3;
-            border-bottom-left-radius: 0.25rem;
-        }
-        .chat-passenger {
-            background-color: #E0F2F1;
-            color: #004D40;
-            border-bottom-right-radius: 0.25rem;
-            align-self: flex-end;
-        }
-        .section-icon {
-            font-size: 1.5rem;
-            margin-right: 0.75rem;
-            color: #3B82F6;
+        .analysis-popup {
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="relative min-h-screen">
-        <div class="main-container absolute inset-0"></div>
-        <header class="header-glass sticky top-0 z-20">
-            <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-gray-800">✈️ Airport Conversations</h1>
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-gray-800">Effective Portfolio Presentations</h1>
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#objectives" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Objectives</a>
+                    <a href="#vocabulary" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Vocabulary</a>
+                    <a href="#structure" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Structure</a>
+                    <a href="#language" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Language</a>
+                    <a href="#activities" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Activities</a>
+                    <a href="#homework" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Homework</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="objectives" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Lesson Objectives</h2>
+            <p class="text-lg text-gray-600 mb-6">This lesson will teach you how to structure a compelling portfolio presentation. You will learn to effectively highlight key insights from your projects and confidently discuss the impact of your design work, turning your portfolio from a simple gallery into a powerful story of your skills.</p>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <span class="text-3xl mr-4">🏗️</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Structure a Presentation</h3>
                     </div>
-                    <div class="hidden md:block">
-                        <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="#warmup" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-blue-500">Warm-up</a>
-                            <a href="#vocabulary" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-blue-500">Vocabulary</a>
-                            <a href="#scenes" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-blue-500">Scenes</a>
-                            <a href="#quiz" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent hover:border-blue-500">Quiz</a>
+                    <p class="mt-2 text-gray-600">Learn to build a clear, logical narrative for your projects.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <span class="text-3xl mr-4">💡</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Highlight Key Insights</h3>
+                    </div>
+                    <p class="mt-2 text-gray-600">Showcase the crucial discoveries and decisions in your process.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                     <div class="flex items-center">
+                        <span class="text-3xl mr-4">📈</span>
+                        <h3 class="text-lg font-semibold text-gray-800">Discuss Design Impact</h3>
+                    </div>
+                    <p class="mt-2 text-gray-600">Articulate the value and results of your work using data.</p>
+                </div>
+            </div>
+             <div class="mt-8 bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg">
+                <h3 class="font-bold text-indigo-900">Warm-up Discussion</h3>
+                <p class="text-indigo-800 mt-2">Before we dive in, take a moment to think: What makes a good and engaging presentation? What have you seen in the past that worked well, and what didn't?</p>
+            </div>
+        </section>
+
+        <section id="vocabulary" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Key Vocabulary</h2>
+            <p class="text-lg text-gray-600 mb-8">Mastering the language of design is crucial. Click on each card to flip it and learn the definition. These terms will help you describe your work professionally.</p>
+            <div id="vocab-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            </div>
+        </section>
+
+        <section id="structure" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Structuring Your Narrative</h2>
+            <p class="text-lg text-gray-600 mb-8">A great presentation tells a story. Follow this four-part structure to guide your audience from the initial problem to the final, impactful solution. This creates a clear and memorable narrative for any project.</p>
+            <div class="relative">
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
+                <div class="relative grid md:grid-cols-4 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-red-500">
+                        <div class="flex items-center mb-2">
+                           <span class="text-2xl font-bold text-red-500 mr-3">1</span> 
+                           <h3 class="text-xl font-semibold text-gray-800">The Problem</h3>
                         </div>
+                        <p class="text-gray-600">Start with the "why." Clearly articulate the user need or business challenge your project addressed. Set the stage for your solution.</p>
                     </div>
-                    <div class="md:hidden">
-                        <select id="mobile-nav" class="bg-gray-200/50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                            <option>Menu</option>
-                            <option value="#warmup">Warm-up</option>
-                            <option value="#vocabulary">Vocabulary</option>
-                            <option value="#checkin">Scenes</option>
-                            <option value="#quiz">Quiz</option>
-                        </select>
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-blue-500">
+                        <div class="flex items-center mb-2">
+                           <span class="text-2xl font-bold text-blue-500 mr-3">2</span> 
+                           <h3 class="text-xl font-semibold text-gray-800">The Process</h3>
+                        </div>
+                        <p class="text-gray-600">Explain the "how." Walk through your design journey—the research, ideation, and key decisions. Show your thinking.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-yellow-500">
+                        <div class="flex items-center mb-2">
+                           <span class="text-2xl font-bold text-yellow-500 mr-3">3</span> 
+                           <h3 class="text-xl font-semibold text-gray-800">The Insights</h3>
+                        </div>
+                        <p class="text-gray-600">Reveal what you learned. What were the "aha!" moments? Highlight the key insights that shaped your final design.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-green-500">
+                        <div class="flex items-center mb-2">
+                           <span class="text-2xl font-bold text-green-500 mr-3">4</span> 
+                           <h3 class="text-xl font-semibold text-gray-800">The Impact</h3>
+                        </div>
+                        <p class="text-gray-600">Finish with the "so what?" Discuss the project's outcome. Use metrics and qualitative feedback to prove its success.</p>
                     </div>
                 </div>
-            </nav>
-        </header>
-
-        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 relative z-10">
-            
-            <section class="text-center mb-20 fade-in-section">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Prepare for your Next Trip!</h2>
-                <p class="max-w-3xl mx-auto text-lg text-gray-700">
-                    Welcome to your interactive English conversation class. We'll start with a discussion, learn new words, and then practice with realistic dialogues. Good luck!
-                </p>
-            </section>
-            
-            <div id="content" class="space-y-20">
-                
-                <section id="warmup" class="fade-in-section">
-                    <div class="glass-card p-6 md:p-8">
-                        <h3 class="flex items-center text-2xl font-bold text-gray-800 mb-6"><span class="section-icon">💬</span>Warm-up: Let's Talk About Travel</h3>
-                        <p class="text-gray-600 mb-8">Before we begin, let's discuss our travel experiences. Use these questions to start a conversation with your classmates.</p>
-                        <div class="space-y-4">
-                            <p class="text-lg bg-white/50 p-4 rounded-lg"><strong>1.</strong> What's the most interesting place you've ever traveled to? Why was it special?</p>
-                            <p class="text-lg bg-white/50 p-4 rounded-lg"><strong>2.</strong> If you could travel anywhere in the world right now, where would you go and why?</p>
-                            <p class="text-lg bg-white/50 p-4 rounded-lg"><strong>3.</strong> What do you find most exciting or most stressful about air travel?</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="vocabulary" class="fade-in-section">
-                    <div class="glass-card p-6 md:p-8">
-                        <h3 class="flex items-center text-2xl font-bold text-gray-800 mb-6"><span class="section-icon">📖</span>Key Vocabulary Builder</h3>
-                        <p class="text-gray-600 mb-8">Here are some essential words for your trip. Click on each term to see its definition and an example.</p>
-                        <div id="vocab-list" class="space-y-3">
-                            <!-- Vocabulary items will be injected here by JS -->
-                        </div>
-                    </div>
-                </section>
-
-                <section id="scenes" class="fade-in-section">
-                    <div class="glass-card p-6 md:p-8">
-                        <h3 class="flex items-center text-2xl font-bold text-gray-800 mb-8"><span class="section-icon">🎬</span>Airport Scenes</h3>
-                        
-                        <!-- Scene 1 -->
-                        <div id="checkin" class="mb-12">
-                            <h4 class="font-semibold text-xl text-gray-700 mb-4">Scene 1: At the Check-in Counter</h4>
-                            <div class="bg-white/50 p-4 rounded-xl flex flex-col space-y-3">
-                                <div class="chat-bubble chat-agent">Good morning! Where are you flying to today?</div>
-                                <div class="chat-bubble chat-passenger">Hello, I'm flying to Tokyo.</div>
-                                <div class="chat-bubble chat-agent">May I have your <span class="tooltip">passport<span class="tooltip-text">An official document for international travel.</span></span>, please?</div>
-                                <div class="chat-bubble chat-passenger">Yes, just this one suitcase. I also have this backpack as a <span class="tooltip">carry-on<span class="tooltip-text">A small bag you take onto the plane.</span></span>.</div>
-                                <div class="chat-bubble chat-agent">Okay. Would you prefer a <span class="tooltip">window or an aisle seat<span class="tooltip-text">A seat by the window or by the corridor.</span></span>?</div>
-                                <div class="chat-bubble chat-passenger">An aisle seat, please.</div>
-                                <div class="chat-bubble chat-agent">Alright. Here is your <span class="tooltip">boarding pass<span class="tooltip-text">Your ticket to get on the plane.</span></span>. Your flight departs from <span class="tooltip">gate<span class="tooltip-text">The door where you board the plane.</span></span> 42B.</div>
-                            </div>
-                        </div>
-
-                        <!-- Scene 2 -->
-                        <div id="security" class="mb-12">
-                            <h4 class="font-semibold text-xl text-gray-700 mb-4">Scene 2: Going Through Security</h4>
-                            <div class="bg-white/50 p-4 rounded-xl flex flex-col space-y-3">
-                                <div class="chat-bubble chat-agent">Please take all <span class="tooltip">laptops<span class="tooltip-text">Computers and large electronics.</span></span> out of your bag and place them in a separate <span class="tooltip">tray<span class="tooltip-text">A plastic bin for your items.</span></span>.</div>
-                                <div class="chat-bubble chat-passenger">Do I need to take my belt off?</div>
-                                <div class="chat-bubble chat-agent">Yes, please. Walk through the <span class="tooltip">metal detector<span class="tooltip-text">A machine that checks for metal.</span></span> when you're ready.</div>
-                                <div class="chat-bubble chat-passenger">(Walks through) Am I all set?</div>
-                                <div class="chat-bubble chat-agent">Yes, you can collect your belongings. Have a nice flight.</div>
-                            </div>
-                        </div>
-
-                         <!-- Scene 3 -->
-                        <div id="departure" class="mb-12">
-                            <h4 class="font-semibold text-xl text-gray-700 mb-4">Scene 3: At the Departure Lounge</h4>
-                            <div class="bg-white/50 p-4 rounded-xl flex flex-col space-y-3">
-                                <div class="chat-bubble chat-agent text-center w-full">"Attention passengers. Flight BA249 is now <span class="tooltip">boarding<span class="tooltip-text">The process of getting on the plane.</span></span> at gate 42B."</div>
-                                <div class="chat-bubble chat-passenger">Excuse me, is this the right gate for Tokyo?</div>
-                                <div class="chat-bubble chat-agent" style="background-color: #D1C4E9; color: #4527A0; align-self: flex-start;">No, you should check the <span class="tooltip">departures board<span class="tooltip-text">The screen with all flight information.</span></span>.</div>
-                                <div class="chat-bubble chat-passenger">Oh, you're right. It seems my flight is <span class="tooltip">delayed<span class="tooltip-text">It will leave later than scheduled.</span></span>.</div>
-                                <div class="chat-bubble chat-agent text-center w-full bg-red-100 text-red-800">"This is the <span class="tooltip">final call<span class="tooltip-text">The last chance to board.</span></span> for flight BA249."</div>
-                            </div>
-                        </div>
-
-                        <!-- Scene 4 -->
-                        <div id="onboard">
-                            <h4 class="font-semibold text-xl text-gray-700 mb-4">Scene 4: On the Airplane</h4>
-                             <div class="bg-white/50 p-4 rounded-xl flex flex-col space-y-3">
-                                <div class="chat-bubble chat-passenger">Excuse me, could you help me find my seat? It's 24A.</div>
-                                <div class="chat-bubble chat-agent">Of course. It's this <span class="tooltip">window seat<span class="tooltip-text">The seat next to the window.</span></span> right here. You can place your bag in the <span class="tooltip">overhead bin<span class="tooltip-text">The storage above your seat.</span></span>.</div>
-                                <div class="chat-bubble chat-passenger">Thank you.</div>
-                                <div class="chat-bubble chat-agent">Please <span class="tooltip">fasten your seatbelt<span class="tooltip-text">Buckle your safety belt.</span></span> for <span class="tooltip">takeoff<span class="tooltip-text">When the plane leaves the ground.</span></span>.</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="quiz" class="fade-in-section">
-                    <div class="glass-card p-6 md:p-8">
-                        <h3 class="flex items-center text-2xl font-bold text-gray-800 mb-6"><span class="section-icon">❓</span>Final Quiz: Test Your Understanding!</h3>
-                        <p class="text-gray-600 mb-8">Now let's check what you've learned. Choose the best response for each conversational question.</p>
-                        <div id="quiz-container" class="max-w-2xl mx-auto">
-                            <div id="question-area" class="mb-6">
-                                <p id="question-text" class="text-lg font-semibold mb-4 text-center"></p>
-                                <div id="options-container" class="space-y-3"></div>
-                            </div>
-                            <div id="feedback-area" class="text-center mb-4 h-6">
-                                <p id="feedback-text" class="font-medium"></p>
-                            </div>
-                            <button id="next-button" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all disabled:from-gray-400 disabled:to-gray-500 disabled:shadow-none">Next Question</button>
-                        </div>
-                        <div id="results-container" class="hidden text-center max-w-2xl mx-auto">
-                            <h4 class="text-2xl font-bold mb-4">Quiz Complete!</h4>
-                            <p id="score-text" class="text-lg mb-6"></p>
-                            <div class="chart-container">
-                                <canvas id="results-chart"></canvas>
-                            </div>
-                            <button id="restart-button" class="mt-8 bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:shadow-lg hover:from-green-600 hover:to-teal-700 transition-all">Try Again</button>
-                        </div>
-                    </div>
-                </section>
             </div>
-        </main>
+        </section>
+
+        <section id="language" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Language & Quantifying Results</h2>
+            <p class="text-lg text-gray-600 mb-8">Using the right language is key to sounding professional and credible. This section provides phrases to help you introduce your project and describe its results, plus a visual on how to quantify your impact with data.</p>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Functional Language</h3>
+                     <div class="border-b border-gray-200">
+                        <nav id="lang-tabs" class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <button data-tab="intro" class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Introducing</button>
+                            <button data-tab="challenges" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700">Challenges & Solutions</button>
+                            <button data-tab="results" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700">Results</button>
+                        </nav>
+                    </div>
+                    <div class="mt-6">
+                        <div id="tab-intro" class="tab-content active">
+                            <ul class="space-y-3 text-gray-700 list-disc list-inside">
+                                <li>"The project began with the goal of addressing..."</li>
+                                <li>"We identified a key problem where users were struggling with..."</li>
+                                <li>"The main objective was to improve..."</li>
+                            </ul>
+                        </div>
+                        <div id="tab-challenges" class="tab-content">
+                            <ul class="space-y-3 text-gray-700 list-disc list-inside">
+                                <li>"One of the main challenges we faced was..."</li>
+                                <li>"To solve this, we implemented a new design that..."</li>
+                                <li>"After several iterations, we arrived at a solution which..."</li>
+                            </ul>
+                        </div>
+                         <div id="tab-results" class="tab-content">
+                            <ul class="space-y-3 text-gray-700 list-disc list-inside">
+                                <li>"As a result, we saw a significant improvement in..."</li>
+                                <li>"The final design led to a..."</li>
+                                <li>"User feedback confirmed that the new feature was..."</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Quantifying Impact with KPIs</h3>
+                    <p class="text-gray-600 mb-4">Data makes your impact undeniable. Show how your design work improved key performance indicators (KPIs). For example, demonstrating a change in metrics like this is powerful:</p>
+                    <div class="chart-container relative w-full h-80 max-h-80 max-w-lg mx-auto">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Practice & Application</h2>
+            <p class="text-lg text-gray-600 mb-8">Now it's time to put your learning into practice. Use these activities to hone your presentation skills and analyze how others apply these concepts.</p>
+            <div class="space-y-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Mini-Portfolio Presentation Practice</h3>
+                    <p class="text-gray-600 mb-4">Choose your favorite project and draft a 5-minute presentation outline in the box below. Use the 4-part structure (Problem, Process, Insights, Impact) we discussed. This is your chance to start crafting your story.</p>
+                    <textarea class="w-full h-48 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="1. Problem: What was the core user issue?&#10;2. Process: What were my key design steps?&#10;3. Insights: What did I learn along the way?&#10;4. Impact: How did my work improve things?"></textarea>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Listening & Analysis Activity</h3>
+                    <p class="text-gray-600 mb-4">Read the mock presentation transcript below. Click on the <span class="bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm">highlighted phrases</span> to see an analysis of the language and techniques being used.</p>
+                    <div id="analysis-text" class="text-gray-700 leading-relaxed space-y-3">
+                        <p>"Good morning. Today I'll be sharing a case study about the redesign of the 'CityGardens' mobile checkout. <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="This is a clear, direct opening that states the topic and project scope immediately.">The original app had a high cart abandonment rate—nearly 70%—which our initial research linked to a confusing, multi-page checkout process.</span>"</p>
+                        <p>"Our team started with user journey mapping and competitive analysis. <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="Using past tense ('started', 'conducted') correctly describes completed project actions. It establishes a clear timeline of the process.">We conducted five user interviews which revealed a major pain point: the lack of guest checkout.</span>"</p>
+                        <p>"Based on this insight, our main focus became creating a streamlined, single-page checkout with an optional 'create account' step after purchase. <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="This phrase directly connects a research insight ('lack of guest checkout') to a specific design decision, showing logical, data-driven design.">We iterated on three different layouts before user testing confirmed our final direction.</span>"</p>
+                        <p>"After launching the new design, <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="Here, the presenter quantifies the project's success using a specific KPI ('cart abandonment rate') and a percentage change, demonstrating clear, measurable impact.">we successfully reduced the cart abandonment rate by 45% in the first quarter,</span> leading to a projected revenue increase of over $200,000 for the year. Thank you."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="homework" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Homework</h2>
+            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg">
+                <p class="text-lg text-indigo-900">Prepare a detailed outline for a 5-minute portfolio presentation focusing on one specific project. Build upon the draft you started in the practice activity. Your outline should have clear sections for the problem, your process, key insights, and the project's impact, including the specific language and metrics you plan to use.</p>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="analysis-popup" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-gray-800 text-white p-4 rounded-lg shadow-2xl max-w-xs w-full opacity-0 transform translate-y-4 pointer-events-none">
+        <p id="analysis-popup-text"></p>
     </div>
-
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- Animation on Scroll ---
-            const sections = document.querySelectorAll('.fade-in-section');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-            sections.forEach(section => observer.observe(section));
+        document.addEventListener('DOMContentLoaded', () => {
 
-            // --- Mobile Navigation ---
-            const mobileNav = document.getElementById('mobile-nav');
-            mobileNav.addEventListener('change', (e) => {
-                const target = e.target.value;
-                if (target && target !== 'Menu') {
-                    const element = document.querySelector(target);
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }
-            });
-            
-            // --- Vocabulary Section ---
-            const vocabData = [
-                { term: 'Boarding Pass', definition: 'The document that allows you to get on the plane.', example: 'You must show your boarding pass at the gate.' },
-                { term: 'Carry-on', definition: 'A small bag you are allowed to take with you onto the airplane.', example: 'I only have a backpack as my carry-on.' },
-                { term: 'Check-in', definition: 'The process of announcing your arrival at the airport to the airline.', example: 'You can check-in online or at the airport.' },
-                { term: 'Delayed', definition: 'The flight will leave later than its scheduled time.', example: 'Our flight was delayed due to bad weather.' },
-                { term: 'Gate', definition: 'The specific door in the airport where you will get on the plane.', example: 'Our flight departs from gate C7.' },
-                { term: 'Landing', definition: 'The process of the airplane returning to the ground at its destination.', example: 'The landing was very smooth.' },
-                { term: 'Overhead Bin', definition: 'The storage compartment above the seats for carry-on luggage.', example: 'Please store larger items in the overhead bin.' },
-                { term: 'Takeoff', definition: 'The moment the airplane leaves the ground and begins to fly.', example: 'Passengers must be seated during takeoff.' }
+            const vocabulary = [
+                { term: "Information Architecture (IA)", definition: "The art and science of organizing and labeling websites, intranets, online communities and software to support usability and findability." },
+                { term: "Interaction Design (IxD)", definition: "The practice of designing interactive digital products, environments, systems, and services. It focuses on the structure and behavior of interactive systems." },
+                { term: "Intuitive UX Design", definition: "Creating a user experience that is easy to understand and use, requiring little to no explanation for the user to navigate and achieve their goals." },
+                { term: "Iteration", definition: "The repetitive process of refining a design or product. It involves a cycle of prototyping, testing, analyzing, and refining a product or process." },
+                { term: "Key Performance Indicator (KPI)", definition: "A measurable value that demonstrates how effectively a company is achieving key business objectives. In UX, this could be conversion rate, task success rate, or user satisfaction." },
+                { term: "Lean UX", definition: "A user-centered design approach that prioritizes rapid experimentation and learning over detailed deliverables. It's about 'build, measure, learn' cycles." },
+                { term: "Material Design", definition: "A design language developed by Google that uses grid-based layouts, responsive animations and transitions, padding, and depth effects such as lighting and shadows." },
+                { term: "Mental Model", definition: "A user's thought process and belief about how a system works. Good UX aligns the product's design with the user's existing mental models." },
+                { term: "Microcopy", definition: "The small bits of text on user interfaces that help guide users, such as button labels, error messages, and placeholder text." },
+                { term: "Minimum Viable Product (MVP)", definition: "A version of a new product which allows a team to collect the maximum amount of validated learning about customers with the least effort." }
             ];
 
-            const vocabList = document.getElementById('vocab-list');
-            vocabData.forEach(item => {
-                const vocabItem = document.createElement('div');
-                vocabItem.className = 'vocab-item bg-white/60 rounded-xl shadow-sm cursor-pointer border border-white/50';
-                vocabItem.innerHTML = `
-                    <div class="p-4 flex justify-between items-center">
-                        <h4 class="font-semibold text-lg text-gray-800">${item.term}</h4>
-                        <span class="vocab-arrow text-blue-500 text-2xl font-light">▼</span>
-                    </div>
-                    <div class="vocab-content px-4 text-gray-700">
-                        <p class="font-medium">${item.definition}</p>
-                        <p class="text-sm italic mt-1 text-gray-500">e.g., "${item.example}"</p>
+            const vocabGrid = document.getElementById('vocab-grid');
+            vocabulary.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'vocab-card h-40 perspective-1000';
+                card.innerHTML = `
+                    <div class="relative w-full h-full">
+                        <div class="vocab-card-face absolute w-full h-full bg-white shadow-md rounded-lg flex items-center justify-center p-4 text-center">
+                            <h4 class="font-semibold text-gray-800">${item.term}</h4>
+                        </div>
+                        <div class="vocab-card-back absolute w-full h-full bg-indigo-600 text-white shadow-md rounded-lg flex items-center justify-center p-4 text-center">
+                            <p class="text-sm">${item.definition}</p>
+                        </div>
                     </div>
                 `;
-                vocabList.appendChild(vocabItem);
-            });
-
-            vocabList.addEventListener('click', function(e) {
-                const header = e.target.closest('.vocab-item');
-                if (header) {
-                    header.classList.toggle('is-open');
-                }
-            });
-
-            // --- Quiz Logic ---
-            const quizData = [
-                { question: "An airline agent asks: 'Window or aisle seat?' What are they asking you to choose?", options: ["Your meal preference", "Your seat location", "Your baggage type", "Your flight destination"], answer: "Your seat location" },
-                { question: "A security officer tells you to put your laptop in a 'tray'. What is a tray?", options: ["Your backpack", "A plastic bin for the scanner", "A special security bag", "The overhead bin"], answer: "A plastic bin for the scanner" },
-                { question: "You hear an announcement: 'This is the final call for Flight 123.' What does this mean?", options: ["The flight is canceled", "The flight is delayed", "It's the last chance to board", "The flight has already left"], answer: "It's the last chance to board" },
-                { question: "A flight attendant asks you to 'fasten your seatbelt'. What should you do?", options: ["Put your seat up", "Open the window shade", "Buckle your safety belt", "Turn off your phone"], answer: "Buckle your safety belt" },
-                { question: "If the departures board says your flight is 'delayed', what does it mean?", options: ["It's leaving on time", "It's leaving earlier", "It's leaving later than scheduled", "The gate has changed"], answer: "It's leaving later than scheduled" },
-                { question: "What is a 'boarding pass'?", options: ["Your passport", "A ticket for a bus to the plane", "A document to get on the plane", "A luggage receipt"], answer: "A document to get on the plane" },
-                { question: "What is the difference between 'checked baggage' and a 'carry-on'?", options: ["One is heavy, one is light", "One goes in the cargo hold, one stays with you", "One is for clothes, one is for electronics", "There is no difference"], answer: "One goes in the cargo hold, one stays with you" },
-                { question: "What does 'takeoff' refer to?", options: ["The plane arriving at the gate", "The plane leaving the ground", "The meal service on the plane", "The process of getting off the plane"], answer: "The plane leaving the ground" },
-            ];
-
-            let currentQuestionIndex = 0;
-            let score = 0;
-            let chartInstance = null;
-            const questionText = document.getElementById('question-text');
-            const optionsContainer = document.getElementById('options-container');
-            const feedbackText = document.getElementById('feedback-text');
-            const nextButton = document.getElementById('next-button');
-            const quizContainer = document.getElementById('quiz-container');
-            const resultsContainer = document.getElementById('results-container');
-            const scoreText = document.getElementById('score-text');
-            const restartButton = document.getElementById('restart-button');
-
-            function loadQuestion() {
-                if (currentQuestionIndex < quizData.length) {
-                    feedbackText.textContent = '';
-                    nextButton.disabled = true;
-                    const currentQuestion = quizData[currentQuestionIndex];
-                    questionText.textContent = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
-                    optionsContainer.innerHTML = '';
-                    currentQuestion.options.forEach(option => {
-                        const button = document.createElement('button');
-                        button.textContent = option;
-                        button.className = "w-full text-left p-3 border-2 border-gray-300/50 bg-white/50 rounded-lg hover:bg-white/90 hover:border-blue-400 quiz-option";
-                        button.onclick = () => selectAnswer(button, option, currentQuestion.answer);
-                        optionsContainer.appendChild(button);
-                    });
-                } else {
-                    showResults();
-                }
-            }
-
-            function selectAnswer(button, selectedOption, correctAnswer) {
-                Array.from(optionsContainer.children).forEach(btn => {
-                    btn.disabled = true;
-                    btn.classList.remove('hover:bg-white/90', 'hover:border-blue-400');
+                card.addEventListener('click', () => {
+                    card.classList.toggle('is-flipped');
                 });
-                nextButton.disabled = false;
-                
-                if (selectedOption === correctAnswer) {
-                    score++;
-                    button.classList.add('bg-green-200/80', 'border-green-500');
-                    feedbackText.textContent = "Correct!";
-                    feedbackText.className = 'font-medium text-green-700';
-                } else {
-                    button.classList.add('bg-red-200/80', 'border-red-500');
-                    feedbackText.textContent = `Incorrect. The correct answer is "${correctAnswer}".`;
-                    feedbackText.className = 'font-medium text-red-700';
-                    Array.from(optionsContainer.children).forEach(btn => {
-                        if (btn.textContent === correctAnswer) {
-                           btn.classList.add('bg-green-200/80', 'border-green-500');
-                        }
-                    });
-                }
+                vocabGrid.appendChild(card);
+            });
 
-                if (currentQuestionIndex === quizData.length - 1) {
-                    nextButton.textContent = "View Results";
-                }
-            }
-            
-            function showResults() {
-                quizContainer.classList.add('hidden');
-                resultsContainer.classList.remove('hidden');
-                scoreText.textContent = `You answered ${score} out of ${quizData.length} questions correctly.`;
-                
-                const ctx = document.getElementById('results-chart').getContext('2d');
-                if(chartInstance) {
-                    chartInstance.destroy();
-                }
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Correct', 'Incorrect'],
-                        datasets: [{
-                            label: 'Your Performance',
-                            data: [score, quizData.length - score],
-                            backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
-                            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
-                            borderWidth: 1,
-                            borderRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1,
-                                    precision: 0,
-                                    color: '#666'
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    color: '#666'
-                                }
+            const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+            const kpiChart = new Chart(kpiCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Task Success Rate', 'User Satisfaction', 'Time on Task (s)'],
+                    datasets: [{
+                        label: 'Before Redesign',
+                        data: [65, 70, 120],
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'After Redesign',
+                        data: [88, 92, 75],
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                             grid: {
+                                color: '#e5e7eb'
                             }
                         },
-                        plugins: {
-                            legend: {
+                        y: {
+                            grid: {
                                 display: false
                             }
                         }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Project Impact on Key Metrics'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        let value = context.parsed.x;
+                                        if (context.label.includes('Rate')) {
+                                            label += value + '%';
+                                        } else if (context.label.includes('Time')) {
+                                            label += value + ' seconds';
+                                        } else {
+                                             label += value;
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
                     }
-                });
-            }
-
-            function restartQuiz() {
-                currentQuestionIndex = 0;
-                score = 0;
-                resultsContainer.classList.add('hidden');
-                quizContainer.classList.remove('hidden');
-                nextButton.textContent = "Next Question";
-                loadQuestion();
-            }
-
-            nextButton.addEventListener('click', () => {
-                currentQuestionIndex++;
-                loadQuestion();
+                }
             });
 
-            restartButton.addEventListener('click', restartQuiz);
+            const tabsContainer = document.getElementById('lang-tabs');
+            const tabButtons = tabsContainer.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-button')) {
+                    const targetTab = e.target.dataset.tab;
+                    
+                    tabButtons.forEach(button => {
+                        button.classList.remove('active');
+                        if (button.dataset.tab === targetTab) {
+                            button.classList.add('active');
+                        }
+                    });
+
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `tab-${targetTab}`) {
+                            content.classList.add('active');
+                        }
+                    });
+                }
+            });
             
-            loadQuestion();
+            const analysisTriggers = document.querySelectorAll('.analysis-trigger');
+            const popup = document.getElementById('analysis-popup');
+            const popupText = document.getElementById('analysis-popup-text');
+            let popupTimeout;
+            
+            analysisTriggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const analysis = trigger.dataset.analysis;
+                    popupText.textContent = analysis;
+                    
+                    popup.classList.remove('opacity-0', 'translate-y-4');
+                    popup.classList.add('opacity-100', 'transform-none');
+                    
+                    clearTimeout(popupTimeout);
+                    popupTimeout = setTimeout(() => {
+                        popup.classList.add('opacity-0', 'translate-y-4');
+                        popup.classList.remove('opacity-100', 'transform-none');
+                    }, 5000);
+                });
+            });
+
+            document.body.addEventListener('click', () => {
+                popup.classList.add('opacity-0', 'translate-y-4');
+                popup.classList.remove('opacity-100', 'transform-none');
+                clearTimeout(popupTimeout);
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-button');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '-20% 0px -80% 0px' });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
         });
     </script>
+
 </body>
 </html>
