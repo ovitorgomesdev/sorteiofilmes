@@ -3,422 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 6: Presenting Portfolio Projects Effectively</title>
+    <title>CELTA Lesson Plan Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Study -->
-    <!-- Application Structure Plan: The application is structured as a linear, interactive learning module to guide students through the lesson plan step-by-step. The flow is designed for educational effectiveness: 1. Introduction & Objectives to set context. 2. Interactive Vocabulary Flashcards for active learning. 3. A Visual Guide to Presentation Structure to provide a clear framework. 4. An Interactive Language & Metrics section with a chart to make abstract concepts tangible. 5. Practice Activities to apply knowledge. 6. A concluding Homework section. This sequential, interactive design transforms the static lesson plan into an engaging experience that reinforces learning at each stage. -->
-    <!-- Visualization & Content Choices: Objectives -> Goal: Inform -> Method: Styled List -> Interaction: Static. Vocabulary -> Goal: Organize/Inform -> Method: HTML/JS Flashcards -> Interaction: Click-to-reveal. Justification: Active recall is superior to passive reading for learning terms. Presentation Structure -> Goal: Organize/Inform -> Method: Numbered HTML/CSS Cards -> Interaction: Static visual guide. Justification: Clearly visualizes the narrative flow. Quantifying Impact -> Goal: Compare/Inform -> Method: Chart.js Bar Chart -> Interaction: Hover tooltips. Justification: Visually demonstrates the impact of using metrics. Functional Language -> Goal: Organize/Inform -> Method: JS-powered Tabs -> Interaction: Click to switch content. Justification: Neatly organizes text snippets. Listening Activity -> Goal: Analyze -> Method: Interactive Text Block -> Interaction: Click to reveal analysis. Justification: Simulates an analytical task interactively. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F8F7F4;
-            color: #4A4A4A;
         }
-        .nav-button.active {
-            background-color: #4F46E5;
-            color: #FFFFFF;
-            font-weight: 600;
+        .section-container {
+            border-left: 3px solid;
+            transition: border-color 0.3s ease;
         }
-        .nav-button {
-            transition: all 0.3s ease;
+        .section-container:hover {
+            border-left-color: #4f46e5; /* indigo-600 */
         }
-        .tab-content {
-            display: none;
+        textarea {
+            resize: vertical;
         }
-        .tab-content.active {
-            display: block;
-        }
-        .tab-button.active {
-            border-bottom-color: #4F46E5;
-            color: #4F46E5;
-            font-weight: 600;
-        }
-        .analysis-popup {
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .vocab-card.is-flipped {
-            transform: rotateY(180deg);
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #lesson-plan-form, #lesson-plan-form * {
+                visibility: visible;
+            }
+            #lesson-plan-form {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-gray-100 text-gray-800">
 
-    <header class="bg-white shadow-sm sticky top-0 z-20">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <h1 class="text-xl md:text-2xl font-bold text-gray-800">Effective Portfolio Presentations</h1>
-                <div class="hidden md:flex items-center space-x-2">
-                    <a href="#objectives" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Objectives</a>
-                    <a href="#vocabulary" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Vocabulary</a>
-                    <a href="#structure" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Structure</a>
-                    <a href="#language" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Language</a>
-                    <a href="#activities" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Activities</a>
-                    <a href="#homework" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200">Homework</a>
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">CELTA Lesson Plan Generator</h1>
+            <p class="text-md text-gray-600 mt-2">Fill in the details below and generate a professional lesson plan PDF.</p>
+        </header>
+
+        <div id="controls" class="bg-white p-4 rounded-lg shadow-md mb-8 sticky top-4 z-10 no-print">
+            <h2 class="text-lg font-semibold mb-3 text-gray-700">Controls</h2>
+            <div class="flex flex-wrap gap-3">
+                <button onclick="addSection('Grammar')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-transform transform hover:scale-105">
+                    + Add Grammar
+                </button>
+                <button onclick="addSection('Vocabulary')" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-transform transform hover:scale-105">
+                    + Add Vocabulary
+                </button>
+                <button onclick="addSection('Pronunciation')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-transform transform hover:scale-105">
+                    + Add Pronunciation
+                </button>
+                <button onclick="addSection('Reading')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-transform transform hover:scale-105">
+                    + Add Reading
+                </button>
+                <button onclick="addSection('Speaking')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-transform transform hover:scale-105">
+                    + Add Speaking
+                </button>
+            </div>
+            <div class="mt-4">
+                 <button id="generate-pdf" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-102">
+                    Generate PDF
+                </button>
+            </div>
+        </div>
+
+        <main id="lesson-plan-form" class="bg-white p-6 sm:p-8 rounded-lg shadow-lg">
+            <!-- General Lesson Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b pb-6">
+                 <div>
+                    <label for="teacher-name" class="block text-sm font-medium text-gray-700 mb-1">Teacher's Name</label>
+                    <input type="text" id="teacher-name" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="lesson-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" id="lesson-date" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="lesson-title" class="block text-sm font-medium text-gray-700 mb-1">Lesson Title / Aims</label>
+                    <input type="text" id="lesson-title" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                 <div>
+                    <label for="class-level" class="block text-sm font-medium text-gray-700 mb-1">Class Level</label>
+                    <input type="text" id="class-level" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
             </div>
-        </nav>
-    </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div id="sections-container" class="space-y-8">
+                <!-- Dynamic sections will be inserted here -->
+            </div>
+        </main>
         
-        <section id="objectives" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Lesson Objectives</h2>
-            <p class="text-lg text-gray-600 mb-6">This lesson will teach you how to structure a compelling portfolio presentation. You will learn to effectively highlight key insights from your projects and confidently discuss the impact of your design work, turning your portfolio from a simple gallery into a powerful story of your skills.</p>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <div class="flex items-center">
-                        <span class="text-3xl mr-4">🏗️</span>
-                        <h3 class="text-lg font-semibold text-gray-800">Structure a Presentation</h3>
-                    </div>
-                    <p class="mt-2 text-gray-600">Learn to build a clear, logical narrative for your projects.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <div class="flex items-center">
-                        <span class="text-3xl mr-4">💡</span>
-                        <h3 class="text-lg font-semibold text-gray-800">Highlight Key Insights</h3>
-                    </div>
-                    <p class="mt-2 text-gray-600">Showcase the crucial discoveries and decisions in your process.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow">
-                     <div class="flex items-center">
-                        <span class="text-3xl mr-4">📈</span>
-                        <h3 class="text-lg font-semibold text-gray-800">Discuss Design Impact</h3>
-                    </div>
-                    <p class="mt-2 text-gray-600">Articulate the value and results of your work using data.</p>
-                </div>
-            </div>
-             <div class="mt-8 bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg">
-                <h3 class="font-bold text-indigo-900">Warm-up Discussion</h3>
-                <p class="text-indigo-800 mt-2">Before we dive in, take a moment to think: What makes a good and engaging presentation? What have you seen in the past that worked well, and what didn't?</p>
-            </div>
-        </section>
+        <!-- Loading Spinner -->
+        <div id="loader" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+            <p class="text-white ml-4 text-lg">Generating PDF...</p>
+        </div>
 
-        <section id="vocabulary" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Key Vocabulary</h2>
-            <p class="text-lg text-gray-600 mb-8">Mastering the language of design is crucial. Click on each card to flip it and learn the definition. These terms will help you describe your work professionally.</p>
-            <div id="vocab-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-                <!-- Vocabulary cards will be generated by JavaScript here -->
-            </div>
-        </section>
-
-        <section id="structure" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Structuring Your Narrative</h2>
-            <p class="text-lg text-gray-600 mb-8">A great presentation tells a story. Follow this four-part structure to guide your audience from the initial problem to the final, impactful solution. This creates a clear and memorable narrative for any project.</p>
-            <div class="relative">
-                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 -translate-y-1/2"></div>
-                <div class="relative grid md:grid-cols-4 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-red-500">
-                        <div class="flex items-center mb-2">
-                           <span class="text-2xl font-bold text-red-500 mr-3">1</span> 
-                           <h3 class="text-xl font-semibold text-gray-800">The Problem</h3>
-                        </div>
-                        <p class="text-gray-600">Start with the "why." Clearly articulate the user need or business challenge your project addressed. Set the stage for your solution.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-blue-500">
-                        <div class="flex items-center mb-2">
-                           <span class="text-2xl font-bold text-blue-500 mr-3">2</span> 
-                           <h3 class="text-xl font-semibold text-gray-800">The Process</h3>
-                        </div>
-                        <p class="text-gray-600">Explain the "how." Walk through your design journey—the research, ideation, and key decisions. Show your thinking.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-yellow-500">
-                        <div class="flex items-center mb-2">
-                           <span class="text-2xl font-bold text-yellow-500 mr-3">3</span> 
-                           <h3 class="text-xl font-semibold text-gray-800">The Insights</h3>
-                        </div>
-                        <p class="text-gray-600">Reveal what you learned. What were the "aha!" moments? Highlight the key insights that shaped your final design.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-green-500">
-                        <div class="flex items-center mb-2">
-                           <span class="text-2xl font-bold text-green-500 mr-3">4</span> 
-                           <h3 class="text-xl font-semibold text-gray-800">The Impact</h3>
-                        </div>
-                        <p class="text-gray-600">Finish with the "so what?" Discuss the project's outcome. Use metrics and qualitative feedback to prove its success.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="language" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Language & Quantifying Results</h2>
-            <p class="text-lg text-gray-600 mb-8">Using the right language is key to sounding professional and credible. This section provides phrases to help you introduce your project and describe its results, plus a visual on how to quantify your impact with data.</p>
-            <div class="grid lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Functional Language</h3>
-                     <div class="border-b border-gray-200">
-                        <nav id="lang-tabs" class="-mb-px flex space-x-6" aria-label="Tabs">
-                            <button data-tab="intro" class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Introducing</button>
-                            <button data-tab="challenges" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700">Challenges & Solutions</button>
-                            <button data-tab="results" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700">Results</button>
-                        </nav>
-                    </div>
-                    <div class="mt-6">
-                        <div id="tab-intro" class="tab-content active">
-                            <ul class="space-y-3 text-gray-700 list-disc list-inside">
-                                <li>"The project began with the goal of addressing..."</li>
-                                <li>"We identified a key problem where users were struggling with..."</li>
-                                <li>"The main objective was to improve..."</li>
-                            </ul>
-                        </div>
-                        <div id="tab-challenges" class="tab-content">
-                            <ul class="space-y-3 text-gray-700 list-disc list-inside">
-                                <li>"One of the main challenges we faced was..."</li>
-                                <li>"To solve this, we implemented a new design that..."</li>
-                                <li>"After several iterations, we arrived at a solution which..."</li>
-                            </ul>
-                        </div>
-                         <div id="tab-results" class="tab-content">
-                            <ul class="space-y-3 text-gray-700 list-disc list-inside">
-                                <li>"As a result, we saw a significant improvement in..."</li>
-                                <li>"The final design led to a..."</li>
-                                <li>"User feedback confirmed that the new feature was..."</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Quantifying Impact with KPIs</h3>
-                    <p class="text-gray-600 mb-4">Data makes your impact undeniable. Show how your design work improved key performance indicators (KPIs). For example, demonstrating a change in metrics like this is powerful:</p>
-                    <div class="chart-container relative w-full h-80 max-h-80 max-w-lg mx-auto">
-                        <canvas id="kpiChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="activities" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Practice & Application</h2>
-            <p class="text-lg text-gray-600 mb-8">Now it's time to put your learning into practice. Use these activities to hone your presentation skills and analyze how others apply these concepts.</p>
-            <div class="space-y-8">
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Mini-Portfolio Presentation Practice</h3>
-                    <p class="text-gray-600 mb-4">Choose your favorite project and draft a 5-minute presentation outline in the box below. Use the 4-part structure (Problem, Process, Insights, Impact) we discussed. This is your chance to start crafting your story.</p>
-                    <textarea class="w-full h-48 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="1. Problem: What was the core user issue?&#10;2. Process: What were my key design steps?&#10;3. Insights: What did I learn along the way?&#10;4. Impact: How did my work improve things?"></textarea>
-                </div>
-
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Listening & Analysis Activity</h3>
-                    <p class="text-gray-600 mb-4">Read the mock presentation transcript below. Click on the <span class="bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm">highlighted phrases</span> to see an analysis of the language and techniques being used.</p>
-                    <div id="analysis-text" class="text-gray-700 leading-relaxed space-y-3">
-                        <p>"Good morning. Today I'll be sharing a case study about the redesign of the 'CityGardens' mobile checkout. <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="This is a clear, direct opening that states the topic and project scope immediately.">The original app had a high cart abandonment rate—nearly 70%—which our initial research linked to a confusing, multi-page checkout process.</span>"</p>
-                        <p>"Our team started with user journey mapping and competitive analysis. <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="Using past tense ('started', 'conducted') correctly describes completed project actions. It establishes a clear timeline of the process.">We conducted five user interviews which revealed a major pain point: the lack of guest checkout.</span>"</p>
-                        <p>"Based on this insight, our main focus became creating a streamlined, single-page checkout with an optional 'create account' step after purchase. <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="This phrase directly connects a research insight ('lack of guest checkout') to a specific design decision, showing logical, data-driven design.">We iterated on three different layouts before user testing confirmed our final direction.</span>"</p>
-                        <p>"After launching the new design, <span class="analysis-trigger bg-yellow-200 text-yellow-800 font-medium px-1 rounded-sm cursor-pointer" data-analysis="Here, the presenter quantifies the project's success using a specific KPI ('cart abandonment rate') and a percentage change, demonstrating clear, measurable impact.">we successfully reduced the cart abandonment rate by 45% in the first quarter,</span> leading to a projected revenue increase of over $200,000 for the year. Thank you."</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="homework" class="scroll-mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Homework</h2>
-            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg">
-                <p class="text-lg text-indigo-900">Prepare a detailed outline for a 5-minute portfolio presentation focusing on one specific project. Build upon the draft you started in the practice activity. Your outline should have clear sections for the problem, your process, key insights, and the project's impact, including the specific language and metrics you plan to use.</p>
-            </div>
-        </section>
-
-    </main>
-    
-    <div id="analysis-popup" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 bg-gray-800 text-white p-4 rounded-lg shadow-2xl max-w-xs w-full opacity-0 transform translate-y-4 pointer-events-none">
-        <p id="analysis-popup-text"></p>
     </div>
-    
+
+    <!-- Template for a single section block -->
+    <template id="section-template">
+        <div class="section-container border-gray-300 pl-4 py-2 relative">
+             <button onclick="this.parentElement.remove()" class="no-print absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </button>
+            <h3 class="section-title text-2xl font-semibold text-indigo-700 mb-4">Section Title</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Lead-in</label>
+                    <textarea rows="3" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Engage interest and activate prior knowledge..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Presentation</label>
+                    <textarea rows="4" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Introduce target language (contextualized, not isolated)..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Controlled Practice</label>
+                    <textarea rows="4" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe activities and how they will be presented/done. Include interaction pattern..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Freer Practice</label>
+                    <textarea rows="4" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe activities and how they will be presented/done. Include interaction pattern..."></textarea>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script>
+        // Ensure jsPDF is loaded
+        window.jsPDF = window.jspdf.jsPDF;
+
+        // Function to add a new section from the template
+        function addSection(title) {
+            const template = document.getElementById('section-template');
+            const clone = template.content.cloneNode(true);
+            
+            // Set the title of the new section
+            const titleElement = clone.querySelector('.section-title');
+            titleElement.textContent = `${title} Focus`;
+
+            // Add a specific color to the border based on the section type
+            const sectionContainer = clone.querySelector('.section-container');
+            const colorMap = {
+                'Grammar': 'border-blue-500',
+                'Vocabulary': 'border-green-500',
+                'Pronunciation': 'border-purple-500',
+                'Reading': 'border-orange-500',
+                'Speaking': 'border-red-500',
+                'Default': 'border-gray-400'
+            };
+            sectionContainer.classList.add(colorMap[title] || colorMap['Default']);
+            
+            // Append the new section to the container
+            document.getElementById('sections-container').appendChild(clone);
+        }
+
+        // Add a default section on page load
         document.addEventListener('DOMContentLoaded', () => {
+            addSection('Main Lesson');
+        });
 
-            const vocabulary = [
-                { term: "Information Architecture (IA)", definition: "The art and science of organizing and labeling websites, intranets, online communities and software to support usability and findability." },
-                { term: "Interaction Design (IxD)", definition: "The practice of designing interactive digital products, environments, systems, and services. It focuses on the structure and behavior of interactive systems." },
-                { term: "Intuitive UX Design", definition: "Creating a user experience that is easy to understand and use, requiring little to no explanation for the user to navigate and achieve their goals." },
-                { term: "Iteration", definition: "The repetitive process of refining a design or product. It involves a cycle of prototyping, testing, analyzing, and refining a product or process." },
-                { term: "Key Performance Indicator (KPI)", definition: "A measurable value that demonstrates how effectively a company is achieving key business objectives. In UX, this could be conversion rate, task success rate, or user satisfaction." },
-                { term: "Lean UX", definition: "A user-centered design approach that prioritizes rapid experimentation and learning over detailed deliverables. It's about 'build, measure, learn' cycles." },
-                { term: "Material Design", definition: "A design language developed by Google that uses grid-based layouts, responsive animations and transitions, padding, and depth effects such as lighting and shadows." },
-                { term: "Mental Model", definition: "A user's thought process and belief about how a system works. Good UX aligns the product's design with the user's existing mental models." },
-                { term: "Microcopy", definition: "The small bits of text on user interfaces that help guide users, such as button labels, error messages, and placeholder text." },
-                { term: "Minimum Viable Product (MVP)", definition: "A version of a new product which allows a team to collect the maximum amount of validated learning about customers with the least effort." }
-            ];
+        // Function to generate and download the PDF
+        document.getElementById('generate-pdf').addEventListener('click', () => {
+            const form = document.getElementById('lesson-plan-form');
+            const loader = document.getElementById('loader');
+            
+            loader.classList.remove('hidden'); // Show loader
 
-            const vocabGrid = document.getElementById('vocab-grid');
-            vocabGrid.innerHTML = ''; 
-
-            vocabulary.forEach(item => {
-                const cardContainer = document.createElement('div');
-                cardContainer.className = 'h-40 cursor-pointer [perspective:1000px]';
-
-                const card = document.createElement('div');
-                card.className = 'vocab-card relative w-full h-full duration-500 [transform-style:preserve-3d]';
-
-                card.innerHTML = `
-                    <div class="absolute w-full h-full bg-white shadow-md rounded-lg flex items-center justify-center p-4 text-center [backface-visibility:hidden]">
-                        <h4 class="font-semibold text-gray-800">${item.term}</h4>
-                    </div>
-                    <div class="absolute w-full h-full bg-indigo-600 text-white shadow-md rounded-lg flex items-center justify-center p-4 text-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                        <p class="text-sm">${item.definition}</p>
-                    </div>
-                `;
-
-                cardContainer.appendChild(card);
-                vocabGrid.appendChild(cardContainer);
-
-                cardContainer.addEventListener('click', () => {
-                    card.classList.toggle('is-flipped');
-                });
-            });
-
-            const kpiCtx = document.getElementById('kpiChart').getContext('2d');
-            const kpiChart = new Chart(kpiCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Task Success Rate', 'User Satisfaction', 'Time on Task (s)'],
-                    datasets: [{
-                        label: 'Before Redesign',
-                        data: [65, 70, 120],
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }, {
-                        label: 'After Redesign',
-                        data: [88, 92, 75],
-                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                             grid: {
-                                color: '#e5e7eb'
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Project Impact on Key Metrics'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.x !== null) {
-                                        let value = context.parsed.x;
-                                        if (context.label.includes('Rate')) {
-                                            label += value + '%';
-                                        } else if (context.label.includes('Time')) {
-                                            label += value + ' seconds';
-                                        } else {
-                                             label += value;
-                                        }
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            const tabsContainer = document.getElementById('lang-tabs');
-            const tabButtons = tabsContainer.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabsContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('tab-button')) {
-                    const targetTab = e.target.dataset.tab;
-                    
-                    tabButtons.forEach(button => {
-                        button.classList.remove('active');
-                        if (button.dataset.tab === targetTab) {
-                            button.classList.add('active');
-                        }
-                    });
-
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        if (content.id === `tab-${targetTab}`) {
-                            content.classList.add('active');
-                        }
+            // Use html2canvas to capture the form as an image
+            html2canvas(form, {
+                scale: 2, // Improve resolution
+                useCORS: true,
+                onclone: (document) => {
+                    // This runs on the cloned document before rendering
+                    // We can adjust styles for the PDF here if needed
+                    // For example, ensuring textareas show all content
+                    const textareas = document.querySelectorAll('textarea');
+                    textareas.forEach(ta => {
+                        ta.style.height = ta.scrollHeight + 'px';
+                        ta.style.overflow = 'hidden';
+                        ta.style.border = '1px solid #ccc'; // Ensure border is visible
                     });
                 }
-            });
-            
-            const analysisTriggers = document.querySelectorAll('.analysis-trigger');
-            const popup = document.getElementById('analysis-popup');
-            const popupText = document.getElementById('analysis-popup-text');
-            let popupTimeout;
-            
-            analysisTriggers.forEach(trigger => {
-                trigger.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const analysis = trigger.dataset.analysis;
-                    popupText.textContent = analysis;
-                    
-                    popup.classList.remove('opacity-0', 'translate-y-4');
-                    popup.classList.add('opacity-100', 'transform-none');
-                    
-                    clearTimeout(popupTimeout);
-                    popupTimeout = setTimeout(() => {
-                        popup.classList.add('opacity-0', 'translate-y-4');
-                        popup.classList.remove('opacity-100', 'transform-none');
-                    }, 5000);
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'pt',
+                    format: 'a4'
                 });
-            });
 
-            document.body.addEventListener('click', () => {
-                popup.classList.add('opacity-0', 'translate-y-4');
-                popup.classList.remove('opacity-100', 'transform-none');
-                clearTimeout(popupTimeout);
-            });
-            
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-button');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, { rootMargin: '-20% 0px -80% 0px' });
-            
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                const ratio = canvasWidth / canvasHeight;
+                
+                const imgWidth = pdfWidth - 40; // with some margin
+                const imgHeight = imgWidth / ratio;
+                
+                let heightLeft = imgHeight;
+                let position = 20; // top margin
 
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
+                pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                heightLeft -= (pdfHeight - 40);
 
+                while (heightLeft > 0) {
+                    position = -heightLeft - 20;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                    heightLeft -= (pdfHeight - 40);
+                }
+                
+                const teacherName = document.getElementById('teacher-name').value || 'teacher';
+                const lessonDate = document.getElementById('lesson-date').value || new Date().toISOString().split('T')[0];
+                pdf.save(`Lesson-Plan-${teacherName}-${lessonDate}.pdf`);
+                
+                loader.classList.add('hidden'); // Hide loader
+            }).catch(err => {
+                console.error("Error generating PDF:", err);
+                loader.classList.add('hidden'); // Hide loader in case of error
+                alert("Sorry, there was an error creating the PDF. Please check the console for details.");
+            });
         });
     </script>
 
