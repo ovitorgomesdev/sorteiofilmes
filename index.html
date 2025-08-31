@@ -238,6 +238,9 @@
             synopsisTitleEl.style.display = 'none';
             movieSynopsis.style.display = 'none';
 
+            // Adicionado: Rola a página para o resultado
+            movieResultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
             await runDrawAnimation(moviesDataCache);
 
             if (finalMovieData) {
@@ -312,5 +315,6 @@
     </script>
 </body>
 </html>
+
 
 
