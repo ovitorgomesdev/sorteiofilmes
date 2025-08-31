@@ -97,7 +97,7 @@
 
         let movieTitles = [
             'Persepolis', 'Mon Oncle', 'Come and See', 'Mysterious Skin', 'Titanic',
-            'O Fantasma da Ópera', 'Moulin Rouge', 'Jesus Cristo Superstar', 'O Exorcista'
+            'O Fantasma da Ópera', 'Moulin Rouge', 'Jesus Cristo Superstar', 'O Exorcista', 'I Saw the Devil'
         ];
 
         const drawButton = document.getElementById('draw-button');
@@ -221,11 +221,13 @@
 
             let finalMovieData;
             if (isFirstDraw) {
-                // MODIFICADO: O resultado de hoje será sempre "O Exorcista"
-                finalMovieData = moviesDataCache.find(m => m.title === 'O Exorcista');
-
-                // Fallback caso "O Exorcista" tenha sido removido da lista
-                if (!finalMovieData) {
+                const specialPicksTitles = ['Titanic', 'O Exorcista', 'Come and See', 'I Saw the Devil'];
+                const specialPicks = moviesDataCache.filter(m => specialPicksTitles.includes(m.originalTitle));
+                
+                if (specialPicks.length > 0) {
+                   finalMovieData = specialPicks[Math.floor(Math.random() * specialPicks.length)];
+                } else {
+                    // Fallback caso os filmes especiais tenham sido removidos
                     finalMovieData = moviesDataCache[Math.floor(Math.random() * moviesDataCache.length)];
                 }
                 isFirstDraw = false;
@@ -315,6 +317,7 @@
     </script>
 </body>
 </html>
+
 
 
 
