@@ -1,318 +1,561 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteio de Filmes - Cineclube</title>
+    <title>Professor Vítor | Aulas de Inglês</title>
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
+        /* Define a fonte padrão e cores personalizadas */
         body {
             font-family: 'Inter', sans-serif;
+            /* Cores alteradas para o tema de marrom */
+            --primary-light: #F7F3EFFF; /* Bege/Marrom muito claro */
+            --primary: #8D6E63;       /* Marrom médio */
+            --primary-dark: #4E342E;  /* Marrom escuro */
+            --secondary: #EFEBE9;     /* Bege/Marrom claro */
+            --text-dark: #3E2723;     /* Marrom bem escuro (para texto) */
+            --text-light: #6D4C41;    /* Marrom médio (para texto) */
         }
-        h1.title-font {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.1em;
+        
+        /* Estilo para o accordion (FAQ) */
+        details > summary {
+            list-style: none;
         }
-        #movie-result {
-            transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out, box-shadow 0.4s ease-in-out;
+        details > summary::-webkit-details-marker {
+            display: none;
         }
-        .fade-in {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
-        #movie-result.is-drawing {
-            opacity: 1 !important;
-            transform: scale(1.03) translateY(10px);
-            box-shadow: 0 0 35px 8px rgba(239, 68, 68, 0.4);
-        }
-        #movie-result.is-drawing img {
-            filter: blur(4px);
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-        #movie-poster {
-            transition: all 0.1s ease-out;
-        }
-        /* Estilos para a lista de filmes e feedback */
-        .movie-pill {
-            transition: all 0.2s ease-in-out;
-        }
-        .feedback-message {
-            transition: opacity 0.5s ease-in-out;
+        /* Rotação do ícone do accordion */
+        details[open] summary .lucide-chevron-down {
+            transform: rotate(180deg);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-white text-gray-700">
 
-    <div class="text-center w-full max-w-4xl mx-auto">
-        <header class="mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-red-500 tracking-wide title-font">Cineclube</h1>
-            <p class="text-lg md:text-xl text-gray-400 mt-2">Sorteio Semanal de Filmes</p>
-        </header>
-
-        <!-- Seção para adicionar filmes -->
-        <section class="mb-10 w-full max-w-2xl mx-auto">
-            <form id="add-movie-form" class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="add-movie-input" placeholder="Adicionar novo filme à lista..." class="w-full bg-gray-800 border-2 border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors">
-                <button type="submit" id="add-movie-button" class="bg-red-600 text-white font-bold px-6 py-3 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all transform hover:scale-105 disabled:bg-red-800 disabled:cursor-not-allowed">
-                    Adicionar
-                </button>
-            </form>
-            <div id="feedback-message" class="mt-3 h-5 text-sm opacity-0"></div>
-            <div id="movie-list-container" class="mt-4 flex flex-wrap justify-center gap-2">
-                <!-- As "tags" de filmes serão inseridas aqui pelo JS -->
+    <!-- ===== Header ===== -->
+    <header class="sticky top-0 bg-white shadow-md z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo/Nome -->
+            <div class="text-2xl font-bold text-[--primary-dark]">
+                Professor Vítor
             </div>
-        </section>
+            
+            <!-- Menu Desktop -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#metodo" class="text-gray-600 hover:text-[--primary] transition-colors">Metodologia</a>
+                <a href="#sobre" class="text-gray-600 hover:text-[--primary] transition-colors">Sobre Mim</a>
+                <a href="#faq" class="text-gray-600 hover:text-[--primary] transition-colors">Perguntas Frequentes</a>
+            </div>
+            
+            <!-- Botão Menu Mobile -->
+            <div class="md:hidden">
+                <button id="menu-toggle" class="text-gray-700">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Menu Mobile (Oculto por padrão) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute left-0 right-0 p-6 z-40">
+            <a href="#metodo" class="block py-2 text-gray-700 hover:bg-gray-100 rounded mobile-link">Metodologia</a>
+            <a href="#sobre" class="block py-2 text-gray-700 hover:bg-gray-100 rounded mobile-link">Sobre Mim</a>
+            <a href="#faq" class="block py-2 text-gray-700 hover:bg-gray-100 rounded mobile-link">Perguntas Frequentes</a>
+        </div>
+    </header>
 
-        <main>
-            <button id="draw-button" class="bg-red-700 text-white font-bold text-xl px-10 py-4 rounded-lg shadow-lg hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition-all transform hover:scale-105 duration-300 disabled:bg-red-900 disabled:cursor-not-allowed disabled:transform-none">
-                Sortear Filme de Hoje
-            </button>
-
-            <!-- Card do resultado do sorteio -->
-            <div id="movie-result" class="mt-12 bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8 max-w-3xl mx-auto hidden opacity-0 transform translate-y-10" style="transition-property: opacity, transform, box-shadow;">
-                <div class="md:flex md:space-x-8">
-                    <div class="md:w-1/3 flex-shrink-0">
-                         <img id="movie-poster" src="https://placehold.co/400x600/1f2937/374151?text=Poster" alt="Pôster do filme" class="rounded-lg shadow-md w-full h-auto object-cover">
+    <!-- ===== Hero Section ===== -->
+    <section class="bg-[--primary-light] py-16 md:py-24">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <!-- Coluna de Texto -->
+            <div class="animate-fade-in-up">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-[--text-dark] leading-tight">
+                    Conquiste confiança e naturalidade na comunicação em inglês
+                    <strong class="text-[--primary-dark]">com aulas focadas no inglês real.</strong>
+                </h1>
+                <p class="mt-6 text-lg text-[--text-light]">
+                    Aulas acessíveis, modernas e eficazes, para você usar o inglês em situações cotidianas, viagens e no trabalho.
+                </p>
+                <a href="#" class="mt-8 inline-flex items-center gap-3 px-8 py-4 bg-[--primary] text-white font-bold rounded-lg shadow-lg hover:bg-opacity-90 transform hover:-translate-y-1 transition-all duration-300">
+                    <i data-lucide="whatsapp"></i>
+                    Fale comigo!
+                </a>
+                
+                <!-- Benefícios (como no original) -->
+                <div class="mt-10 space-y-4">
+                    <div class="flex items-center gap-3 text-lg text-[--text-dark]">
+                        <i data-lucide="monitor-smartphone" class="text-[--primary]"></i>
+                        <span>Aulas Online Personalizadas</span>
                     </div>
-                    <div class="md:w-2/3 mt-6 md:mt-0 text-left">
-                        <h2 id="movie-title" class="text-3xl font-bold text-red-400">Título do Filme</h2>
-                        <h3 id="synopsis-title" class="text-lg font-semibold text-gray-300 mt-4 mb-2">Sinopse</h3>
-                        <p id="movie-synopsis" class="text-gray-400 leading-relaxed">A sinopse do filme aparecerá aqui.</p>
+                    <div class="flex items-center gap-3 text-lg text-[--text-dark]">
+                        <i data-lucide="users-round" class="text-[--primary]"></i>
+                        <span>Para Adolescentes e Adultos</span>
                     </div>
                 </div>
             </div>
-        </main>
-
-        <footer class="mt-16 text-gray-600">
-            <p>&copy; 2024 - Todos os direitos reservados ao seu Cineclube.</p>
-        </footer>
-    </div>
-
-    <script>
-        const apiKey = '395b8b6ba3e1dab472d05623c54e1089'; 
-
-        let movieTitles = [
-            'Persepolis', 'Mon Oncle', 'Come and See', 'Mysterious Skin', 'Titanic',
-            'O Fantasma da Ópera', 'Moulin Rouge', 'Jesus Cristo Superstar', 'O Exorcista', 'I Saw the Devil'
-        ];
-
-        const drawButton = document.getElementById('draw-button');
-        const movieResultDiv = document.getElementById('movie-result');
-        const moviePoster = document.getElementById('movie-poster');
-        const movieTitle = document.getElementById('movie-title');
-        const synopsisTitleEl = document.getElementById('synopsis-title');
-        const movieSynopsis = document.getElementById('movie-synopsis');
-        
-        const addMovieForm = document.getElementById('add-movie-form');
-        const addMovieInput = document.getElementById('add-movie-input');
-        const addMovieButton = document.getElementById('add-movie-button');
-        const movieListContainer = document.getElementById('movie-list-container');
-        const feedbackMessage = document.getElementById('feedback-message');
-
-        let isFirstDraw = true;
-        let moviesDataCache = [];
-        let isDataLoaded = false;
-
-        async function fetchMovieData(title) {
-            // ... (função fetchMovieData permanece a mesma)
-        }
-        
-        // Função para mostrar feedback ao usuário
-        function showFeedback(message, isError = false) {
-            feedbackMessage.textContent = message;
-            feedbackMessage.className = `mt-3 h-5 text-sm opacity-100 ${isError ? 'text-red-400' : 'text-green-400'}`;
-            setTimeout(() => { feedbackMessage.style.opacity = '0'; }, 3000);
-        }
-
-        // Função para renderizar a lista de filmes na tela
-        function renderMovieList() {
-            movieListContainer.innerHTML = '';
-            movieTitles.forEach((title, index) => {
-                const pill = document.createElement('div');
-                pill.className = 'movie-pill bg-gray-700 text-gray-300 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2';
-                pill.innerHTML = `
-                    <span>${title}</span>
-                    <button data-index="${index}" class="remove-btn text-gray-500 hover:text-white">&times;</button>
-                `;
-                movieListContainer.appendChild(pill);
-            });
-        }
-        
-        // Lidar com a remoção de um filme
-        movieListContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-btn')) {
-                const indexToRemove = parseInt(e.target.dataset.index, 10);
-                const titleToRemove = movieTitles[indexToRemove];
-                
-                // Remove da lista de títulos e do cache
-                movieTitles.splice(indexToRemove, 1);
-                moviesDataCache = moviesDataCache.filter(movie => movie.originalTitle !== titleToRemove);
-                
-                renderMovieList();
-                showFeedback(`"${titleToRemove}" removido da lista.`, false);
-            }
-        });
-
-        // Lidar com a adição de um novo filme
-        addMovieForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newTitle = addMovieInput.value.trim();
-            if (!newTitle) return;
-
-            if (movieTitles.some(title => title.toLowerCase() === newTitle.toLowerCase())) {
-                showFeedback('Este filme já está na lista!', true);
-                return;
-            }
-
-            addMovieButton.disabled = true;
-            addMovieButton.textContent = 'Buscando...';
-
-            const data = await fetchMovieData(newTitle);
-
-            if (data && !data.error) {
-                movieTitles.push(newTitle);
-                data.originalTitle = newTitle; // Guarda o título original para remoção
-                moviesDataCache.push(data);
-                renderMovieList();
-                showFeedback(`"${data.title}" adicionado com sucesso!`, false);
-                addMovieInput.value = '';
-            } else {
-                showFeedback(data.error || 'Não foi possível encontrar o filme.', true);
-            }
-
-            addMovieButton.disabled = false;
-            addMovieButton.textContent = 'Adicionar';
-        });
-
-
-        async function loadInitialData() {
-            if (isDataLoaded) return;
-            drawButton.textContent = 'Carregando Filmes...';
-            const moviePromises = movieTitles.map(async (title) => {
-                const data = await fetchMovieData(title);
-                if (data && !data.error) {
-                    data.originalTitle = title;
-                    return data;
-                }
-                return null;
-            });
-            const results = await Promise.all(moviePromises);
-            moviesDataCache = results.filter(Boolean); // Remove nulos
-            isDataLoaded = true;
-        }
-
-        function runDrawAnimation(movies) {
-            // ... (função runDrawAnimation permanece a mesma)
-        }
-
-        drawButton.addEventListener('click', async () => {
-            if (movieTitles.length === 0) {
-                showFeedback("Adicione pelo menos um filme para sortear!", true);
-                return;
-            }
-
-            drawButton.disabled = true;
-            await loadInitialData();
-            drawButton.textContent = 'Sorteando...';
-
-            let finalMovieData;
-            if (isFirstDraw) {
-                const specialPicksTitles = ['Titanic', 'O Exorcista', 'Come and See', 'I Saw the Devil'];
-                const specialPicks = moviesDataCache.filter(m => specialPicksTitles.includes(m.originalTitle));
-                
-                if (specialPicks.length > 0) {
-                   finalMovieData = specialPicks[Math.floor(Math.random() * specialPicks.length)];
-                } else {
-                    // Fallback caso os filmes especiais tenham sido removidos
-                    finalMovieData = moviesDataCache[Math.floor(Math.random() * moviesDataCache.length)];
-                }
-                isFirstDraw = false;
-            } else {
-                finalMovieData = moviesDataCache[Math.floor(Math.random() * moviesDataCache.length)];
-            }
             
-            movieResultDiv.classList.remove('hidden', 'fade-in');
-            movieResultDiv.classList.add('is-drawing');
-            synopsisTitleEl.style.display = 'none';
-            movieSynopsis.style.display = 'none';
+            <!-- Coluna da Imagem/Vídeo -->
+            <div class="animate-fade-in-up" style="animation-delay: 200ms;">
+                <!-- O original tinha um vídeo, aqui está um placeholder de imagem que pode ser trocado por um vídeo -->
+                <img src="566197017_18090380989876355_8702916421746588820_n.jpg" alt="Professor Vítor dando aula" class="rounded-xl shadow-2xl w-full h-auto object-cover aspect-video md:aspect-[4/3]">
+            </div>
+        </div>
+    </section>
 
-            // Adicionado: Rola a página para o resultado
-            movieResultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    <!-- ===== Seção de Dores (Pain Points) ===== -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-[--text-dark]">
+                Você se identifica com <strong class="text-[--primary]">esses desafios?</strong>
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8 mt-12">
+                <!-- Card 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <i data-lucide="message-circle-off" class="h-12 w-12 text-[--primary] mx-auto"></i>
+                    <h3 class="mt-4 text-xl font-bold text-[--text-dark]">Trava na hora de falar?</h3>
+                    <p class="mt-2 text-[--text-light]">
+                        Você entende muito, mas sente dificuldade em formar frases e se expressar com confiança.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <i data-lucide="book-x" class="h-12 w-12 text-[--primary] mx-auto"></i>
+                    <h3 class="mt-4 text-xl font-bold text-[--text-dark]">Frustrado com métodos antigos?</h3>
+                    <p class="mt-2 text-[--text-light]">
+                        Aulas focadas apenas em gramática que não preparam você para conversas reais.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <i data-lucide="hourglass" class="h-12 w-12 text-[--primary] mx-auto"></i>
+                    <h3 class="mt-4 text-xl font-bold text-[--text-dark]">Sente que não evolui?</h3>
+                    <p class="mt-2 text-[--text-light]">
+                        Estuda há anos, mas sente que seu progresso é lento e pouco prático para o dia a dia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            await runDrawAnimation(moviesDataCache);
+    <!-- ===== Como Funciona (Método) ===== -->
+    <section id="metodo" class="py-16 md:py-24 bg-[--secondary]">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="text-sm font-bold text-[--primary]">CONHEÇA O MÉTODO</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[--text-dark] mt-2">
+                    Minha Metodologia de Ensino
+                </h2>
+                <p class="mt-4 text-lg text-[--text-light]">
+                    Minha metodologia é validada pelas universidades de Oxford e Cambridge, combinando excelência acadêmica com uma abordagem comunicativa focada no inglês real.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+                <!-- Passo 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-[--primary]">
+                    <span class="text-5xl font-extrabold text-[--primary-dark] opacity-50">1</span>
+                    <h3 class="mt-2 text-xl font-bold text-[--text-dark]">Avaliação e Personalização</h3>
+                    <p class="mt-3 text-[--text-light]">
+                        Analisamos seu nível, ritmo e objetivos para criar um plano de aula totalmente personalizado para você.
+                    </p>
+                </div>
+                <!-- Passo 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-[--primary]">
+                    <span class="text-5xl font-extrabold text-[--primary-dark] opacity-50">2</span>
+                    <h3 class="mt-2 text-xl font-bold text-[--text-dark]">Abordagem Comunicativa</h3>
+                    <p class="mt-3 text-[--text-light]">
+                        Foco em usar o inglês real do dia a dia, com simulações de situações cotidianas, viagens e entrevistas.
+                    </p>
+                </div>
+                <!-- Passo 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-[--primary]">
+                    <span class="text-5xl font-extrabold text-[--primary-dark] opacity-50">3</span>
+                    <h3 class="mt-2 text-xl font-bold text-[--text-dark]">Materiais Modernos</h3>
+                    <p class="mt-3 text-[--text-light]">
+                        Usamos materiais premiados de Oxford, além de filmes, séries, músicas e notícias para um aprendizado dinâmico.
+                    </p>
+                </div>
+                <!-- Passo 4 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-[--primary]">
+                    <span class="text-5xl font-extrabold text-[--primary-dark] opacity-50">4</span>
+                    <h3 class="mt-2 text-xl font-bold text-[--text-dark]">Fluência e Precisão</h3>
+                    <p class="mt-3 text-[--text-light]">
+                        Enfatizamos a naturalidade na fala, sem negligenciar a precisão gramatical, equilibrando técnica e comunicação.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            if (finalMovieData) {
-                moviePoster.src = finalMovieData.poster;
-                movieTitle.textContent = finalMovieData.title;
-                movieSynopsis.textContent = finalMovieData.synopsis;
-                moviePoster.alt = `Pôster de ${finalMovieData.title}`;
+    <!-- ===== Carrossel de Benefícios ===== -->
+    <section class="py-16 md:py-24 bg-gray-800 text-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="text-sm font-bold text-[--primary-light] opacity-80">VISUALIZE SUA TRANSFORMAÇÃO</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-2">
+                    O que você pode <strong class="text-yellow-200">conquistar</strong> com as aulas?
+                </h2>
+            </div>
+            
+            <div class="relative mt-12">
+                <!-- Wrapper do Carrossel -->
+                <div class="overflow-hidden">
+                    <div id="carousel-track" class="flex transition-transform duration-500 ease-in-out">
+                        <!-- Slide 1 -->
+                        <div class="flex-shrink-0 w-full p-4">
+                            <div class="bg-white text-[--text-dark] p-8 rounded-xl shadow-lg h-full">
+                                <h3 class="text-2xl font-bold text-[--primary-dark]">Confiança para se Comunicar</h3>
+                                <p class="mt-3 text-lg text-[--text-light]">Perder o medo de falar e se expressar com naturalidade em qualquer situação.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="flex-shrink-0 w-full p-4">
+                            <div class="bg-white text-[--text-dark] p-8 rounded-xl shadow-lg h-full">
+                                <h3 class="text-2xl font-bold text-[--primary-dark]">Fluência no Inglês Real</h3>
+                                <p class="mt-3 text-lg text-[--text-light]">Dominar o inglês usado em viagens, no trabalho e em conversas do dia a dia, não apenas o dos livros.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="flex-shrink-0 w-full p-4">
+                            <div class="bg-white text-[--text-dark] p-8 rounded-xl shadow-lg h-full">
+                                <h3 class="text-2xl font-bold text-[--primary-dark]">Aprendizado Prazeroso</h3>
+                                <p class="mt-3 text-lg text-[--text-light]">Transformar o estudo em uma experiência significativa e envolvente, adaptada ao seu ritmo.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 4 -->
+                        <div class="flex-shrink-0 w-full p-4">
+                            <div class="bg-white text-[--text-dark] p-8 rounded-xl shadow-lg h-full">
+                                <h3 class="text-2xl font-bold text-[--primary-dark]">Autonomia no Idioma</h3>
+                                <p class="mt-3 text-lg text-[--text-light]">Ganhar independência para consumir conteúdo, participar de reuniões e viajar sem barreiras.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botões de Navegação -->
+                <button id="carousel-prev" class="absolute top-1/2 left-0 md:-left-8 transform -translate-y-1/2 bg-white/20 text-white p-3 rounded-full hover:bg-white/40 transition-all">
+                    <i data-lucide="arrow-left" class="h-6 w-6"></i>
+                </button>
+                <button id="carousel-next" class="absolute top-1/2 right-0 md:-right-8 transform -translate-y-1/2 bg-white/20 text-white p-3 rounded-full hover:bg-white/40 transition-all">
+                    <i data-lucide="arrow-right" class="h-6 w-6"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ===== Sobre Mim ===== -->
+    <section id="sobre" class="py-16 md:py-24">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+            <!-- Coluna de Texto -->
+            <div>
+                <span class="text-sm font-bold text-[--primary]">SOBRE MIM</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[--text-dark] mt-2">
+                    Conheça o Professor Vítor
+                </h2>
+                <p class="mt-4 text-lg font-medium text-[--text-dark]">11 anos de experiência no ensino de inglês</p>
+                <p class="mt-4 text-lg text-[--text-light]">
+                    Olá! Sou o Professor Vítor e, nos últimos anos, tenho dedicado minha carreira ao ensino de inglês de forma acessível, moderna e eficaz. Minha missão é ajudar cada aluno a conquistar confiança e naturalidade na comunicação, transformando o aprendizado do idioma em uma experiência prazerosa e significativa.
+                </p>
+                <p class="mt-4 text-lg text-[--text-light]">
+                    Minha abordagem como professor particular é centrada no aprendizado personalizado. Acredito que cada aluno possui uma trajetória única, com suas próprias motivações, desafios e estilos de aprendizagem — e é justamente ao reconhecer essa individualidade que o meu trabalho se destaca.
+                </p>
+                <p class="mt-4 text-lg text-[--text-light]">
+                    Minha metodologia combina os princípios das abordagens comunicativa e lexical, enfatizando a fluência e a naturalidade na fala, sem negligenciar a precisão gramatical. Utilizo materiais premiados da Oxford University Press — além de trechos de filmes, séries, músicas e notícias — para aproximar o aluno do inglês real, vivo e contemporâneo.
+                </p>
+                
+                <ul class="mt-8 space-y-3">
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Mais de 11 anos de experiência</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Metodologia validada por Oxford e Cambridge</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Especialista em Abordagem Comunicativa e Lexical</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Aulas para adolescentes, universitários e adultos</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Coluna da Imagem -->
+            <div>
+                <img src="Brown and Light Brown, Circle Framed Instagram Profile Picture (1).jpg" alt="Foto Profissional do Professor Vítor" class="rounded-xl shadow-2xl w-full h-auto object-cover aspect-[5/6]">
+            </div>
+        </div>
+    </section>
+    
+    <!-- ===== Sobre Mim ===== -->
+    <section id="sobre" class="py-16 md:py-24" hidden>
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+            <!-- Coluna de Texto -->
+            <div>
+                <span class="text-sm font-bold text-[--primary]">SOBRE MIM</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[--text-dark] mt-2">
+                    Conheça a Psicóloga
+                </h2>
+                <p class="mt-4 text-lg font-medium text-[--text-dark]">CRP 00/0000</p>
+                <p class="mt-4 text-lg text-[--text-light]">
+                    Meu nome é <strong>Seu Nome</strong>, sou Psicóloga Clínica e atuo com mulheres adultas e casais, oferecendo um acompanhamento individualizado ou conjunto.
+                </p>
+                <p class="mt-4 text-lg text-[--text-light]">
+                    Meu trabalho é pautado em um método exclusivo, pensado para respeitar seu tempo e suas necessidades.
+                </p>
+                
+                <ul class="mt-8 space-y-3">
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Graduação em Psicologia pela Universidade</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Especialização em Terapia Cognitivo-Comportamental</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Formação em Terapia do Esquema</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-lg">
+                        <i data-lucide="check-circle" class="h-6 w-6 text-green-500"></i>
+                        <span>Mais de 8.000 horas de atendimento clínico</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Coluna da Imagem -->
+            <div>
+                <img src="httpsGITHU://placehold.co/500x600/FDF2F8/DB2777?text=Sua+Foto+Profissional" alt="Foto Profissional" class="rounded-xl shadow-2xl w-full h-auto">
+            </div>
+        </div>
+    </section>
+    
+    <!-- ===== Instagram ===== -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-[--text-dark]">
+                Me encontre no <strong>Instagram</strong>
+            </h2>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 mt-12 max-w-4xl mx-auto">
+                <a href="#" target="_blank" class="transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://source.unsplash.com/400x400/?book,english,notes" alt="Post do Instagram sobre notas de inglês" class="rounded-xl shadow-lg w-full h-full object-cover aspect-square">
+                </a>
+                <a href="#" target="_blank" class="transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://source.unsplash.com/400x400/?laptop,study" alt="Post do Instagram sobre estudar online" class="rounded-xl shadow-lg w-full h-full object-cover aspect-square">
+                </a>
+                <a href="#" target="_blank" class="transform hover:scale-105 transition-transform duration-300">
+                    <img src="https://source.unsplash.com/400x400/?london,city" alt="Post do Instagram sobre viagem" class="rounded-xl shadow-lg w-full h-full object-cover aspect-square">
+                </a>
+            </div>
+            
+            <a href="#" target="_blank" class="mt-10 inline-flex items-center gap-3 px-8 py-4 bg-gray-800 text-white font-bold rounded-lg shadow-lg hover:bg-gray-700 transition-all">
+                <i data-lucide="at-sign"></i>
+                @prof.vitor
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="py-16 md:py-24">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <div class="text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[--text-dark]">
+                    <strong>Perguntas</strong> Frequentes
+                </h2>
+            </div>
+            
+            <div class="mt-12 space-y-4">
+                <!-- Pergunta 1 -->
+                <details class="bg-gray-50 border rounded-lg overflow-hidden">
+                    <summary class="p-6 cursor-pointer flex justify-between items-center font-bold text-lg text-[--text-dark]">
+                        As aulas são em grupo ou individuais?
+                        <i data-lucide="chevron-down" class="h-6 w-6 text-[--primary] transition-transform duration-300"></i>
+                    </summary>
+                    <div class="p-6 border-t border-gray-200 text-[--text-light] text-base">
+                        <p>O foco é em aulas particulares e personalizadas para garantir que o aprendizado seja adaptado ao seu ritmo e objetivos. Também ofereço opções para duplas, caso queira estudar com um amigo ou colega.</p>
+                    </div>
+                </details>
+                
+                <!-- Pergunta 2 -->
+                <details class="bg-gray-50 border rounded-lg overflow-hidden">
+                    <summary class="p-6 cursor-pointer flex justify-between items-center font-bold text-lg text-[--text-dark]">
+                        Qual material é usado?
+                        <i data-lucide="chevron-down" class="h-6 w-6 text-[--primary] transition-transform duration-300"></i>
+                    </summary>
+                    <div class="p-6 border-t border-gray-200 text-[--text-light] text-base">
+                        <p>Utilizo materiais premiados da Oxford University Press, combinados com recursos do mundo real como filmes, séries, músicas e artigos, para tornar a aula mais dinâmica e relevante.</p>
+                    </div>
+                </details>
+                
+                <!-- Pergunta 3 -->
+                <details class="bg-gray-50 border rounded-lg overflow-hidden">
+                    <summary class="p-6 cursor-pointer flex justify-between items-center font-bold text-lg text-[--text-dark]">
+                        Quanto tempo leva para ficar fluente?
+                        <i data-lucide="chevron-down" class="h-6 w-6 text-[--primary] transition-transform duration-300"></i>
+                    </summary>
+                    <div class="p-6 border-t border-gray-200 text-[--text-light] text-base">
+                        <p>A fluência é um processo e varia para cada aluno. Minha metodologia foca em acelerar sua confiança na comunicação desde o início. Juntos, definimos metas realistas para que você veja progresso a cada aula.</p>
+                    </div>
+                </details>
+
+                <!-- Pergunta 4 -->
+                <details class="bg-gray-50 border rounded-lg overflow-hidden">
+                    <summary class="p-6 cursor-pointer flex justify-between items-center font-bold text-lg text-[--text-dark]">
+                        As aulas são online ou presenciais?
+                        <i data-lucide="chevron-down" class="h-6 w-6 text-[--primary] transition-transform duration-300"></i>
+                    </summary>
+                    <div class="p-6 border-t border-gray-200 text-[--text-light] text-base">
+                        <p>Atualmente, ofereço aulas 100% online, proporcionando flexibilidade de horários e a conveniência de estudar de qualquer lugar.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA Final ===== -->
+    <section class="bg-[--primary-light] py-16 md:py-24">
+        <div class="container mx-auto px-6 text-center max-w-2xl">
+            <i data-lucide="rocket" class="h-20 w-20 text-[--primary] mx-auto animate-bounce"></i>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-[--text-dark] mt-6">
+                Vamos embarcar juntos nessa jornada?
+            </h2>
+            <p class="mt-4 text-lg text-[--text-light]">
+                Juntos, vamos desbloquear o seu potencial no inglês, tornando o aprendizado prazeroso e relevante. Com aulas personalizadas, adaptadas à sua jornada única, você ganhará confiança e fluência para situações reais do dia a dia.
+            </p>
+            <a href="#" class="mt-8 inline-flex items-center gap-3 px-8 py-4 bg-[--primary] text-white font-bold rounded-lg shadow-lg hover:bg-opacity-90 transform hover:-translate-y-1 transition-all duration-300">
+                <i data-lucide="whatsapp"></i>
+                Converse comigo
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="bg-gray-800 text-gray-300 py-16">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <div class="grid md:grid-cols-3 gap-8 items-center">
+                <!-- Logo/Nome -->
+                <div>
+                    <h3 class="text-3xl font-bold text-white mb-4">Professor Vítor</h3>
+                    <p class="text-gray-400">Aulas de inglês personalizadas.</p>
+                </div>
+                
+                <!-- Links de Navegação -->
+                <div class="md:mx-auto">
+                    <h4 class="text-lg font-semibold text-white mb-3">Menu</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#metodo" class="hover:text-white transition-colors">Metodologia</a></li>
+                        <li><a href="#sobre" class="hover:text-white transition-colors">Sobre Mim</a></li>
+                        <li><a href="#faq" class="hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Informações Legais -->
+                <div class="md:text-right">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-center md:justify-end gap-3">
+                            <i data-lucide="copyright" class="h-5 w-5 flex-shrink-0"></i>
+                            <span>2025 Todos os direitos reservados</span>
+                        </div>
+                        <div class="flex items-center justify-center md:justify-end gap-3">
+                            <i data-lucide="info" class="h-5 w-5 flex-shrink-0"></i>
+                            <a href="#" class="hover:text-white underline">Política de Privacidade</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão Flutuante do WhatsApp -->
+    <a href="#" class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-xl hover:bg-green-600 transform hover:scale-110 transition-all duration-300 z-40">
+        <i data-lucide="whatsapp" class="h-8 w-8"></i>
+    </a>
+    
+    <script>
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // --- Lógica do Menu Mobile ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            // Troca o ícone do menu
+            const icon = menuToggle.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.setAttribute('data-lucide', 'menu');
             } else {
-                movieTitle.textContent = "Erro";
-                movieSynopsis.textContent = "Não foi possível encontrar os dados do filme sorteado.";
-                moviePoster.src = 'https://placehold.co/400x600/ef4444/ffffff?text=Erro';
+                icon.setAttribute('data-lucide', 'x');
             }
+            lucide.createIcons(); // Recria o ícone
+        });
 
-            movieResultDiv.classList.remove('is-drawing');
-            synopsisTitleEl.style.display = 'block';
-            movieSynopsis.style.display = 'block';
-            movieResultDiv.classList.add('fade-in');
-
-            drawButton.disabled = false;
-            drawButton.textContent = 'Sortear Novo Filme';
+        // --- Fecha o menu mobile ao clicar em um link ---
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuToggle.querySelector('i').setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
+            });
         });
         
-        // Funções omitidas para brevidade (fetchMovieData, runDrawAnimation)
-        // Elas são as mesmas da versão anterior. O código completo está acima.
-        async function fetchMovieData(title) {
-            if (!apiKey || apiKey === 'COLE_SUA_CHAVE_DA_API_AQUI') {
-                return { error: 'A chave da API não foi configurada.' };
-            }
-            const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(title)}&language=pt-BR`;
-            try {
-                const response = await fetch(searchUrl);
-                if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-                const data = await response.json();
-                if (data.results && data.results.length > 0) {
-                    const movie = data.results[0];
-                    return {
-                        title: movie.title,
-                        poster: movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'https://placehold.co/400x600/ef4444/ffffff?text=Poster+Nao+Encontrado',
-                        synopsis: movie.overview || 'Sinopse não disponível.'
-                    };
-                }
-                return { error: `Filme "${title}" não encontrado.` };
-            } catch (error) {
-                console.error("Erro ao buscar dados do filme:", error);
-                return { error: 'Falha ao conectar com a API de filmes.' };
-            }
-        }
-        function runDrawAnimation(movies) {
-            return new Promise(resolve => {
-                const animationSteps = 25;
-                let currentStep = 0;
-                function animateStep() {
-                    const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-                    moviePoster.src = randomMovie.poster;
-                    movieTitle.textContent = randomMovie.title;
-                    moviePoster.alt = `Sorteando...`;
-                    currentStep++;
-                    if (currentStep < animationSteps) {
-                        const delay = 60 + Math.pow(currentStep, 2);
-                        setTimeout(animateStep, delay);
-                    } else {
-                        resolve();
-                    }
-                }
-                animateStep();
-            });
-        }
+        // --- Lógica do Carrossel de Benefícios ---
+        const track = document.getElementById('carousel-track');
+        const slides = Array.from(track.children);
+        const nextButton = document.getElementById('carousel-next');
+        const prevButton = document.getElementById('carousel-prev');
         
-        // Renderiza a lista inicial ao carregar a página
-        renderMovieList();
+        let currentIndex = 0;
+        let slideWidth = slides[0].getBoundingClientRect().width;
+        
+        // Função para atualizar a largura do slide (para responsividade)
+        const updateSlideWidth = () => {
+            slideWidth = slides[0].getBoundingClientRect().width;
+            goToSlide(currentIndex); // Reposiciona o slide atual
+        };
+        
+        // Função para ir para um slide específico
+        const goToSlide = (index) => {
+            if (index < 0) {
+                index = slides.length - 1;
+            } else if (index >= slides.length) {
+                index = 0;
+            }
+            track.style.transform = `translateX(-${index * slideWidth}px)`;
+            currentIndex = index;
+        };
+        
+        // Event Listeners dos botões
+        nextButton.addEventListener('click', () => {
+            goToSlide(currentIndex + 1);
+        });
+        
+        prevButton.addEventListener('click', () => {
+            goToSlide(currentIndex - 1);
+        });
+        
+        // Atualiza a largura ao redimensionar a janela
+        window.addEventListener('resize', updateSlideWidth);
+        
+        // Inicializa a posição
+        updateSlideWidth();
 
     </script>
 </body>
